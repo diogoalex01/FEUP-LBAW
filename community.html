@@ -1,0 +1,253 @@
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/af172a0b3b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/home.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+    <title>Porto</title>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav id="topBar" class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="home.html">
+            <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 mr-3 my-lg-0 mx-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Explore" aria-label="Explore">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
+            </form>
+
+            <div class="dropdown show">
+                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
+                        id="login" height="50" width="50" src="./images/avatar_male.png" alt="Profile Image"></a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="myProfile.html">My Account</a>
+                    <a class="dropdown-item" href="settings.html">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="homeUnauth.html">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <!-- Aside -->
+            <div class="col-md-3 aside">
+
+                <!-- My Categories -->
+                <div class="card my-4 aside-container">
+                    <h5 class="card-header aside-container-top">My Categories</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <ul class="list-unstyled mb-0">
+                                    <li> <a href="#">UPorto</a></li>
+                                    <li> <a href="#">FEUP</a></li>
+                                    <li> <a href="#">MIEIC</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Categories -->
+                <div class="card my-4  aside-container">
+                    <h5 class="card-header aside-container-top">Top Communities</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="font-weight-bold"> Porto</li>
+                                    <li> <a href="#">Homework</a></li>
+                                    <li> <a href="#">Applications</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Posts Column -->
+            <div class="col-md-9">
+
+                <div class="row">
+                    <div class="col-md-2 text-center community-pic-container">
+                        <img class="community-pic" src="./images/Porto.jpg" alt="Community Image">
+                    </div>
+                    <div class="col-md-7">
+                        <h1 class="my-4">Porto</h1>
+                    </div>
+                    <div class="col-md-1 text-center d-flex align-items-center">
+                        <input type="button" class="btn btn-outline-dark" value="Join">
+                    </div>
+                    <div class="col-md-2 text-center d-flex align-items-center">
+                        <input type="button" class="btn btn-outline-danger" value="Report">
+                    </div>
+                </div>
+
+                <!-- Post -->
+                <div class="card mb-4 post-container">
+                    <a href="post.html">
+                        <img class="card-img-top p-2" src="./images/ICBAS.png" alt="Post Image">
+                        <div class="card-body">
+
+                            <h2 class="card-title">Problem with studying.</h2>
+                            <p class="card-text">Hello i am desperately trying to find a way to learn how to learn. I am
+                                in the first semester of my CS uni and i just realised that i dont know how to start
+                                learning a new course. I tried reading the provided book / searching on internet but
+                                when it comes to the homework i dont know a single thing...So please if you have any umm
+                                i dont know tip or how to it would be nice.
+                                Thank you.
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-muted">
+                        <a><i class="fas fa-chevron-up"></i></a>
+                        <a><i class="fas fa-chevron-down"></i></a>
+                        <span class="card-footer-buttons">
+                            <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="#"><i class="fas fa-flag"></i></i>Report</a>
+                        </span>
+                        <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                alt="Profile Image"></a>
+                        Posted on March 5, 2020 by
+                        <a href="myProfile.html">@someusername</a>
+                    </div>
+                </div>
+
+                <!-- Post -->
+                <div class="card mb-4 post-container">
+                    <a href="post.html">
+                        <img class="card-img-top p-2" src="./images/Porto.jpg" alt="Post Image">
+                        <div class="card-body">
+
+                            <h2 class="card-title">Financial help</h2>
+                            <p class="card-text">So I have had some offers from my university so now I'm looking at
+                                financing and asked my parents if they would help with living costs so I could focus on
+                                my studies. What do I do. Will a part time job be able to support all of my living
+                                costs?</p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-muted">
+                        <a><i class="fas fa-chevron-up"></i></a>
+                        <a><i class="fas fa-chevron-down"></i></a>
+                        <span class="card-footer-buttons">
+                            <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="#"><i class="fas fa-flag"></i></i>Report</a>
+                        </span>
+                        <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                alt="Profile Image"></a>
+                        Posted on March 5, 2020 by
+                        <a href="myProfile.html">@someusername</a>
+                    </div>
+                </div>
+
+                <!-- Post -->
+                <div class="card mb-4 post-container">
+                    <a href="post.html">
+                        <img class="card-img-top p-2" src="./images/Porto.jpg" alt="post1 image">
+                        <div class="card-body">
+
+                            <h2 class="card-title">What editor do you people use for papers?</h2>
+                            <p class="card-text">Preferably free or a cheap fee but as I write my analysis essay, I was
+                                wondering if there are good tools for editing papers? If so, which do you use?</p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-muted">
+                        <a><i class="fas fa-chevron-up"></i></a>
+                        <a><i class="fas fa-chevron-down"></i></a>
+                        <span class="card-footer-buttons">
+                            <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="#"><i class="fas fa-flag"></i></i>Report</a>
+                        </span>
+                        <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                alt="Profile Image"></a>
+                        Posted on March 5, 2020 by
+                        <a href="myProfile.html">@someusername</a>
+                    </div>
+                </div>
+
+                <!-- Post -->
+                <div class="card mb-4 post-container">
+                    <a href="post.html">
+                        <img class="card-img-top p-2" src="./images/UPorto.png" alt="Post Image">
+                        <div class="card-body">
+
+                            <h2 class="card-title">University acceptance</h2>
+                            <p class="card-text">I just got accepted to UMass Amherst as an international
+                                undergraduate(freshman for engn). Any tips that might help me start well my year ?</p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-muted">
+                        <a><i class="fas fa-chevron-up"></i></a>
+                        <a><i class="fas fa-chevron-down"></i></a>
+                        <span class="card-footer-buttons">
+                            <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="#"><i class="fas fa-flag"></i></i>Report</a>
+                        </span>
+                        <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                alt="Profile Image"></a>
+                        Posted on March 5, 2020 by
+                        <a href="myProfile.html">@someusername</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="upper-footer" class="page-footer font-small">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 py-4">
+                    <div class="mb-5 flex-center">
+                        <!-- Logo -->
+                        <!-- <div>
+                            <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Elements -->
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3 medium text-white-50">LBAW © 2020 Copyright:
+            <a id="about" href="about.html"> about</a>
+        </div>
+    </footer>
+    <!-- Footer -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

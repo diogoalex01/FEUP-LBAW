@@ -1,0 +1,73 @@
+.personal-data {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.profile-aside {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.username-header {
+  color: rgb(117, 38, 40);
+}
+
+.profile-pic {
+  width: 100%;
+}
+
+.profile-pic-container {
+  margin: 100 0 0;
+  padding: 20;
+  width: 100%;
+}
+
+.card a .thumbnail {
+  width: 10%;
+  padding: 2 0 2 20;
+  margin-right: 0;
+}
+
+.post-thumbnail-header {
+  padding: 10 20 5;
+  margin: 0;
+}
+
+.post-thbn-body {
+  margin: 0 auto;
+  padding: 0 20 10;
+}
+
+.post-thbn-header-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.settings-form {
+  margin-top: 20;
+}
+
+.personal-info-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card .community-thumbnail {
+  padding: 5 0;
+}
+
+.community-thumbnail-row {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.n-members-text {
+  padding: 20 10;
+}

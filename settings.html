@@ -1,0 +1,252 @@
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/af172a0b3b.js" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="css/profile.css">
+	<link rel="stylesheet" href="css/home.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<title>Settings</title>
+</head>
+
+<body>
+	<!-- Navigation -->
+    <nav id="topBar" class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="home.html">
+            <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 mr-3 my-lg-0 mx-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Explore" aria-label="Explore">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
+            </form>
+
+            <div class="dropdown show">
+                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"> <img id="login" height="50" width="50" src="./images/avatar_male.png"
+                        alt="Profile Image"></a>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="myProfile.html">My Account</a>
+                    <a class="dropdown-item" href="settings.html">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="homeUnauth.html">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+	<div class="container">
+		<div class="settings-form">
+			<h1>Settings <i class="fa fa-sliders fa-sm" aria-hidden="true"></i>
+			</h1>
+			<hr>
+			<div class="row">
+				<!-- left column -->
+				<div class="col-md-3 photo-upload-container">
+					<div class="text-center">
+						<div class="text-center">
+							<img class="rounded-circle profile-pic " src="./images/avatar_male.png" alt="Profile Image">
+						</div>
+						<h6>Change profile photo</h6>
+						<input type="file" style="padding:3;" class="form-control-file">
+					</div>
+				</div>
+
+				<!-- edit form column -->
+				<div class="col-md-9">
+					<form>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-8 control-label">First name:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" value="Some">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Username:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" value="@someuser">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Email:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" value="someuser@gmail.com">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Gender:</label>
+									<div class="col-md-8">
+										<select class="form-control" id="gender" name="gender">
+											<option value="male">Male</option>
+											<option value="female">Female</option>
+											<option value="other">Other</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 personal-info-col">
+								<div class="form-group">
+									<label class="col-md-8 control-label">Last name:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" value="User">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Password:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="password" value="11111122333">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Confirm password:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="password" value="11111122333">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label">Age:</label>
+									<div class="col-md-8">
+										<input class="form-control" type="number" value="27">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-8 control-label"></label>
+									<div class="col-md-8">
+										<input type="button" class="btn btn-outline-dark" value="Save Changes">
+										<span></span>
+										<input type="reset" class="btn btn-default" value="Cancel">
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<!-- <h3>Personal info</h3>
+
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-lg-3 control-label">First name:</label>
+              <div class="col-lg-8">
+                <input class="form-control" type="text" value="Some">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Last name:</label>
+              <div class="col-lg-8">
+                <input class="form-control" type="text" value="User">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Age:</label>
+              <div class="col-lg-8">
+                <input class="form-control" type="number" value="27">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Gender:</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="gender" name="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label">Email:</label>
+              <div class="col-lg-8">
+                <input class="form-control" type="text" value="someuser@gmail.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">Username:</label>
+              <div class="col-md-8">
+                <input class="form-control" type="text" value="@someuser">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">Password:</label>
+              <div class="col-md-8">
+                <input class="form-control" type="password" value="11111122333">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label">Confirm password:</label>
+              <div class="col-md-8">
+                <input class="form-control" type="password" value="11111122333">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label"></label>
+              <div class="col-md-8">
+                <input type="button" class="btn btn-outline-dark" value="Save Changes">
+                <span></span>
+                <input type="reset" class="btn btn-default" value="Cancel">
+              </div>
+            </div>
+          </form> -->
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+	<!-- Footer -->
+	<footer id="upper-footer" class="page-footer font-small">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 py-4">
+					<div class="mb-5 flex-center">
+						<!-- Logo -->
+						<!-- <div>
+                            <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+                        </div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Footer Elements -->
+
+		<!-- Copyright -->
+		<div class="footer-copyright text-center py-3 medium text-white-50">LBAW © 2020 Copyright:
+			<a id="about" href="about.html"> about</a>
+		</div>
+	</footer>
+	<!-- Footer -->
+</body>
