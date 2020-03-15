@@ -52,18 +52,26 @@
         <!-- Posts Column -->
         <div class="col-md-14">
             <h1 class="my-4 text-center">New Post <i class="fa fa-keyboard-o" aria-hidden="true"></i></h1>
-			<hr>
+            <hr>
             <!-- Post Article Input -->
             <div class="card mb-4 post-container">
-                <div class="card-body">
+                <div class="card-body ">
                     <input type="text" class="form-control mb-2" placeholder="Post Community: /examplecommunity">
                     <input type="text" class="form-control mb-2" placeholder="Post Title">
                     <textarea type="text" class="form-control mb-3" placeholder="Post Body"
                         rows="16">Post Body</textarea>
-                    <button type="button" class="btn btn-secondary mr-5 px-4">Post</button>
-                    <label for="post-image-input">Add an image <i class="fa fa-paperclip"
-                            aria-hidden="true"></i></label>
-                    <input type="file" class="" id="post-image-input">
+                    <div class="row justify-content-between">
+                        <div class="col">
+                            <button type="button" class="btn btn-dark px-4">Post</button>
+                        </div>
+                        <div class="col ">
+                            <div class="row justify-content-end">
+                                <label for="post-image-input">Add an image <i class="fa fa-paperclip"
+                                        aria-hidden="true"></i></label>
+                                <input type="file" class="" id="post-image-input">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
