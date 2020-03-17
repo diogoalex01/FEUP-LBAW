@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="css/home.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="./images/pear_logo.png">
 
     <title>Home</title>
 </head>
@@ -28,11 +29,13 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <form class="form-inline my-2 mr-3 my-lg-0 mx-auto ">
-                <input class="form-control mr-sm-2" style="width: 300px;" type="search" placeholder="Explore"
+                <input class="form-control mr-sm-2" style="width: 450px;" type="search" placeholder="Explore"
                     aria-label="Explore">
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
             </form>
-
+            <div class="mr-4 bell">
+                <i class="fas fa-bell fa-lg"></i>
+            </div>
             <div class="dropdown show">
                 <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
                         id="login" height="50" width="50" src="./images/avatar_male.png" alt="Profile Image"></a>
@@ -46,6 +49,43 @@
             </div>
         </div>
     </nav>
+
+    <!-- Report Modal -->
+    <div class="modal" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
+        aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <section>
+                        <div class="container mb-3">
+                            <h2 class="text-secondary title-padding title-mobile">Report Post
+                            </h2>
+                            <hr>
+                            <label class="col-md-8 control-label mx-2">Could you tell us the why:</label>
+                            <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                <option value="spam">It's spam</option>
+                                <option value="copy">It infringes my copyright</option>
+                                <option value="innapropriate">Inappropriate Content</option>
+                                <option value="irrelevant">Irrelevant Content</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="row justify-content-end my-2 mx-1">
+                                <button class="btn btn-secondary my-2 mr-1" data-toggle="modal" data-dismiss="modal"
+                                    data-target="#modalLogin"
+                                    style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">Close</button>
+                                <button class="btn btn-danger my-2 ml-1" data-toggle="modal" data-dismiss="modal"
+                                    data-target="#modalLogin" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">Send
+                                    Report</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Page Content -->
     <div class="container">
@@ -82,12 +122,13 @@
                 </div>
 
             </div>
+
             <!-- Posts Column -->
             <div class="col-md-9">
 
                 <!-- Post Article -->
                 <a href="newPost.html">
-                    <div class="card mb-4 post-container">
+                    <div class="mt-4 mt-md-0 card mb-4 post-container">
                         <div class="card-body">
                             <div class="row" style="font-size: 0.45rem;">
                                 <div class="col">
@@ -110,9 +151,33 @@
                     </a>
                     <div style="padding: 0 12%">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="d-flex align-items-end">
+                                <div class="col">
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 90 </p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 3 </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mx-auto">
                                 <a href="post.html">
-                                    <div style="padding-top: 15px;">
+                                    <div style="padding: 15px 0;">
                                         <h2 class="card-title">Problem with studying.</h2>
                                         <p class="card-text">Hello i am desperately trying to find a way
                                             to learn how to learn. I am
@@ -126,20 +191,10 @@
                                             have
                                             any
                                             umm
-                                            i dont know tip or how to it would be nice.
-                                            <p>
-                                                Thank you.
-                                            </p>
+                                            i dont know tip or how to it would be nice. <br>
+                                            Thank you.
                                         </p>
                                     </div>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="">
-                                    <div><i class="fas fa-chevron-up fa-lg pb-1"></i></div>
-                                </a>
-                                <a href="">
-                                    <div><i class="fas fa-chevron-down fa-lg"></i></div>
                                 </a>
                             </div>
                         </div>
@@ -147,8 +202,10 @@
                             style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
                             <div class="col-md-6 align-self-center ">
                                 <div class="card-footer-buttons row align-content-center justify-content-start">
-                                    <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
-                                    <a href="#"><i class="fas fa-flag"></i></i>Report</a>
+                                    <a href="/post.html#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalReport">
+                                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -166,29 +223,69 @@
                 <!-- Post -->
                 <div class="card mb-4 post-container">
                     <a href="post.html">
-                        <img class="card-img-top p-2" src="./images/Porto.jpg" alt="Post Image">
-                        <div class="card-body">
-                            <h2 class="card-title">Financial help</h2>
-                            <p class="card-text">So I have had some offers from my university so now I'm looking at
-                                financing and asked my parents if they would help with living costs so I could focus on
-                                my studies. What do I do. Will a part time job be able to support all of my living
-                                costs?</p>
-                        </div>
+                        <img class="card-img-top" style="padding: 15px 15px 0px;"
+                            src="https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg"
+                            alt="Post Image">
                     </a>
-                    <div class="card-footer text-muted post-card-footer">
-                        <div>
-                            <a><i class="fas fa-chevron-up"></i></a>
-                            <a><i class="fas fa-chevron-down"></i></a>
-                            <span class="card-footer-buttons">
-                                <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
-                                <a href="#"><i class="fas fa-flag"></i></i>Report</a>
-                            </span>
+                    <div style="padding: 0 12%">
+                        <div class="row">
+                            <div class="d-flex align-items-end">
+                                <div class="col">
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 90 </p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 3 </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mx-auto">
+                                <a href="post.html">
+                                    <div style="padding: 15px 0;">
+                                        <h2 class="card-title">Financial help</h2>
+                                        <p class="card-text">So I have had some offers from my university so now I'm
+                                            looking at
+                                            financing and asked my parents if they would help with living costs so I
+                                            could focus on
+                                            my studies. What do I do. Will a part time job be able to support all of my
+                                            living
+                                            costs?</p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                        <div>
-                            <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
-                                    alt="Profile Image"></a>
-                            Posted on March 5, 2020 by
-                            <a href="myProfile.html">@someusername</a>
+                        <div class="card-footer row text-muted p-3"
+                            style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
+                            <div class="col-md-6 align-self-center ">
+                                <div class="card-footer-buttons row align-content-center justify-content-start">
+                                    <a href="/post.html#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalReport">
+                                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row align-self-center justify-content-end">
+                                    <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                            alt="Profile Image"></a>
+                                    <span class="px-1 align-self-center">March 5, 2020 by</span>
+                                    <a class="align-self-center" href="myProfile.html">@someusername</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -196,28 +293,66 @@
                 <!-- Post -->
                 <div class="card mb-4 post-container">
                     <a href="post.html">
-                        <img class="card-img-top p-2" src="./images/Porto.jpg" alt="post1 image">
-                        <div class="card-body">
-
-                            <h2 class="card-title">What editor do you people use for papers?</h2>
-                            <p class="card-text">Preferably free or a cheap fee but as I write my analysis essay, I was
-                                wondering if there are good tools for editing papers? If so, which do you use?</p>
-                        </div>
+                        <img class="card-img-top" style="padding: 15px 15px 0px;"
+                            src="https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg"
+                            alt="Post Image">
                     </a>
-                    <div class="card-footer text-muted post-card-footer">
-                        <div>
-                            <a><i class="fas fa-chevron-up"></i></a>
-                            <a><i class="fas fa-chevron-down"></i></a>
-                            <span class="card-footer-buttons">
-                                <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
-                                <a href="#"><i class="fas fa-flag"></i></i>Report</a>
-                            </span>
+                    <div style="padding: 0 12%">
+                        <div class="row">
+                            <div class="d-flex align-items-end">
+                                <div class="col">
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 90 </p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 3 </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mx-auto">
+                                <a href="post.html">
+                                    <div style="padding: 15px 0;">
+                                        <h2 class="card-title">What editor do you people use for papers?</h2>
+                                        <p class="card-text">Preferably free or a cheap fee but as I write my analysis
+                                            essay, I was
+                                            wondering if there are good tools for editing papers? If so, which do you
+                                            use?</p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                        <div>
-                            <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
-                                    alt="Profile Image"></a>
-                            Posted on March 5, 2020 by
-                            <a href="myProfile.html">@someusername</a>
+                        <div class="card-footer row text-muted p-3"
+                            style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
+                            <div class="col-md-6 align-self-center ">
+                                <div class="card-footer-buttons row align-content-center justify-content-start">
+                                    <a href="/post.html#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalReport">
+                                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row align-self-center justify-content-end">
+                                    <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                            alt="Profile Image"></a>
+                                    <span class="px-1 align-self-center">March 5, 2020 by</span>
+                                    <a class="align-self-center" href="myProfile.html">@someusername</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,31 +360,69 @@
                 <!-- Post -->
                 <div class="card mb-4 post-container">
                     <a href="post.html">
-                        <img class="card-img-top p-2" src="./images/UPorto.png" alt="Post Image">
-                        <div class="card-body">
-
-                            <h2 class="card-title">University acceptance</h2>
-                            <p class="card-text">I just got accepted to UMass Amherst as an international
-                                undergraduate(freshman for engn). Any tips that might help me start well my year ?</p>
-                        </div>
+                        <img class="card-img-top" style="padding: 15px 15px 0px;"
+                            src="https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg"
+                            alt="Post Image">
                     </a>
-                    <div class="card-footer text-muted post-card-footer">
-                        <div>
-                            <a><i class="fas fa-chevron-up"></i></a>
-                            <a><i class="fas fa-chevron-down"></i></a>
-                            <span class="card-footer-buttons">
-                                <a href="post.html"><i class="fas fa-reply"></i>Reply</a>
-                                <a href="#"><i class="fas fa-flag"></i></i>Report</a>
-                            </span>
+                    <div style="padding: 0 12%">
+                        <div class="row">
+                            <div class="d-flex align-items-end">
+                                <div class="col">
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 90 </p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <a>
+                                            <p> 3 </p>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mx-auto">
+                                <a href="post.html">
+                                    <div style="padding: 15px 0;">
+                                        <h2 class="card-title">University acceptance</h2>
+                                        <p class="card-text">I just got accepted to UMass Amherst as an international
+                                            undergraduate(freshman for engn). Any tips that might help me start well my
+                                            year ?</p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                        <div>
-                            <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
-                                    alt="Profile Image"></a>
-                            Posted on March 5, 2020 by
-                            <a href="myProfile.html">@someusername</a>
+                        <div class="card-footer row text-muted p-3"
+                            style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
+                            <div class="col-md-6 align-self-center ">
+                                <div class="card-footer-buttons row align-content-center justify-content-start">
+                                    <a href="/post.html#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalReport">
+                                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row align-self-center justify-content-end">
+                                    <a href="myProfile.html"><img height="35" width="35" src="./images/avatar_male.png"
+                                            alt="Profile Image"></a>
+                                    <span class="px-1 align-self-center">March 5, 2020 by</span>
+                                    <a class="align-self-center" href="myProfile.html">@someusername</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
