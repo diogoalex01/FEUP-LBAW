@@ -31,7 +31,7 @@ function draw_head($title)
     <?php
 }
 
-function draw_navigation($auth, $studying = "")
+function draw_navigation($auth, $studying = "", $admin = "false")
 {
     ?>
         <!-- Navigation -->
@@ -53,133 +53,135 @@ function draw_navigation($auth, $studying = "")
                 <?php if ($auth === "true") { ?>
 
                     <!--------------------------------------------------------->
+                    <?php if ($admin === "false") { ?>
 
-                    <div class="dropdown">
+                        <div class="dropdown">
 
-                        <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-                            <i class="fas fa-bell bell fa-lg"></i>
-                        </a>
+                            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+                                <i class="fas fa-bell bell fa-lg"></i>
+                            </a>
 
-                        <ul class="dropdown-menu notifications dropdown-menu-right pl-3 pt-3 pb-0 mt-3" role="menu" aria-labelledby="dLabel" style="background-color: #f8f9fa;">
+                            <ul class="dropdown-menu notifications dropdown-menu-right pl-3 pt-3 pb-0 mt-3" role="menu" aria-labelledby="dLabel" style="background-color: #f8f9fa;">
 
-                            <div class="notification-heading">
-                                <div class="row">
-                                    <div class="col">
-                                        <h6 class="menu-title">Notifications</h6>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <li class="divider"></li>
-
-                            <div class="notifications-wrapper">
-
-                                <div class="notification-content" href="#">
-
-                                    <div class="notification-item">
-
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="userProfile.php?auth=<?= $auth ?>">
-                                                    <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
-                                            </div>
-                                            <div class="col-7 p-0">
-                                                <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
-                                                <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
-                                            </div>
-                                            <div class="d-flex align-items-start pt-1">
-                                                <div class="col-2">
-                                                    <div class="row mb-3">
-                                                        <a href="">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="row">
-                                                        <a href="">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <hr class="my-0" style="width: 80%;">
-
-                                <div class="notification-content" href="#">
-
-                                    <div class="notification-item">
-
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="community.php?auth=<?= $auth ?>">
-                                                    <img class="notification-pic" id="login" height="50" width="50" src="./images/Porto.jpg" alt="Profile Image"></a>
-                                            </div>
-                                            <div class="col-7 p-0">
-                                                <h4 class="item-title"><a href="userProfile.php?auth=<?= $auth ?>">@someotheruser</a> asked to
-                                                    join your communnity <a href="community.php?auth=<?= $auth ?>">/Porto</a></h4>
-                                                <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 14h ago</h6>
-                                            </div>
-                                            <div class="d-flex align-items-start pt-1">
-                                                <div class="col-2">
-                                                    <div class="row mb-3">
-                                                        <a href="">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="row">
-                                                        <a href="">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <hr class="my-0" style="width: 80%;">
-
-                                <div class="notification-content" href="#">
-                                    <div class="notification-item">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="userProfile.php?auth=<?= $auth ?>">
-                                                    <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
-                                            </div>
-                                            <div class="col-7 p-0">
-                                                <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
-                                                <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
-                                            </div>
-                                            <div class="d-flex align-items-start pt-1">
-                                                <div class="col-2">
-                                                    <div class="row mb-3">
-                                                        <a href="">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="row">
-                                                        <a href="">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div class="notification-heading">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6 class="menu-title">Notifications</h6>
                                         </div>
                                     </div>
                                 </div>
 
-                            </div>
+                                <li class="divider"></li>
 
-                            <li class="divider"></li>
-                        </ul>
+                                <div class="notifications-wrapper">
 
-                    </div>
+                                    <div class="notification-content" href="#">
+
+                                        <div class="notification-item">
+
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <a href="userProfile.php?auth=<?= $auth ?>">
+                                                        <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
+                                                </div>
+                                                <div class="col-7 p-0">
+                                                    <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
+                                                    <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
+                                                </div>
+                                                <div class="d-flex align-items-start pt-1">
+                                                    <div class="col-2">
+                                                        <div class="row mb-3">
+                                                            <a href="">
+                                                                <i class="fas fa-check"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="row">
+                                                            <a href="">
+                                                                <i class="fas fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <hr class="my-0" style="width: 80%;">
+
+                                    <div class="notification-content" href="#">
+
+                                        <div class="notification-item">
+
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <a href="community.php?auth=<?= $auth ?>">
+                                                        <img class="notification-pic" id="login" height="50" width="50" src="./images/Porto.jpg" alt="Profile Image"></a>
+                                                </div>
+                                                <div class="col-7 p-0">
+                                                    <h4 class="item-title"><a href="userProfile.php?auth=<?= $auth ?>">@someotheruser</a> asked to
+                                                        join your communnity <a href="community.php?auth=<?= $auth ?>">/Porto</a></h4>
+                                                    <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 14h ago</h6>
+                                                </div>
+                                                <div class="d-flex align-items-start pt-1">
+                                                    <div class="col-2">
+                                                        <div class="row mb-3">
+                                                            <a href="">
+                                                                <i class="fas fa-check"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="row">
+                                                            <a href="">
+                                                                <i class="fas fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <hr class="my-0" style="width: 80%;">
+
+                                    <div class="notification-content" href="#">
+                                        <div class="notification-item">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <a href="userProfile.php?auth=<?= $auth ?>">
+                                                        <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
+                                                </div>
+                                                <div class="col-7 p-0">
+                                                    <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
+                                                    <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
+                                                </div>
+                                                <div class="d-flex align-items-start pt-1">
+                                                    <div class="col-2">
+                                                        <div class="row mb-3">
+                                                            <a href="">
+                                                                <i class="fas fa-check"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="row">
+                                                            <a href="">
+                                                                <i class="fas fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <li class="divider"></li>
+                            </ul>
+
+                        </div>
+                    <? } ?>
 
                     <!--------------------------------------------------------->
             </div>
@@ -188,9 +190,15 @@ function draw_navigation($auth, $studying = "")
                 <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img id="login" height="50" width="50" src="./images/avatar_male.png" alt="Profile Image"></a>
 
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="myProfile.php?auth=<?= $auth ?>">My Account</a>
-                    <a class="dropdown-item" href="settings.php?auth=<?= $auth ?>">Settings</a>
-                    <div class="dropdown-divider"></div>
+                    <?php
+                    if ($admin === "false") {
+                    ?>
+                        <a class="dropdown-item" href="myProfile.php?auth=<?= $auth ?>">My Account</a>
+                        <a class="dropdown-item" href="settings.php?auth=<?= $auth ?>">Settings</a>
+                        <div class="dropdown-divider"></div>
+                    <?
+                    }
+                    ?>
                     <a class="dropdown-item" href="home.php?auth=false">Log Out</a>
                 </div>
             </div>
@@ -356,68 +364,83 @@ function draw_login_modals($auth)
 
     <!-- Modal -->
     <div class="modal" id="modalWelcome" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <section>
-                        <div class="container mb-3">
-                            <h2 class="text-center text-secondary title-padding title-mobile">Welcome
-                            </h2>
-                            <div>
-                                <div class="d-flex justify-content-center">
-                                    <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal" data-target="#modalLogin" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">Continue
-                                        with Email</button>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <a href="home.php?auth=<?= $auth ?>">
-                                        <img width="172px" src="./images/google.png" alt="Google OAuth">
-                                    </a>
-                                </div>
-                            </div>
+                <div class="modal-body login-modal">
+                    <div class="col">
+
+                        <div class="d-flex justify-content-center">
+                            <img src="./images/pear_logo.png" width="auto" height="100" alt="logo">
                         </div>
-                    </section>
+
+                        <div>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-center text-dark title-padding title-mobile">Welcome
+                                    </h2>
+                                    <div>
+                                        <div class="d-flex justify-content-center">
+                                            <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal" data-target="#modalLogin" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);">Continue
+                                                with Email</button>
+                                        </div>
+                                        <div class="d-flex justify-content-center">
+                                            <a href="home.php?auth=<?= $auth ?>">
+                                                <img width="172px" src="./images/google.png" alt="Google OAuth">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Modal -->
     <div class="modal" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="modalLoginTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg w-75" role="document">
             <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-body p-0">
                     <section>
-                        <div class="container">
-                            <h2 class="text-center text-secondary title-padding title-mobile">Log in
-                            </h2>
-                        </div>
-                        <div class="row d-flex justify-content-lg-center">
-                            <div class="col-lg-10 mb-4">
-                                <label for="emailAddress">Email</label>
-                                <input type="email" class="form-control" id="emailAddress" placeholder="Email" required>
+                        <div class="row login-modal">
+                            <div class="col-md-2 modal-image container pl-3 pt-8 m-0">
+                                <!-- <img src="./images/pear_logo.png" style="width: 350px; height: 500px; object-fit: cover" alt="logo"> -->
                             </div>
-                            <div class="col-lg-10 mty-3">
-                                <label for="pass">Password</label>
-                                <input type="password" id="pass" class="form-control" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}" placeholder="Password" required>
-                                <div class="invalid-feedback">
-                                    Required!
+                            <div class="col-md-8 my-auto mx-auto">
+                                <div class="my-auto">
+                                    <div class="container">
+                                        <h2 class="text-center text-dark title-padding title-mobile mb-4">Log in
+                                        </h2>
+                                    </div>
+                                    <div class="row d-flex justify-content-lg-center">
+                                        <div class="col-lg-10 mb-4">
+                                            <label for="emailAddress">Email</label>
+                                            <input type="email" class="form-control" id="emailAddress" placeholder="Email" required>
+                                        </div>
+                                        <div class="col-lg-10 mty-3">
+                                            <label for="pass">Password</label>
+                                            <input type="password" id="pass" class="form-control" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}" placeholder="Password" required>
+                                            <div class="invalid-feedback">
+                                                Required!
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mt-4">
+                                            <div class="row d-flex align-items-center mr-2">
+                                                <p class="m-0">Don't have an account? <a class="mr-1 text-center" href="">
+                                                        <p class="font-weight-bold m-0" data-toggle="modal" data-dismiss="modal" data-target="#modalSignup">Sign up</p>
+                                                    </a></p>
+                                            </div>
+                                            <a href="home.php?auth=<?= $auth ?>">
+                                                <button type="submit" class="btn btn-outline-dark ">Log in</button>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group d-flex mt-4 ">
-                                <p class="m-0 text-center">Don't have an account? <a class="mr-1 text-center" href="">
-                                        <p class="font-weight-bold pr-2" data-toggle="modal" data-dismiss="modal" data-target="#modalSignup">Sign up</p>
-                                </p>
-                                </a>
-                                <a href="home.php?auth=<?= $auth ?>">
-                                    <button type="submit" class="btn btn-secondary ">Log in</button>
-                                </a>
-                            </div>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -425,64 +448,66 @@ function draw_login_modals($auth)
     </div>
 
     <!-- Modal -->
+    <!-- Missing: First Name, Last Name, birthday, gender -->
     <div class="modal" id="modalSignup" tabindex="-1" role="dialog" aria-labelledby="modalSignupTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-body p-0">
                     <section>
-                        <div class="container">
-                            <h2 class="text-center text-secondary title-padding title-mobile">Sign up
-                            </h2>
+                        <div class="row login-modal">
+                            <div class="col-md-2 modal-image container pl-3 pt-8 m-0">
+                            </div>
+                            <div class="col-md-8 my-auto mx-auto">
+                                <div class="my-auto">
+                                    <div class="container">
+                                        <h2 class="text-center text-dark title-padding title-mobile mb-4">Sign up
+                                        </h2>
+                                    </div>
+                                    <div class="row d-flex justify-content-center">
+                                        <div class="row d-flex justify-content-lg-center mb-2">
+                                            <div class="col-lg-5 pr-0">
+                                                <label for="nameInput">Full Name *</label>
+                                                <input type="text" class="form-control" id="nameInput" placeholder="Full Name">
+                                            </div>
+                                            <div class="col-lg-5 pl-0">
+                                                <label for="usernameInput">Username *</label>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">@</div>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="usernameInput" placeholder="Username">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row d-flex justify-content-lg-center">
+                                            <div class="col-lg-10 p-0 mb-2">
+                                                <label for="emailAddress">Email *</label>
+                                                <input type="email" class="form-control" id="emailAddress" placeholder="Email" required>
+                                            </div>
+                                            <div class="col-lg-10 mb-2 p-0">
+                                                <label for="pass">Password *</label>
+                                                <input type="password" id="pass" class="form-control" aria-describedby="passwordHelp" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}" placeholder="Password" required>
+                                                <div class="invalid-feedback">
+                                                    Required!
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mt-4">
+                                            <div class="row d-flex align-items-center mr-2">
+                                                <p class="m-0">Already have an account? <a class="mr-1 text-center" href="">
+                                                        <p class="font-weight-bold m-0" data-toggle="modal" data-dismiss="modal" data-target="#modalLogin">Log in</p>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                            <a href="home.php?auth=<?= $auth ?>">
+                                                <button type="submit" class="btn btn-outline-dark">Sign up</button>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <div class="row d-flex justify-content-lg-center">
-                                <div class="col-5">
-                                    <label for="nameInput">Full Name *</label>
-                                    <input type="text" class="form-control" id="nameInput" placeholder="Full Name">
-                                </div>
-                                <div class="col-5">
-                                    <label for="usernameInput">Username *</label>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">@</div>
-                                        </div>
-                                        <input type="text" class="form-control" id="usernameInput" placeholder="Username">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row d-flex justify-content-lg-center">
-                                <div class="col-lg-10">
-                                    <label for="emailAddress">Email *</label>
-                                    <input type="email" class="form-control" id="emailAddress" placeholder="Email" required>
-                                </div>
-                                <div class="col-lg-10 mty-3">
-                                    <label for="pass">Password *</label>
-                                    <input type="password" id="pass" class="form-control" aria-describedby="passwordHelp" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}" placeholder="Password" required>
-                                    <div class="invalid-feedback">
-                                        Required!
-                                    </div>
-                                </div>
-                                <!-- 
-                                    <div class="row d-flex justify-content-lg-center">
-                                        <div class="col-lg-8">
-                                            <lgall id="passwordHelp" class="form-text text-muted">
-                                                Utilize 6 ou mais caractéres numa mistura de letras e pelo menos 1 número.
-                                            </lgall>
-                                        </div>
-                            </div> -->
-                            </div>
-                            <div class="form-group d-flex justify-content-center mt-4">
-                                <p clas="m-0">Already have an account? <a class="mr-1" href="">
-                                        <p class="font-weight-bold pr-2" data-toggle="modal" data-dismiss="modal" data-target="#modalLogin">Log in</p>
-                                    </a>
-                                </p>
-                                <a href="home.php?auth=<?= $auth ?>">
-                                    <button type="submit" class="btn btn-secondary">Sign up</button>
-                                </a>
-                            </div>
                     </section>
                 </div>
             </div>
@@ -658,50 +683,63 @@ function profile_info($auth, $points, $posts, $age, $gender)
 
 <?php }
 
-function home_post($auth, $poster_name, $poster_page, $poster_image, $date, $up_votes, $down_votes, $image, $title, $content)
+function home_post($auth, $poster_name, $poster_page, $poster_image, $community, $date, $up_votes, $down_votes, $image, $title, $content)
 { ?>
 
     <!-- Post -->
-    <div class="card mb-4 post-container">
-        <a href="post.php?auth=<?= $auth ?>">
-            <img class="card-img-top" style="padding: 15px 15px 0px;" src="<?= $image ?>" alt="Post Image">
-        </a>
-        <div style="padding: 0 12%">
-            <div class="row">
+    <div class="row no-gutters">
+        <div class="col-md-11 pr-0 mr-0">
+            <div class="card mb-4 post-container">
+                <a href="post.php?auth=<?= $auth ?>">
+                    <img class="card-img-top" style="padding: 15px 15px 0px;" src="<?= $image ?>" alt="Post Image">
+                </a>
+                <div style="padding: 0 12%">
+                    <div class="row">
 
-                <?php vote_content($up_votes, $down_votes); ?>
+                        <?php vote_content($up_votes, $down_votes); ?>
 
-                <div class="col-md-10 mx-auto">
-                    <a href="post.php?auth=<?= $auth ?>">
-                        <div style="padding: 15px 0;">
-                            <h2 class="card-title"><?= $title ?></h2>
-                            <p class="card-text"><?= $content ?>
-                            </p>
+                        <div class="col-md-10 mx-auto">
+                            <a href="post.php?auth=<?= $auth ?>">
+                                <div style="padding: 15px 0;">
+                                    <h2 class="card-title"><?= $title ?></h2>
+                                    <p class="card-text"><?= $content ?>
+                                    </p>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="card-footer row text-muted p-3" style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
-                <div class="col-md-6 align-self-center ">
-                    <div class="card-footer-buttons row align-content-center justify-content-start">
-                        <a href="post.php?auth=<?= $auth ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
-                        <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
-                            <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                        </a>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row align-self-center justify-content-end">
-                        <a href="<?= $poster_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $poster_image ?> alt="Profile Image"></a>
-                        <span class="px-1 align-self-center"><?= $date ?> by</span>
-                        <a class="align-self-center" href="<?= $poster_page ?>?auth=<?= $auth ?>">@<?= $poster_name ?></a>
+
+                    <div class="card-footer row text-muted py-3  px-3" style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
+                        <div class="col-md-5 align-self-center justify-content-start">
+                            <div class="card-footer-buttons row align-content-center justify-content-start">
+                                <a href="post.php?auth=<?= $auth ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
+                                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row align-self-center justify-content-end">
+                                <a href="<?= $poster_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $poster_image ?> alt="Profile Image"></a>
+                                <span class="px-1 align-self-center"><?= $date ?> by</span>
+                                <a class="align-self-center" href="<?= $poster_page ?>?auth=<?= $auth ?>">@<?= $poster_name ?></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div class="col-md-1 px-0 ml-0">
+            <div class="row">
+                <div>
+                    <a href="community.php?auth=<?= $auth ?>">
+                        <h5 class="community-tag mb-0"><?= $community ?></h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php }
 
 function post_comment($auth, $id, $commenter_name, $commenter_page, $commenter_image, $date, $up_votes, $down_votes, $content, $class)

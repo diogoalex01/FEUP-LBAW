@@ -1,7 +1,7 @@
 <?php
 
 include('common.php');
-draw_head("Community");
+draw_head('Home');
 
 $auth = $_GET['auth'];
 if (!isset($_GET['auth'])) {
@@ -9,14 +9,17 @@ if (!isset($_GET['auth'])) {
 }
 
 draw_navigation($auth);
+
 ?>
 
 <!-- Page Content -->
 <div class="container">
-    <div class="row">
+
+    <div class="row" style="padding: 20 0;">
 
         <!-- Aside -->
-        <div class="col-md-3 mt-3 aside">
+        <div class="col-md-3 aside ">
+
             <!-- My Categories -->
             <div class="card aside-container sticky-top">
                 <h5 class="card-header aside-container-top" style="border: 1px solid rgba(76, 25, 27); border-radius: 2px; background-color: rgb(76, 25, 27);">
@@ -24,59 +27,45 @@ draw_navigation($auth);
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
-                            <a href="#">
-                                <div class="nav-border-active">
+                            <a href="home.php?auth=<?= $auth ?>">
+                                <div class="nav-border">
                                     Home
                                 </div>
                             </a>
-                            <a href="#">
-                                <div class="nav-border">Popular</div>
-                            </a>
-                            <a href="#">
+                            <div class="nav-border-active">Popular</div>
+                            <a href="trendingHome.php?auth=<?= $auth ?>">
                                 <div class="nav-border">Trending</div>
                             </a>
-                            <a href="#">
+                            <a href="universitiesHome.php?auth=<?= $auth ?>">
                                 <div class="nav-border" style="border-bottom: 0px;">Universities</div>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Posts Column -->
         <div class="col-md-9">
 
-            <div class="row">
-                <div class="col-md-2 text-center community-pic-container">
-                    <img class="community-pic" src="./images/Porto.jpg" alt="Community Image">
-                </div>
-                <div class="col-md-7">
-                    <h1 class="my-4">/Porto</h1>
-                </div>
-                <div class="col-md-1 text-center d-flex align-items-center">
-                    <input type="button" class="btn btn-dark" value="Join">
-                </div>
-                <div class="col-md-2 text-center d-flex align-items-center">
-                    <input type="button" class="btn btn-outline-danger" value="Report">
-                </div>
-            </div>
-
-            <!-- New Post -->
-            <a href="newPost.php?auth=<?= $auth ?>">
-                <div class="mt-4 mt-md-0 card mb-4 post-container">
-                    <div class="card-body">
-                        <div class="row" style="font-size: 0.45rem;">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Write your own article">
-                            </div>
-                            <div class="col-1 pl-0 my-auto">
-                                <i class="fas fa-plus-circle fa-4x"></i>
+            <?php if ($auth === "true") { ?>
+                <!-- New Post -->
+                <a href="newPost.php?auth=<?= $auth ?>">
+                    <div class="mt-4 mt-md-0 card mb-4 post-container">
+                        <div class="card-body">
+                            <div class="row" style="font-size: 0.45rem;">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Write your own article">
+                                </div>
+                                <div class="col-1 pl-0 my-auto">
+                                    <i class="fas fa-plus-circle fa-4x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            <?php } ?>
 
             <!-- Post -->
             <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
@@ -113,13 +102,12 @@ draw_navigation($auth);
             <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://static.wixstatic.com/media/969f6d_76c95d0987e2442799573d290138b124~mv2.jpg", "University acceptance", "I just got accepted to UMass Amherst as an international
                                         undergraduate(freshman for engn). Any tips that might help me start well my
                                         year ?") ?>
+
         </div>
     </div>
 </div>
 
-
 <?php
-
 draw_footer($auth);
 
 ?>

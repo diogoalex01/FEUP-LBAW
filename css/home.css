@@ -60,6 +60,18 @@ body {
   align-content: flex-start;
 }
 
+.community-tag{
+  background-color: #4c191b;
+  border: 0px;
+  border-radius: 2px;
+  box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.25);
+  color:white;
+  margin-top:17.6;
+  margin-bottom:0;
+  padding: 4;
+  transform: rotate(90deg);
+}
+
 footer .footer-copyright {
   background-color: #4c191b;
 }
@@ -285,4 +297,22 @@ input[type=number] {
 .post-reply {
   padding: 0 12%; 
   margin-left: 8%;
+}
+
+
+/* ///////////////////////////// */
+
+.modal-image{
+  height: 75vh;
+  background-image: url('../images/pear_logo(4).png');
+  background-size: 170% 90%;
+  background-repeat: no-repeat;
+  background-color: #4c191b;
+  background-position: left;
+  background-origin: padding-box;
+}
+
+.login-modal {
+  background-color:#4c191b28 ;
+  color: black;
 }

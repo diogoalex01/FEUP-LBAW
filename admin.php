@@ -5,10 +5,10 @@ draw_head('Admin');
 
 $auth = $_GET['auth'];
 if (!isset($_GET['auth'])) {
-    $auth = "false";
+    $auth = "true";
 }
 
-draw_navigation($auth);
+draw_navigation($auth, "", "true");
 
 ?>
 

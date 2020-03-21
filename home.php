@@ -27,18 +27,16 @@ draw_navigation($auth);
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
-                            <a href="#">
-                                <div class="nav-border-active">
-                                    Home
-                                </div>
-                            </a>
-                            <a href="#">
+                            <div class="nav-border-active">
+                                Home
+                            </div>
+                            <a href="popularHome.php?auth=<?= $auth ?>">
                                 <div class="nav-border">Popular</div>
                             </a>
-                            <a href="#">
+                            <a href="trendingHome.php?auth=<?= $auth ?>">
                                 <div class="nav-border">Trending</div>
                             </a>
-                            <a href="#">
+                            <a href="universitiesHome.php?auth=<?= $auth ?>">
                                 <div class="nav-border" style="border-bottom: 0px;">Universities</div>
                             </a>
                         </div>
@@ -70,7 +68,7 @@ draw_navigation($auth);
             <?php } ?>
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
+            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am
                                         in the first semester of my CS uni and i just realised that i dont know how
                                         to
@@ -86,7 +84,7 @@ draw_navigation($auth);
                                         Thank you."); ?>
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", 12, 2, "https://cdn.thecollegeinvestor.com/wp-content/uploads/2018/03/WP_FORGIVE.jpg", "Financial help", "So I have had some offers from my university so now I'm
+            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://cdn.thecollegeinvestor.com/wp-content/uploads/2018/03/WP_FORGIVE.jpg", "Financial help", "So I have had some offers from my university so now I'm
                                         looking at
                                         financing and asked my parents if they would help with living costs so I
                                         could focus on
@@ -95,13 +93,13 @@ draw_navigation($auth);
                                         costs?"); ?>
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", 15, 2, "https://image.freepik.com/free-photo/vintage-typewriter-header-retro-machine-technology_1484-1355.jpg", "What editor do you people use for papers?", "Preferably free or a cheap fee but as I write my analysis
+            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 15, 2, "https://image.freepik.com/free-photo/vintage-typewriter-header-retro-machine-technology_1484-1355.jpg", "What editor do you people use for papers?", "Preferably free or a cheap fee but as I write my analysis
                                         essay, I was
                                         wondering if there are good tools for editing papers? If so, which do you
                                         use?") ?>
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", 12, 2, "https://static.wixstatic.com/media/969f6d_76c95d0987e2442799573d290138b124~mv2.jpg", "University acceptance", "I just got accepted to UMass Amherst as an international
+            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://static.wixstatic.com/media/969f6d_76c95d0987e2442799573d290138b124~mv2.jpg", "University acceptance", "I just got accepted to UMass Amherst as an international
                                         undergraduate(freshman for engn). Any tips that might help me start well my
                                         year ?") ?>
 

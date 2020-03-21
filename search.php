@@ -51,7 +51,7 @@ draw_navigation($auth, "studying");
         <div class="col-md-9">
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
+            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am
                                         in the first semester of my CS uni and i just realised that i dont know how
                                         to
