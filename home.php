@@ -1,7 +1,7 @@
 <?php
 
 include('common.php');
-draw_head('Home');
+draw_head('Pear To Pear');
 
 $auth = $_GET['auth'];
 if (!isset($_GET['auth'])) {
@@ -50,9 +50,10 @@ draw_navigation($auth);
         <div class="col-md-9">
 
             <?php if ($auth === "true") { ?>
+
                 <!-- New Post -->
                 <a href="newPost.php?auth=<?= $auth ?>">
-                    <div class="mt-4 mt-md-0 card mb-4 post-container">
+                    <div class="mt-4 mt-md-1 card mb-4 mr-md-2 mr-lg-4 post-container">
                         <div class="card-body">
                             <div class="row" style="font-size: 0.45rem;">
                                 <div class="col">
@@ -65,6 +66,7 @@ draw_navigation($auth);
                         </div>
                     </div>
                 </a>
+
             <?php } ?>
 
             <!-- Post -->

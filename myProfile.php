@@ -10,6 +10,7 @@ if (!isset($_GET['auth'])) {
 
 draw_navigation($auth);
 ?>
+
 <!-- Page Content -->
 <div class="container">
 
@@ -31,7 +32,7 @@ draw_navigation($auth);
                         <div class="col justify-content-start">
                             <div class="nav-border-active">Activity</div>
 
-                            <a href="userCommunities.php?auth=<?= $auth ?>">
+                            <a href="myCommunities.php?auth=<?= $auth ?>">
                                 <div class="nav-border" style="border-bottom: 0px;">Communities</div>
                             </a>
                         </div>

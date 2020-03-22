@@ -18,7 +18,7 @@ draw_navigation($auth, "", "true");
     <div class="row">
 
         <!-- Aside -->
-        <div class="col-md-3 aside" style="padding: 20 0;" >
+        <div class="col-md-3 aside" style="padding: 20 0;">
 
             <!-- My Categories -->
             <div class="card aside-container sticky-top">
@@ -60,10 +60,10 @@ draw_navigation($auth, "", "true");
             <?php report_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", "Porto", "./images/Porto.jpg", "Financial help", "So I have had some offers from my university so now I'm looking at
                             financing and asked my parents if they would help with living costs so I could focus on
                             my studies. What do I do. Will a part time job be able to support all of my living
-                            costs?"); ?> 
+                            costs?"); ?>
 
             <!-- Reported Comment -->
-           <?php report_comment($auth, "c1", "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", "Post1", "It is Computer Science but yeah my main issue is maths i tried going to every
+            <?php report_comment($auth, "c1", "someusername", "myProfile.php", "./images/avatar_male.png", "March 5, 2020", "Post1", "It is Computer Science but yeah my main issue is maths i tried going to every
                             election - writing down every single thing (even if i don't understand a single thing) and then
                             going home realizing that i cant understand anything. I may be low on IQ or something i dont
                             know."); ?>

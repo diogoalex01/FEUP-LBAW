@@ -1,7 +1,7 @@
 <?php
 
 include('common.php');
-draw_head("User Profile");
+draw_head("My Profile");
 
 $auth = $_GET['auth'];
 if (!isset($_GET['auth'])) {
@@ -19,32 +19,21 @@ draw_navigation($auth);
         <!-- Aside -->
         <div class="col-md-3 aside profile-aside">
 
-            <!-- <div class="container"> -->
             <div class="profile-pic-container text-center">
-                <img class="rounded-circle profile-pic " src="./images/avatar_female.png" alt="Profile Image">
-            </div>
-            <!-- </div> -->
-
-            <div class="row">
-                <div class="col-6 text-center d-flex align-items-center justify-content-end">
-                    <input type="button" class="btn btn-outline-danger" value="Block">
-                </div>
-                <div class="col-1 text-center d-flex align-items-center ">
-                    <input type="button" class="btn btn-dark" value="Follow">
-                </div>
+                <img class="rounded-circle profile-pic " src="./images/avatar_male.png" alt="Profile Image">
             </div>
 
-            <?php profile_info($auth, 3353, 4, 23, "Female") ?>
+            <?php profile_info($auth, 25, 4, 27, "Male") ?>
 
             <!-- My Categories -->
             <div class="card aside-container">
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
-                            <a href="userProfile.php?auth=<?= $auth ?>">
-                                <div class="nav-border" style="border-bottom: 0px;">Activity</div>
+                            <a href="myProfile.php?auth=<?= $auth ?>">
+                                <div class="nav-border">Activity</div>
                             </a>
-                            <div class="nav-border-active">Communities</div>
+                            <div class="nav-border-active" style="border-bottom: 0px;">Communities</div>
                         </div>
                     </div>
                 </div>
@@ -55,7 +44,7 @@ draw_navigation($auth);
         <!-- Post Column -->
         <div class="col-md-9">
 
-            <h1 class="col-md-4.5 my-4 username-header">@someotherusername</h1>
+            <h1 class="col-md-4.5 my-4 username-header">@someusername</h1>
 
             <!-- Community Thumbnail -->
             <div id="c1" class="card mb-4 post-container">
@@ -166,6 +155,7 @@ draw_navigation($auth);
             </div>
 
         </div>
+
     </div>
 </div>
 

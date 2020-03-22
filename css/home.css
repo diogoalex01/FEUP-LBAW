@@ -60,16 +60,31 @@ body {
   align-content: flex-start;
 }
 
-.community-tag{
+.community-tag {
   background-color: #4c191b;
   border: 0px;
   border-radius: 2px;
   box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.25);
   color:white;
-  margin-top:17.6;
-  margin-bottom:0;
-  padding: 4;
+  margin-top: 17.6px;
+  margin-bottom: 0px;
+  padding: 4px;
   transform: rotate(90deg);
+}
+
+@media (max-width: 767px) {
+  div .community-tag {
+    margin-bottom: 20px;
+    margin-top: 0px;
+    padding: 4px;
+    transform: rotate(0deg);
+  }
+
+  div .community-row {
+    margin-bottom: 20px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
 }
 
 footer .footer-copyright {
@@ -154,8 +169,8 @@ textarea {
   color:ffe8dd;
 }
 
-@media (max-width: 770px) {
-  .comment-button button{
+@media (max-width: 767px) {
+  .comment-button button {
     margin-top: 10px;
   }
 }
@@ -272,7 +287,7 @@ input[type=number] {
   color: #000;
 }
 
-.notification-pic{
+.notification-pic {
   object-fit: contain;
 }
   
@@ -283,7 +298,7 @@ input[type=number] {
   /*border-top: 1px solid rgb(76, 25, 27);*/
 }
 
-.notification-item:hover{
+.notification-item:hover {
   background: #f8f9fa;
 }
 
@@ -302,7 +317,7 @@ input[type=number] {
 
 /* ///////////////////////////// */
 
-.modal-image{
+.modal-image {
   height: 75vh;
   background-image: url('../images/pear_logo(4).png');
   background-size: 170% 90%;
@@ -310,9 +325,65 @@ input[type=number] {
   background-color: #4c191b;
   background-position: left;
   background-origin: padding-box;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .login-modal {
-  background-color:#4c191b28 ;
+  background-color:#4c191b28;
   color: black;
+}
+
+.login-signup-trans {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .modal-image {
+    display: none;
+  }
+
+  .login-modal {
+    padding: 2em;
+  }
+}
+
+@media (min-width: 600px) {
+  form input#search-bar {
+    width: 450px;
+  }
+}
+
+.sign-up-input {
+  width: 230px;
+  min-width: 200px;
+}
+
+.delete-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: end;
+}
+
+@media (min-width: 768px) {
+  div div.delete-container {
+    border-radius: 2px;
+    max-width: 650px;
+    min-width: 450px;
+    width: 80%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.delete-container {
+    width: 450px;
+  }
+}
+
+@media (max-width: 500px) {
+  #delete-container {
+    width: 290px;
+  }
 }
