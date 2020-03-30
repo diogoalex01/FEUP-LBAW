@@ -103,7 +103,7 @@ INSERT INTO post (image, title, content, "date", upvotes, downvotes, id_author, 
 INSERT INTO post (image, title, content, "date", upvotes, downvotes, id_author, id_community) VALUES ('image', 'Não me sinto integrada, e agora?', 'Quando estava quase a terminar o curso profissional (10°, 11°, 12°) resolvi que tinha chegado a altura de fazer a decisão da minha vida. Avanço com a candidatura para o Ensino Superior ou embarco no Mundo do Trabalho? Resolvi que ir atrás do que quero para mim futuramente iria ser a decisão mais acertada, e assim avancei com a minha candidatura. No entanto, tinha plena consciência de que as aprendizagens que tinha tido no curso profissional não eram suficientes para me candidatar nos Exames Nacionais. Até que me falaram em CTeSP. Candi"date"i-me a um Curso Técnico e Superior Profissional, fiquei entusiasmada e imaginei como tudo seria.', '2020-03-26',599, 26, 9, 4);
 
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Excelente artigo!','2020-03-18',8, 4, 2, 20);
-INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Não o conseguiria descrever melhor','2020-01-29',12, 2, 14, 21);
+INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Não o conseguiria descrever melhor','2020-01-29',12, 2, 14, 22);
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Vão, experimentem e criem a vossa opinião.','2020-02-19',100, 20, 18, 3);
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('O ranking do “Financial Times”, que seleciona','2019-12-08',134, 23, 16, 6);
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Adorei cada palavra','2020-01-13',28, 2, 13, 22);
@@ -112,6 +112,18 @@ INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VA
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Precisamos de mais ajuda e apoio emocional!','2020-03-26',0, 5, 16, 30);
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('Fora de contexto...','2020-02-17',9, 15, 15, 26);
 INSERT INTO comment (content, "date", upvotes, downvotes, id_author, id_post) VALUES ('O ranking do “Financial Times”, que seleciona','2020-03-27',26, 19, 11, 29);
+
+INSERT INTO reply (reply_comment, parent_comment) VALUES (2,5);
+
+INSERT INTO report (reason, date, id_admin, id_user) VALUES ('Conteudo impróprio', '2020-03-27',1,5);
+INSERT INTO report (reason, date, id_admin, id_user) VALUES ('Vocabulário impróprio', '2020-03-18',2, 9);
+INSERT INTO report (reason, date, id_admin, id_user) VALUES ('SPAM', '2020-03-15',3,12);
+INSERT INTO report (reason, date, id_admin, id_user) VALUES ('Conteudo impróprio', '2020-03-26',4,17);
+
+INSERT INTO comment_report (id_report, id_comment) VALUES (2,5);
+INSERT INTO post_report (id_report, id_post) VALUES (3,3);
+INSERT INTO community_report (id_report, id_community) VALUES (4,2);
+INSERT INTO user_report (id_report, id_user) VALUES (1,8);
 
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 1, 9);
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 3, 2);
@@ -272,7 +284,14 @@ INSERT INTO follow_user (id_followed, id_follower) VALUES (18,11);
 INSERT INTO follow_user (id_followed, id_follower) VALUES (19,13);
 INSERT INTO follow_user (id_followed, id_follower) VALUES (20,14);
 INSERT INTO follow_user (id_followed, id_follower) VALUES (4,16);
+INSERT INTO follow_user (id_followed, id_follower) VALUES (16,4);
 INSERT INTO follow_user (id_followed, id_follower) VALUES (12,3);
+
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (1,8);
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (16,4);
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (1,18);
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (11,8);
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (3, 10);
 
 -----------------------------------------
 -- end

@@ -30,10 +30,22 @@ DROP TYPE IF EXISTS status_types CASCADE;
 DROP FUNCTION IF EXISTS block_user() CASCADE;
 DROP FUNCTION IF EXISTS vote_on_comment() CASCADE;
 DROP FUNCTION IF EXISTS vote_on_post() CASCADE;
+DROP FUNCTION IF EXISTS create_notification() CASCADE;
+DROP FUNCTION IF EXISTS check_comment_date() CASCADE;
+DROP FUNCTION IF EXISTS post_not_member_community() CASCADE;
+DROP FUNCTION IF EXISTS comment_not_member_community() CASCADE;
+DROP FUNCTION IF EXISTS comment_vote_not_member_community() CASCADE;
+DROP FUNCTION IF EXISTS post_vote_not_member_community() CASCADE;
 
 DROP TRIGGER IF EXISTS block_user ON block_user;
 DROP TRIGGER IF EXISTS vote_on_comment ON comment_vote;
 DROP TRIGGER IF EXISTS vote_on_post ON post_vote;
+DROP TRIGGER IF EXISTS create_notification ON request;
+DROP TRIGGER IF EXISTS check_comment_date ON comment;
+DROP TRIGGER IF EXISTS post_not_member_community ON post;
+DROP TRIGGER IF EXISTS comment_not_member_community ON comment;
+DROP TRIGGER IF EXISTS comment_vote_not_member_community ON comment_vote;
+DROP TRIGGER IF EXISTS post_vote_not_member_community ON post_vote;
 
 -----------------------------------------
 -- Types
@@ -196,55 +208,75 @@ CREATE INDEX post_author_index ON post USING hash(id_author);
 
 CREATE INDEX admin_index ON report USING btree(id_admin);
 
-CREATE INDEX search_index ON post USING GIST (to_tsvector(' ' || content));
+CREATE INDEX search_index ON post
+USING GIST ((setweight(to_tsvector('portuguese', title),'A') || 
+       setweight(to_tsvector('portuguese', content), 'B')));
 
 -----------------------------------------
 -- TRIGGERS and UDFs
 -----------------------------------------
 
-CREATE FUNCTION block_user() 
-RETURNS TRIGGER AS 
+CREATE FUNCTION block_user() RETURNS TRIGGER AS 
 $BODY$ 
 BEGIN 
-	IF EXISTS 
-		(SELECT * FROM follow_user 
-	 		WHERE NEW.blocked_user = id_follower AND NEW.blocker_user = id_followed)  
-		THEN 
-			DELETE FROM follow_user WHERE NEW.blocked_user = id_follower AND NEW.blocker_user = id_followed; 
-	END IF; 
+	IF EXISTS (
+		SELECT *
+			FROM follow_user 
+			WHERE NEW.blocked_user = id_follower AND NEW.blocker_user = id_followed)  
+		THEN
+			DELETE
+				FROM follow_user
+				WHERE NEW.blocked_user = id_follower AND NEW.blocker_user = id_followed; 
+	END IF;
 	
-	IF EXISTS 
-		(SELECT * FROM follow_user 
+	IF EXISTS (
+			SELECT *
+			FROM follow_user 
 	 		WHERE NEW.blocker_user = id_follower AND NEW.blocked_user = id_followed)  
 		THEN 
-			DELETE FROM follow_user WHERE NEW.blocker_user = id_follower AND NEW.blocked_user = id_followed; 
-	END IF; 
+			DELETE
+				FROM follow_user
+				WHERE NEW.blocker_user = id_follower AND NEW.blocked_user = id_followed; 
+	END IF;
+
 	RETURN NEW; 
 END 
 $BODY$ 
+LANGUAGE plpgsql;
 
-LANGUAGE plpgsql; 
 CREATE TRIGGER block_user 
-AFTER INSERT ON block_user 
-FOR EACH ROW 
-EXECUTE PROCEDURE block_user();
+	AFTER INSERT ON block_user 
+	FOR EACH ROW 
+	EXECUTE PROCEDURE block_user();
 
 
 CREATE FUNCTION vote_on_comment() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF EXISTS (SELECT * FROM comment
-        WHERE NEW.id_comment = comment.id AND NEW.id_user = comment.id_author ) THEN
-            RAISE EXCEPTION 'A user cannot vote on their own comments. % %', NEW.id_comment, NEW.id_user;
-	ELSIF NEW.vote_type = 'up' THEN
-		UPDATE comment SET upvotes = upvotes + 1 WHERE id = NEW.id_comment;
-	ELSIF NEW.vote_type = 'down' THEN
-		UPDATE comment SET downvotes = downvotes + 1 WHERE id = NEW.id_comment;
+    IF EXISTS (
+		SELECT *
+			FROM comment
+			WHERE NEW.id_comment = comment.id AND NEW.id_user = comment.id_author)
+		THEN
+			RAISE EXCEPTION 'A user cannot vote on their own comments.';
+	ELSIF NEW.vote_type = 'up'
+	THEN
+		UPDATE comment
+			SET upvotes = upvotes + 1
+			WHERE id = NEW.id_comment;
+	ELSIF NEW.vote_type = 'down'
+	THEN
+		UPDATE comment
+			SET downvotes = downvotes + 1
+			WHERE id = NEW.id_comment;
     END IF;
 	
 	UPDATE "user" 
-		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes))*sign(subquery.upvotes - subquery.downvotes) 
-		FROM (SELECT comment.id_author AS author, comment.upvotes AS upvotes, comment.downvotes AS downvotes FROM comment WHERE comment.id = NEW.id_comment) AS subquery 
+		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
+		FROM 
+			(SELECT comment.id_author AS author, comment.upvotes AS upvotes, comment.downvotes AS downvotes
+				FROM comment
+				WHERE comment.id = NEW.id_comment) AS subquery 
 		WHERE "user".id = subquery.author;
 	
     RETURN NEW;
@@ -255,34 +287,53 @@ LANGUAGE plpgsql;
 CREATE TRIGGER vote_on_comment
     AFTER INSERT ON comment_vote
     FOR EACH ROW
-    EXECUTE PROCEDURE vote_on_comment(); 
+    EXECUTE PROCEDURE vote_on_comment();
 
 
 CREATE FUNCTION vote_on_post() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	IF TG_OP = 'INSERT' THEN
-    	IF EXISTS (SELECT * FROM post
-        	WHERE NEW.id_post = post.id AND NEW.id_user = post.id_author ) THEN
-            	RAISE EXCEPTION 'A user cannot vote on their own posts., % %', NEW.id_post, NEW.id_user;	
+	IF TG_OP = 'INSERT'
+	THEN IF EXISTS (
+		SELECT *
+			FROM post
+			WHERE NEW.id_post = post.id AND NEW.id_user = post.id_author )
+		THEN
+			RAISE EXCEPTION 'A user cannot vote on their own posts.';
 		END IF;
-	ELSIF TG_OP = 'UPDATE' THEN
-		IF OLD.vote_type = 'up' THEN
-			UPDATE post SET upvotes = upvotes - 1 WHERE id = OLD.id_post;
-		ELSIF OLD.vote_type = 'down' THEN
-			UPDATE post SET downvotes = downvotes - 1 WHERE id = OLD.id_post;
+        
+	ELSIF TG_OP = 'UPDATE'
+	THEN IF OLD.vote_type = 'up'
+		THEN
+			UPDATE post
+				SET upvotes = upvotes - 1
+				WHERE id = OLD.id_post;
+	ELSIF OLD.vote_type = 'down'
+		THEN
+			UPDATE post
+				SET downvotes = downvotes - 1
+				WHERE id = OLD.id_post;
     	END IF;
 	END IF;
 	
-	IF NEW.vote_type = 'up' THEN
-		UPDATE post SET upvotes = upvotes + 1 WHERE id = NEW.id_post;
-	ELSIF NEW.vote_type = 'down' THEN
-		UPDATE post SET downvotes = downvotes + 1 WHERE id = NEW.id_post;
+	IF NEW.vote_type = 'up'
+	THEN
+		UPDATE post
+			SET upvotes = upvotes + 1
+			WHERE id = NEW.id_post;
+	ELSIF NEW.vote_type = 'down'
+	THEN
+		UPDATE post
+			SET downvotes = downvotes + 1
+			WHERE id = NEW.id_post;
     END IF;
 	
 	UPDATE "user" 
-		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes))*sign(subquery.upvotes - subquery.downvotes) 
-		FROM (SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes FROM post WHERE post.id = NEW.id_post) AS subquery 
+		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
+		FROM (
+			SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes
+				FROM post
+				WHERE post.id = NEW.id_post) AS subquery 
 		WHERE "user".id = subquery.author;
 	
     RETURN NEW;
@@ -300,6 +351,7 @@ CREATE FUNCTION create_notification() RETURNS TRIGGER AS
 $BODY$
 BEGIN
     INSERT INTO notification ("read", id_request) VALUES (FALSE, NEW.id);
+
     RETURN NULL;
 END
 $BODY$
@@ -310,14 +362,17 @@ CREATE TRIGGER create_notification
     FOR EACH ROW
     EXECUTE PROCEDURE create_notification();
 
-
 CREATE FUNCTION check_comment_date() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF EXISTS (SELECT * FROM post 
-			   WHERE NEW.id_post = id AND NEW."date" < "date") THEN 
-		RAISE EXCEPTION 'The comment''s date must be after the post''s date. %', New.id_post ;
+    IF EXISTS (
+		SELECT *
+			FROM post
+			WHERE NEW.id_post = id AND NEW."date" < "date")
+		THEN
+			RAISE EXCEPTION 'The comment''s date must be after the post''s date. %', New.id_post ;
 	END IF;
+	
 	RETURN NEW;
 END
 $BODY$
@@ -392,12 +447,18 @@ CREATE TRIGGER comment_vote_not_member_community
 CREATE FUNCTION post_vote_not_member_community() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-    IF EXISTS 
-		(SELECT * FROM "user", community, post
-	 	 WHERE NEW.id_post = post.id AND post.id_community = community.id AND community.private = TRUE AND NEW.id_user = "user".id AND 
-		 NOT EXISTS(SELECT * FROM community_member CM WHERE CM.id_user = NEW.id_user AND CM.id_community = community.id)) THEN
-	   RAISE EXCEPTION 'The user cannot vote on this post because you''re not member of the community % %', NEW.id_user, NEW.id_post;
+    IF EXISTS (
+		SELECT *
+		FROM "user", community, post
+	 	 	WHERE NEW.id_post = post.id AND post.id_community = community.id AND community.private = TRUE AND NEW.id_user = "user".id AND 
+		 	NOT EXISTS (
+				SELECT *
+					FROM community_member CM
+					WHERE CM.id_user = NEW.id_user AND CM.id_community = community.id))
+				THEN
+					RAISE EXCEPTION 'The user cannot vote on this post because you''re not member of the community % %', NEW.id_user, NEW.id_post;
 	END IF;
+
 	RETURN NEW;
 END
 $BODY$
