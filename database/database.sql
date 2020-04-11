@@ -213,11 +213,20 @@ CREATE TABLE community_member (
 
 CREATE INDEX post_author_index ON post USING hash(id_author);
 
-CREATE INDEX admin_index ON report USING btree(id_admin);
+CREATE INDEX admin_index ON report USING hash(id_admin);
 
-CREATE INDEX search_index ON post
+CREATE INDEX post_index ON comment USING hash(id_post);
+
+CREATE INDEX post_search_index ON post
 USING GIST ((setweight(to_tsvector('portuguese', title),'A') || 
        setweight(to_tsvector('portuguese', content), 'B')));
+
+CREATE INDEX comment_search_index ON comment
+USING GIST (to_tsvector('portuguese', content));
+
+CREATE INDEX community_search_index ON community
+USING GIST (to_tsvector('portuguese',name));
+
 
 -----------------------------------------
 -- TRIGGERS and UDFs
