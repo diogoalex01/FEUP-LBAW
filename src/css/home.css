@@ -120,7 +120,6 @@ a:hover {
 
 .a-report:hover {
   text-decoration: none;
-  /* color: rgb(172, 170, 170); */
   color: #555454;
 }
 
@@ -228,7 +227,6 @@ textarea {
   background-color: rgba(76, 25, 27, 0.05);
   box-shadow: none;
 }
-
 /* ---------------------------- */
 
 /* Remove number input arrows */
@@ -302,8 +300,6 @@ input[type=number] {
   background: #f8f9fa;
 }
 
-/* ////////////////////////////// */
-
 .post-comment {
   padding: 0 12%;
   margin-top: 1.5em;
@@ -313,9 +309,6 @@ input[type=number] {
   padding: 0 12%; 
   margin-left: 8%;
 }
-
-
-/* ///////////////////////////// */
 
 .modal-image {
   height: 75vh;

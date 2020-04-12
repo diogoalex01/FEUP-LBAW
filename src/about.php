@@ -8,7 +8,12 @@ if (!isset($_GET['auth'])) {
     $auth = "false";
 }
 
-draw_navigation($auth);
+$admin = $_GET['admin'];
+if (!isset($_GET['admin'])) {
+    $admin = "false";
+}
+
+draw_navigation($auth, "", $admin);
 
 ?>
 
@@ -50,6 +55,6 @@ draw_navigation($auth);
 
 <?php
 
-draw_footer($auth);
+draw_footer($auth, $admin);
 
 ?>

@@ -8,7 +8,12 @@ if (!isset($_GET['auth'])) {
     $auth = "false";
 }
 
-draw_navigation($auth);
+$admin = $_GET['admin'];
+if (!isset($_GET['admin'])) {
+    $admin = "false";
+}
+
+draw_navigation($auth, "", $admin);
 
 ?>
 
@@ -22,7 +27,7 @@ draw_navigation($auth);
         <!-- New Post Input -->
         <div class="card mb-4 post-container">
             <div class="card-body ">
-                <form action="home.php" method ="get">
+                <form action="home.php" method="get">
                     <input type="text" class="form-control mb-2" placeholder="/exampleCommunity">
                     <input name="auth" hidden value="<?= $auth ?>">
                     <input type="text" class="form-control" placeholder="Example Title">
@@ -70,5 +75,5 @@ draw_navigation($auth);
 </div>
 
 <?
-draw_footer($auth);
+draw_footer($auth, $admin);
 ?>

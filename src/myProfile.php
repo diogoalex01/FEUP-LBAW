@@ -8,7 +8,12 @@ if (!isset($_GET['auth'])) {
     $auth = "false";
 }
 
-draw_navigation($auth);
+$admin = $_GET['admin'];
+if (!isset($_GET['admin'])) {
+    $admin = "false";
+}
+
+draw_navigation($auth, "", $admin);
 ?>
 
 <!-- Page Content -->
@@ -23,6 +28,14 @@ draw_navigation($auth);
                 <img class="rounded-circle profile-pic " src="./images/avatar_male.png" alt="Profile Image">
             </div>
 
+            <div class="row">
+                <?php if ($admin === "true") { ?>
+                    <div class="text-center mx-auto">
+                        <input type="button" class="btn btn-outline-danger" value="Ban User">
+                    </div>
+                <? } ?>
+            </div>
+
             <?php profile_info($auth, 25, 4, 27, "Male") ?>
 
             <!-- My Categories -->
@@ -32,7 +45,7 @@ draw_navigation($auth);
                         <div class="col justify-content-start">
                             <div class="nav-border-active">Activity</div>
 
-                            <a href="myCommunities.php?auth=<?= $auth ?>">
+                            <a href="myCommunities.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                 <div class="nav-border" style="border-bottom: 0px;">Communities</div>
                             </a>
                         </div>
@@ -48,7 +61,7 @@ draw_navigation($auth);
             <h1 class="my-4 username-header">@someusername</h1>
 
             <!-- New Post -->
-            <a href="newPost.php?auth=<?= $auth ?>">
+            <a href="newPost.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                 <div class="card mb-4 post-container">
                     <div class="card-body">
                         <div class="row" style="font-size: 0.45rem;">
@@ -67,34 +80,34 @@ draw_navigation($auth);
 
             <?php profile_post_myProfile($auth, "someusername", "myProfile.php", "Porto", "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Post 1", "Personally, it depends what you are studying but for me, if it is a
                                         subject that has math / physics / formula then I find that just practicing questions
-                                        (normally in your textbook) is the best way to learn."); ?>
+                                        (normally in your textbook) is the best way to learn.", $admin); ?>
 
             <!-- Comment -->
             <?php profile_comment_myProfile($auth, "c1", "someusername", "myProfile.php", "Post 1", "Personally, it depends what you are studying but for me, if it is a
                                         subject that has math / physics / formula then I find that just practicing questions
-                                        (normally in your textbook) is the best way to learn.") ?>
+                                        (normally in your textbook) is the best way to learn.", $admin); ?>
 
             <!-- Post -->
             <?php profile_post_myProfile($auth, "someusername", "myProfile.php", "Porto", "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Post 2", "Preferably free or a cheap fee but as I write my analysis essay, I was
-                                wondering if there are good tools for editing papers? If so, which do you use?"); ?>
+                                wondering if there are good tools for editing papers? If so, which do you use?", $admin); ?>
 
             <!-- Comment -->
             <?php profile_comment_myProfile($auth, "c2", "someusername", "myProfile.php", "Post 4", "It can be a bit overwhelming at first, but there's definitely a system
-                                to learn effectively. And that is regardless of the course and the amount of work.") ?>
+                                to learn effectively. And that is regardless of the course and the amount of work.", $admin); ?>
 
             <!-- Post -->
             <?php profile_post_myProfile($auth, "someusername", "myProfile.php", "Porto", "./images/Porto.jpg", "Financial help", "So I have had some offers from my university so now I'm looking at
                                 financing and asked my parents if they would help with living costs so I could focus on
                                 my studies. What do I do. Will a part time job be able to support all of my living
-                                costs?"); ?>
+                                costs?", $admin); ?>
 
             <!-- Post -->
             <?php profile_post_myProfile($auth, "someusername", "myProfile.php", "Porto", "./images/UPorto.png", "University acceptance", "I just got accepted to UMass Amherst as an international
-                                undergraduate(freshman for engn). Any tips that might help me start well my year ?"); ?>
+                                undergraduate(freshman for engn). Any tips that might help me start well my year ?", $admin); ?>
 
         </div>
     </div>
 </div>
 <?
-draw_footer($auth);
+draw_footer($auth, $admin);
 ?>

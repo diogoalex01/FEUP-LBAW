@@ -33,14 +33,20 @@ function draw_head($title)
     <?php
 }
 
-function draw_navigation($auth, $studying = "", $admin = "false")
+function draw_navigation($auth, $studying = "", $admin)
 {
     ?>
         <!-- Navigation -->
         <nav id="topBar" class="navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="home.php?auth=<?= $auth ?>">
-                <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
-            </a>
+            <?php if ($admin === "false") { ?>
+                <a class="navbar-brand" href="home.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+                    <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+                </a>
+            <? } else { ?>
+                <a class="navbar-brand" href="admin.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+                    <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+                </a>
+            <? } ?>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -48,6 +54,7 @@ function draw_navigation($auth, $studying = "", $admin = "false")
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="search.php" method="get">
                     <input name="auth" hidden value="<?= $auth ?>">
+                    <input name="admin" hidden value="<?= $admin ?>">
                     <input id="search-bar" class="form-control mr-sm-2" type="search" placeholder="Explore" value="<?= $studying ?>" aria-label="Explore">
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
                 </form>
@@ -82,7 +89,7 @@ function draw_navigation($auth, $studying = "", $admin = "false")
 
                                             <div class="row">
                                                 <div class="col-3">
-                                                    <a href="userProfile.php?auth=<?= $auth ?>">
+                                                    <a href="userProfile.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                         <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
                                                 </div>
                                                 <div class="col-7 p-0">
@@ -117,12 +124,12 @@ function draw_navigation($auth, $studying = "", $admin = "false")
 
                                             <div class="row">
                                                 <div class="col-3">
-                                                    <a href="community.php?auth=<?= $auth ?>">
+                                                    <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                         <img class="notification-pic" id="login" height="50" width="50" src="./images/Porto.jpg" alt="Profile Image"></a>
                                                 </div>
                                                 <div class="col-7 p-0">
-                                                    <h4 class="item-title"><a href="userProfile.php?auth=<?= $auth ?>">@someotheruser</a> asked to
-                                                        join your communnity <a href="community.php?auth=<?= $auth ?>">/Porto</a></h4>
+                                                    <h4 class="item-title"><a href="userProfile.php?auth=<?= $auth ?>&admin=<?= $admin ?>">@someotheruser</a> asked to
+                                                        join your communnity <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">/Porto</a></h4>
                                                     <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 14h ago</h6>
                                                 </div>
                                                 <div class="d-flex align-items-start pt-1">
@@ -151,7 +158,7 @@ function draw_navigation($auth, $studying = "", $admin = "false")
                                         <div class="notification-item">
                                             <div class="row">
                                                 <div class="col-3">
-                                                    <a href="userProfile.php?auth=<?= $auth ?>">
+                                                    <a href="userProfile.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                         <img class="notification-pic" id="login" height="50" width="50" src="./images/avatar_female.png" alt="Profile Image"></a>
                                                 </div>
                                                 <div class="col-7 p-0">
@@ -191,8 +198,8 @@ function draw_navigation($auth, $studying = "", $admin = "false")
                             <?php
                             if ($admin === "false") {
                             ?>
-                                <a class="dropdown-item" href="myProfile.php?auth=<?= $auth ?>">My Account</a>
-                                <a class="dropdown-item" href="settings.php?auth=<?= $auth ?>">Settings</a>
+                                <a class="dropdown-item" href="myProfile.php?auth=<?= $auth ?>&admin=<?= $admin ?>">My Account</a>
+                                <a class="dropdown-item" href="settings.php?auth=<?= $auth ?>&admin=<?= $admin ?>">Settings</a>
                                 <div class="dropdown-divider"></div>
                             <?
                             }
@@ -201,7 +208,7 @@ function draw_navigation($auth, $studying = "", $admin = "false")
                         </div>
                     </div>
                 <? } else {
-                    draw_login_modals("true");
+                    draw_login_modals("true", $admin);
                 ?>
                     <ul class="navbar-nav">
                         <li class="nav-item">
@@ -220,7 +227,7 @@ function draw_navigation($auth, $studying = "", $admin = "false")
     <?php
 }
 
-function draw_footer($auth)
+function draw_footer($auth, $admin)
 {
     ?>
 
@@ -246,7 +253,7 @@ function draw_footer($auth)
                     LBAW © 2020 Copyright
                 </div>
                 <div class="mx-auto">
-                    <a id="about" href="about.php?auth=<?= $auth ?>"> About Us</a>
+                    <a id="about" href="about.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> About Us</a>
                 </div>
         </footer>
         <!-- Footer -->
@@ -260,7 +267,7 @@ function draw_report_modals()
 {
 ?>
     <!-- Report Community Modal -->
-    <div class="modal" id="modalCommunittyReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle" aria-hidden="false">
+    <div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle" aria-hidden="false">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body login-modal">
@@ -361,7 +368,7 @@ function draw_report_modals()
     </div>
 <?php }
 
-function draw_login_modals($auth)
+function draw_login_modals($auth, $admin)
 { ?>
 
     <!-- Modal -->
@@ -385,7 +392,7 @@ function draw_login_modals($auth)
                                                 with Email</button>
                                         </div>
                                         <div class="d-flex justify-content-center">
-                                            <a href="home.php?auth=<?= $auth ?>">
+                                            <a href="home.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                 <img width="172px" src="./images/google.png" alt="Google OAuth">
                                             </a>
                                         </div>
@@ -435,7 +442,7 @@ function draw_login_modals($auth)
                                                     </a>
                                                 </p>
                                             </div>
-                                            <a href="home.php?auth=<?= $auth ?>">
+                                            <a href="home.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                 <button type="submit" class="btn btn-outline-dark ">Log in</button>
                                             </a>
                                         </div>
@@ -527,7 +534,7 @@ function draw_login_modals($auth)
                                                     </a>
                                                 </p>
                                             </div>
-                                            <a href="home.php?auth=<?= $auth ?>">
+                                            <a href="home.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                                 <button type="submit" class="btn btn-outline-dark">Sign up</button>
                                             </a>
 
@@ -574,14 +581,14 @@ function vote_content($up_votes, $down_votes)
 
 <?php }
 
-function profile_post_user($auth, $poster_name, $poster_page, $community_name, $up_votes, $down_votes, $image, $title, $content)
+function profile_post_user($auth, $poster_name, $poster_page, $community_name, $up_votes, $down_votes, $image, $title, $content, $admin)
 { ?>
 
     <!-- Post -->
     <div class="card mb-4 post-container">
 
         <h6 class="card-header"><i class="fa fa-newspaper-o mr-1"></i>
-            <a href="<?= $poster_page ?>?auth=<?= $auth ?>">@<?= $poster_name ?></a> <span class="text-muted"> posted on</span> <a href="community.php?auth=<?= $auth ?>">/<?= $community_name ?></a></h6>
+            <a href="<?= $poster_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $poster_name ?></a> <span class="text-muted"> posted on</span> <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">/<?= $community_name ?></a></h6>
 
         <div class="card-body pb-0 mx-2">
             <div class="row">
@@ -589,9 +596,9 @@ function profile_post_user($auth, $poster_name, $poster_page, $community_name, $
                 <?php vote_content($up_votes, $down_votes); ?>
 
                 <div class="col-md-10 mx-auto pb-3">
-                    <a href="post.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 my-0 pl-0 py-0 text-center" height="35" width="35" src=<?= $image ?> alt="Post Image" style="object-fit: contain;">
+                    <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> <img class="card-img-top thumbnail mr-2 my-0 pl-0 py-0 text-center" height="35" width="35" src=<?= $image ?> alt="Post Image" style="object-fit: contain;">
                         <?= $title ?></a>
-                    <a href="post.php?auth=<?= $auth ?>">
+                    <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                         <p class="card-text pt-2"><?= $content ?></p>
                     </a>
                 </div>
@@ -601,19 +608,19 @@ function profile_post_user($auth, $poster_name, $poster_page, $community_name, $
 
 <?php }
 
-function profile_post_myProfile($auth, $poster_name, $poster_page, $community_name, $image, $title, $content)
+function profile_post_myProfile($auth, $poster_name, $poster_page, $community_name, $image, $title, $content, $admin)
 { ?>
 
     <!-- Post -->
     <div class="card mb-4 post-container">
 
         <h6 class="card-header"><i class="fa fa-newspaper-o mr-1"></i>
-            <a href="<?= $poster_page ?>?auth=<?= $auth ?>">@<?= $poster_name ?></a> <span class="text-muted"> posted on</span> <a href="community.php?auth=<?= $auth ?>">/<?= $community_name ?></a></h6>
-        <a href="post.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1 my-1" height="35" width="35" src=<?= $image ?> alt="Post Image">
+            <a href="<?= $poster_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $poster_name ?></a> <span class="text-muted"> posted on</span> <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">/<?= $community_name ?></a></h6>
+        <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> <img class="card-img-top thumbnail mr-2 mb-1 my-1" height="35" width="35" src=<?= $image ?> alt="Post Image">
             <?= $title ?></a>
 
         <div class="card-body post-thbn-body">
-            <a href="post.php?auth=<?= $auth ?>">
+            <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                 <p class="card-text"><?= $content ?></p>
             </a>
         </div>
@@ -622,14 +629,14 @@ function profile_post_myProfile($auth, $poster_name, $poster_page, $community_na
 
 <?php }
 
-function profile_comment_user($auth, $id, $commenter_name, $commenter_page, $up_votes, $down_votes, $post, $content)
+function profile_comment_user($auth, $id, $commenter_name, $commenter_page, $up_votes, $down_votes, $post, $content, $admin)
 { ?>
 
     <!-- Comment -->
     <div id=<?= $id ?> class="card mb-4 post-container">
 
         <h6 class="card-header"><i class="fa fa-terminal mr-1"></i>
-            <a href="<?= $commenter_page ?>?auth=<?= $auth ?>">@<?= $commenter_name ?></a> <span class="text-muted">commented on</span> <a href="<?= $post ?>?auth=<?= $auth ?>"><?= $post ?></a></h6>
+            <a href="<?= $commenter_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $commenter_name ?></a> <span class="text-muted">commented on</span> <a href="<?= $post ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><?= $post ?></a></h6>
 
         <div class="card-body pb-0 mx-2">
             <div class="row">
@@ -637,7 +644,7 @@ function profile_comment_user($auth, $id, $commenter_name, $commenter_page, $up_
                 <?php vote_content($up_votes, $down_votes); ?>
 
                 <div class="col-md-10 mx-auto">
-                    <a href="post.php?auth=<?= $auth ?>#<?= $id ?>">
+                    <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>#<?= $id ?>">
                         <p class="card-text"><?= $content ?></p>
                     </a>
                 </div>
@@ -647,15 +654,15 @@ function profile_comment_user($auth, $id, $commenter_name, $commenter_page, $up_
 
 <?php }
 
-function profile_comment_myProfile($auth, $id, $commenter_name, $commenter_page, $post, $content)
+function profile_comment_myProfile($auth, $id, $commenter_name, $commenter_page, $post, $content, $admin)
 { ?>
 
     <!-- Comment -->
     <div id=<?= $id ?> class="card mb-4 post-container">
         <h6 class="card-header"><i class="fa fa-terminal mr-1"></i>
-            <a href="<?= $commenter_page ?>?auth=<?= $auth ?>">@<?= $commenter_name ?></a> <span class="text-muted">commented on</span> <a href="post.php?auth=<?= $auth ?>"><?= $post ?></a></h6>
+            <a href="<?= $commenter_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $commenter_name ?></a> <span class="text-muted">commented on</span> <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>"><?= $post ?></a></h6>
         <div class="card-body">
-            <a href="post.php?auth=<?= $auth ?>#<?= $id ?>">
+            <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>#<?= $id ?>">
                 <p class="card-text"><?= $content ?></p>
             </a>
         </div>
@@ -711,14 +718,14 @@ function profile_info($auth, $points, $posts, $age, $gender)
 
 <?php }
 
-function home_post($auth, $poster_name, $poster_page, $poster_image, $community, $date, $up_votes, $down_votes, $image, $title, $content)
+function home_post($auth, $poster_name, $poster_page, $poster_image, $community, $date, $up_votes, $down_votes, $image, $title, $content, $admin)
 { ?>
 
     <!-- Post -->
     <div class="row no-gutters">
         <div class="col-md-11 pr-0 mr-0">
             <div class="card mb-4 post-container">
-                <a href="post.php?auth=<?= $auth ?>">
+                <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                     <img class="card-img-top" style="padding: 15px 15px 0px;" src="<?= $image ?>" alt="Post Image">
                 </a>
                 <div style="padding: 0 12%">
@@ -727,7 +734,7 @@ function home_post($auth, $poster_name, $poster_page, $poster_image, $community,
                         <?php vote_content($up_votes, $down_votes); ?>
 
                         <div class="col-md-10 mx-auto">
-                            <a href="post.php?auth=<?= $auth ?>">
+                            <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                                 <div style="padding: 15px 0;">
                                     <h2 class="card-title"><?= $title ?></h2>
                                     <p class="card-text"><?= $content ?>
@@ -740,7 +747,7 @@ function home_post($auth, $poster_name, $poster_page, $poster_image, $community,
                     <div class="card-footer row text-muted py-3 px-3" style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
                         <div class="col-md-5 align-self-center justify-content-start">
                             <div class="card-footer-buttons row align-content-center justify-content-start">
-                                <a href="post.php?auth=<?= $auth ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                                <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                     <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                                 </a>
@@ -748,7 +755,7 @@ function home_post($auth, $poster_name, $poster_page, $poster_image, $community,
                         </div>
                         <div class="col-md-7">
                             <div class="row align-self-center justify-content-end">
-                                <a href="<?= $poster_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $poster_image ?> alt="Profile Image"></a>
+                                <a href="<?= $poster_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $poster_image ?> alt="Profile Image"></a>
                                 <span class="px-1 align-self-center"><?= $date ?> by</span>
                                 <a class="align-self-center" href="<?= $poster_page ?>?auth=<?= $auth ?>">@<?= $poster_name ?></a>
                             </div>
@@ -761,7 +768,7 @@ function home_post($auth, $poster_name, $poster_page, $poster_image, $community,
         <div class="col-md-1 px-0 ml-0">
             <div class="row community-row">
                 <div>
-                    <a href="community.php?auth=<?= $auth ?>">
+                    <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                         <h5 class="community-tag mb-0"><?= $community ?></h5>
                     </a>
                 </div>
@@ -770,7 +777,7 @@ function home_post($auth, $poster_name, $poster_page, $poster_image, $community,
     </div>
 <?php }
 
-function post_comment($auth, $id, $commenter_name, $commenter_page, $commenter_image, $date, $up_votes, $down_votes, $content, $class)
+function post_comment($auth, $id, $commenter_name, $commenter_page, $commenter_image, $date, $up_votes, $down_votes, $content, $class, $admin)
 { ?>
 
     <!-- Comment -->
@@ -787,17 +794,21 @@ function post_comment($auth, $id, $commenter_name, $commenter_page, $commenter_i
         <div class="card-footer row text-muted p-3" style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
-                    <a href="post.php?auth=<?= $auth ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
-                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
+                    <?php if ($admin == false) { ?>
+                        <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                        <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
+                            <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                        <?php } else { ?>
+                            <a href="#"><i class="fas fa-trash-alt"></i>Delete</a>
+                        <? } ?>
+                        </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                    <a href="<?= $commenter_page ?>?auth=<?= $auth ?>"> <img height="35" width="35" src=<?= $commenter_image ?> alt="Profile Image"> </a>
+                    <a href="<?= $commenter_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"> <img height="35" width="35" src=<?= $commenter_image ?> alt="Profile Image"> </a>
                     <span class="px-1 align-self-center"><?= $date ?> by</span>
-                    <a class="align-self-center" href="<?= $commenter_page ?>?auth=<?= $auth ?>">@<?= $commenter_name ?></a>
+                    <a class="align-self-center" href="<?= $commenter_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $commenter_name ?></a>
                 </div>
             </div>
         </div>
@@ -805,7 +816,7 @@ function post_comment($auth, $id, $commenter_name, $commenter_page, $commenter_i
 
 <?php }
 
-function report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date)
+function report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date, $admin)
 { ?>
 
     <div class="card-footer row text-muted mx-0">
@@ -817,7 +828,7 @@ function report_footer_comment_and_post($auth, $reporter_name, $reporter_name_pa
         </div>
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
-                <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
+                <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
                 <span class="px-1 align-self-center"><?= $date ?> by</span>
                 <a class="align-self-center" href="<?= $reporter_name_page ?>?auth=<?= $auth ?>">@<?= $reporter_name ?></a>
             </div>
@@ -826,49 +837,49 @@ function report_footer_comment_and_post($auth, $reporter_name, $reporter_name_pa
 
 <?php }
 
-function report_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date, $community_name, $community_image, $title, $content)
+function report_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date, $community_name, $community_image, $title, $content, $admin)
 { ?>
 
     <!-- Reported Post -->
-    <div class="card mb-4 post-container">
+    <div class="post-report report card mb-4 post-container">
         <div class="card-body">
-            <a href="community.php?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
-            <a href="post.php?auth=<?= $auth ?>">
+            <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
+            <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                 <h5 class="mt-1"><?= $title ?></h5>
                 <p class="card-text"><?= $content ?>
                 </p>
             </a>
-        </div> <?php report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date); ?>
+        </div> <?php report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date, $admin); ?>
     </div>
 
 <?php }
 
-function report_comment($auth, $id, $reporter_name, $reporter_name_page, $reporter_image, $date, $post, $content)
+function report_comment($auth, $id, $reporter_name, $reporter_name_page, $reporter_image, $date, $post, $content, $admin)
 { ?>
 
     <!-- Reported Comment -->
-    <div class="card mb-4 post-container">
+    <div class="comment-report report card mb-4 post-container">
         <div class="card-body">
-            <a href="community.php?auth=<?= $auth ?>">
+            <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
                 <h5> <?= $post ?></h5>
             </a>
-            <a href="post.php?auth=<?= $auth ?>#<?= $id ?>">
+            <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>#<?= $id ?>">
                 <p class="card-text"><?= $content ?>
                 </p>
             </a>
         </div>
-        <?php report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date); ?>
+        <?php report_footer_comment_and_post($auth, $reporter_name, $reporter_name_page, $reporter_image, $date, $admin); ?>
     </div>
 
 <?php }
 
-function report_user($auth, $reporter_name, $reporter_name_page, $reporter_image, $reported_name, $reported_page, $reported_image, $date, $content)
+function report_user($auth, $reporter_name, $reporter_name_page, $reporter_image, $reported_name, $reported_page, $reported_image, $date, $content, $admin)
 { ?>
 
     <!-- Reported User -->
-    <div class="card mb-4 post-container">
+    <div id="r-user-1" class="user-report report card mb-4 post-container">
         <div class="card-body">
-            <a href="<?= $reported_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $reported_image ?> alt="Profile Image"> @<?= $reported_name ?> </a>
+            <a href="<?= $reported_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $reported_image ?> alt="Profile Image"> @<?= $reported_name ?> </a>
             <p class="card-text mt-2"> <i class="fas fa-exclamation-triangle mr-1"></i><?= $content ?></p>
         </div>
         <div class="card-footer row text-muted mx-0">
@@ -879,9 +890,9 @@ function report_user($auth, $reporter_name, $reporter_name_page, $reporter_image
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                    <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
+                    <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
                     <span class="px-1 align-self-center"><?= $date ?> by</span>
-                    <a class="align-self-center" href="<?= $reporter_name_page ?>?auth=<?= $auth ?>">@<?= $reporter_name ?></a>
+                    <a class="align-self-center" href="<?= $reporter_name_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $reporter_name ?></a>
                 </div>
             </div>
         </div>
@@ -889,13 +900,13 @@ function report_user($auth, $reporter_name, $reporter_name_page, $reporter_image
 
 <?php }
 
-function report_community($auth, $reporter_name, $reporter_name_page, $reporter_image, $community_name, $community_image, $date, $content)
+function report_community($auth, $reporter_name, $reporter_name_page, $reporter_image, $community_name, $community_image, $date, $content, $admin)
 { ?>
 
     <!-- Reported Community -->
-    <div class="card mb-4 post-container">
+    <div id="r-community-1" class="community-report report card mb-4 post-container">
         <div class="card-body">
-            <a href="community.php?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
+            <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
             <p class="card-text mt-2"> <i class="fas fa-exclamation-triangle mr-1"></i><?= $content ?></p>
         </div>
         <div class="card-footer row text-muted mx-0">
@@ -906,9 +917,9 @@ function report_community($auth, $reporter_name, $reporter_name_page, $reporter_
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                    <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
+                    <a href="<?= $reporter_name_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35" src=<?= $reporter_image ?> alt="Profile Image"></a>
                     <span class="px-1 align-self-center"><?= $date ?> by</span>
-                    <a class="align-self-center" href="<?= $reporter_name_page ?>?auth=<?= $auth ?>">@<?= $reporter_name ?></a>
+                    <a class="align-self-center" href="<?= $reporter_name_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $reporter_name ?></a>
                 </div>
             </div>
         </div>

@@ -8,7 +8,12 @@ if (!isset($_GET['auth'])) {
     $auth = "false";
 }
 
-draw_navigation($auth);
+$admin = $_GET['admin'];
+if (!isset($_GET['admin'])) {
+    $admin = "false";
+}
+
+draw_navigation($auth, "", $admin);
 ?>
 
 <!-- Page Content -->
@@ -26,12 +31,18 @@ draw_navigation($auth);
             <!-- </div> -->
 
             <div class="row">
-                <div class="col-6 text-center d-flex align-items-center justify-content-end">
-                    <input type="button" class="btn btn-outline-danger" value="Block">
-                </div>
-                <div class="col-1 text-center d-flex align-items-center ">
-                    <input type="button" class="btn btn-dark" value="Follow">
-                </div>
+                <?php if ($admin === "false") { ?>
+                    <div class="col-6 text-center d-flex align-items-center justify-content-end">
+                        <input type="button" class="btn btn-outline-danger" value="Block">
+                    </div>
+                    <div class="col-1 text-center d-flex align-items-center ">
+                        <input type="button" class="btn btn-dark" value="Follow">
+                    </div>
+                <? } else { ?>
+                    <div class="text-center mx-auto">
+                        <input type="button" class="btn btn-outline-danger" value="Ban User">
+                    </div>
+                <? } ?>
             </div>
 
             <?php profile_info($auth, 3353, 4, 23, "Female") ?>
@@ -171,5 +182,5 @@ draw_navigation($auth);
 
 
 <?
-draw_footer($auth);
+draw_footer($auth, $admin);
 ?>
