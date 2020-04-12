@@ -29,7 +29,7 @@ INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES
 INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('lilianaAlmeida',  'Liliana', 'Almeida', 'lilianaAlmeida@gmail.com', 'admin4');
  
 INSERT INTO community (name, image, private, id_owner) VALUES ('FEUP','image', FALSE, 2);
-INSERT INTO community (name, image, private, id_owner) VALUES ('Uporto','image', FALSE, 5);
+INSERT INTO community (name, image, private, id_owner) VALUES ('UPorto','image', FALSE, 5);
 INSERT INTO community (name, image, private, id_owner) VALUES ('UNL','image', FALSE, 8);
 INSERT INTO community (name, image, private, id_owner) VALUES ('FMUP','image', FALSE, 12);
 INSERT INTO community (name, image, private, id_owner) VALUES ('FAP','image', TRUE, 15);
@@ -115,10 +115,10 @@ INSERT INTO comment (content, time_stamp, upvotes, downvotes, id_author, id_post
 
 INSERT INTO reply (reply_comment, parent_comment) VALUES (2,5);
 
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteudo impróprio', '2020-03-27',1,5);
+INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteúdo impróprio', '2020-03-27',1,5);
 INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Vocabulário impróprio', '2020-03-18',2, 9);
 INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('SPAM', '2020-03-15',3,12);
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteudo impróprio', '2020-03-26',4,17);
+INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteúdo impróprio', '2020-03-26',4,17);
 
 INSERT INTO comment_report (id_report, id_comment) VALUES (2,5);
 INSERT INTO post_report (id_report, id_post) VALUES (3,3);
