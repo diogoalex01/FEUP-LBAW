@@ -91,7 +91,7 @@ draw_footer($auth, $admin);
 
         for (let i = 0; i < all_rep.length; i++) {
             if (all_rep[i].style.display === "none") {
-                all_rep.style.display = "block"
+                all_rep[i].style.display = "block"
             }
         }
     })
