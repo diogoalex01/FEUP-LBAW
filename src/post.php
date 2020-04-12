@@ -79,7 +79,7 @@ draw_navigation($auth, "", $admin);
                         <div class="row align-self-center justify-content-end">
                             <a href="myProfile.php?auth=<?= $auth ?>"><img height="35" width="35" src="./images/avatar_male.png" alt="Profile Image"></a>
                             <span class="px-1 align-self-center">March 5, 2020 by</span>
-                            <a class="align-self-center" href="myProfile.php?auth=<?= $auth ?>">@someusername</a>
+                            <a class="align-self-center" href="myProfile.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> @someusername</a>
                         </div>
                     </div>
                 </div>
