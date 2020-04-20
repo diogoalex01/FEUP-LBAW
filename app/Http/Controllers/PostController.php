@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Post;
+use App\Community;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+class PostController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //if (!Auth::check()) return redirect('/login');
+        $this->authorize('create', Post::class);
+        return view('pages.newPost');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //$post = new Post();
+        //$this->authorize('create', $post);
+
+        $data = $request->validate([
+            'community' => 'required',
+            'title' => 'required',
+            'private' => 'sometimes|accepted',
+            'post_content' => 'required',
+            'image' => 'nullable|mimes:jpeg,jpg,png,gif',
+        ]);
+
+        /* Check and create community if needed */
+        $communities = DB::table('community')->pluck('name')->toArray();
+        $community_name = $data['community'];
+
+        if (in_array($community_name, $communities)) {
+            $community_id = DB::table('community')->where('name', '=', $community_name)->get()->first()->id;
+        } else {
+            if (!in_array('private', $data)) {
+                $data['private'] = 'false';
+            } else {
+                $data['private'] = 'true';
+            }
+
+            $community = Community::create([
+                'name' => $community_name,
+                'private' => $data['private'],
+            ]);
+            $community->id_owner = Auth::user()->id;
+            $community->save();
+            $community_id = $community->id;
+        }
+
+        /* Create Post */
+        $post = Post::create([
+            'id_community' => $community_id,
+            'content' => $data['post_content'],
+            'title' => $data['title'],
+            'image' => $request->hasFile('image') ? $data['image'] : null,
+        ]);
+        
+        $post->id_author = Auth::user()->id;
+        $post->image = $request['image'];
+        $post->save();
+
+        // if ($request->hasFile('image')) {
+        //     $image = $request->file('image');
+        //     $name = time().'.'.$image->getClientOriginalExtension();
+        //     $destinationPath = public_path('/storage/images');
+        //     $image->move($destinationPath, $name);
+        //     $image->save();
+    
+        //     return back()->with('success','Image Upload successfully');
+        // }
+
+       
+
+        // redirect('/post/' . $post->id);
+        return redirect('/');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        // $post = Card::find($id);
+
+        //$this->authorize('show', $post);
+
+        //return view('pages.post', ['post' => $post]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        // if (!Auth::check()) return redirect('/login');
+
+        //$this->authorize('list', Card::class);
+
+        $posts = DB::table('post')->orderBy('time_stamp', 'desc')->get()->take(30);
+
+        return view('pages.home', ['posts' => $posts]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Post $post)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Post $post)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Post $post)
+    {
+        //
+    }
+}

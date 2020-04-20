@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Community extends Model
 {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
@@ -14,7 +14,7 @@ class User extends Authenticatable
      *
      * @var string
      */
-    protected $table = 'member_user';
+    protected $table = 'community';
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'first_name', 'last_name', 'gender', 'username', 'birthday', 'private',
+        'name', 'image', 'private',
     ];
 
     /**
@@ -30,15 +30,14 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    // protected $hidden = [
+    // ];
 
     /**
-     * The posts this user owns.
+     * The user this community belongs to
      */
-    public function posts()
+    public function user()
     {
-        return $this->hasMany('App\Posts');
+        return $this->hasOne('App\User', 'id_owner');
     }
 }
