@@ -32,39 +32,38 @@ class ItemController extends Controller
     return $item;
   }
 
-    /**
-     * Updates the state of an individual item.
-     *
-     * @param  int  $id
-     * @param  Request request containing the new state
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-      $item = Item::find($id);
+  /**
+   * Updates the state of an individual item.
+   *
+   * @param  int  $id
+   * @param  Request request containing the new state
+   * @return Response
+   */
+  public function update(Request $request, $id)
+  {
+    $item = Item::find($id);
 
-      $this->authorize('update', $item);
+    $this->authorize('update', $item);
 
-      $item->done = $request->input('done');
-      $item->save();
+    $item->done = $request->input('done');
+    $item->save();
 
-      return $item;
-    }
+    return $item;
+  }
 
-    /**
-     * Deletes an individual item.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function delete(Request $request, $id)
-    {
-      $item = Item::find($id);
+  /**
+   * Deletes an individual item.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function delete(Request $request, $id)
+  {
+    $item = Item::find($id);
 
-      $this->authorize('delete', $item);
-      $item->delete();
+    $this->authorize('delete', $item);
+    $item->delete();
 
-      return $item;
-    }
-
+    return $item;
+  }
 }

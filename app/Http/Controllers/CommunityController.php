@@ -84,7 +84,7 @@ class CommunityController extends Controller
         //
     }
 
-    public function getAll()
+    public function get_all()
     {
         $communities = DB::table('community')->get();
         // $communities = DB::table('community')->pluck('name', 'image');

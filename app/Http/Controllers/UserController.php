@@ -79,9 +79,8 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        error_log("enteredupdate");
         $user = Auth::user();
-        error_log("\n\here\n\n");
+        error_log($request->image);
         $data = Validator::make($request->all(), [
             'first_name' => 'string|max:255',
             'last_name' => 'string|max:255',
@@ -89,9 +88,9 @@ class UserController extends Controller
             'birthday' => 'date|before_or_equal:' . now()->subYears(12),
             'email' => 'string|email|max:255',
             'gender' => 'in:male,female,other',
-            'password' => 'string|min:6|confirmed',
-            //'image' => ''
-            //'private' => 'boolean'
+            'password' => 'required|string|min:6|confirmed',
+            //'image' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'private' => 'in:true,false'
         ]);
 
         if ($data->fails()) {
@@ -100,47 +99,50 @@ class UserController extends Controller
                 'errors' => $data->errors()
             ), 300);
         }
-        // $data = $request->validate([
-        //     'first_name' => 'string|max:255',
-        //     'last_name' => 'string|max:255',
-        //     'username' => 'string|max:255',
-        //     'birthday' => 'date|before_or_equal:' . now()->subYears(12),
-        //     'email' => 'string|email|max:255',
-        //     'gender' => 'in:male,female,other',
-        //     'password' => 'string|min:6|confirmed',
-        //     'image' => '',
-        //     // 'private' => 'boolean'
-        // ]);
 
-        error_log("\n\Validated\n\n");
-        error_log($user->password);
+        if (Hash::check($request->password_confirmation, Hash::make($request->password)) === false) {
+            return response()->json(array(
+                'success' => false,
+                'errors' => array('password_confirmation' => array('Passwords do not match.'))
+            ), 300);
+        } else if (Hash::check($request->password, $user->password)) {
+            if (User::where('email', $request->email)->first() !== null && $request->email != $user->email) {
+                return response()->json(array(
+                    'success' => false,
+                    'errors' => array('email' => array('The email already exists.'))
+                ), 300);
+            }
 
-        // if (Hash::check(strval($data['password']), $user->password)) {
-        //     if (User::where('email', strval($data['email']))->first() !== null && strval($data['email']) != $user->email) {
-        //         return;
-        //     }
+            $user->email = $request->email;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
+            $user->username = $request->username;
+            $user->birthday = $request->birthday;
+            $user->gender = $request->gender;
+            $user->private = $request->private;
 
-        //     $user->email = $data['email'];
-        //     $user->first_name = $data['first_name'];
-        //     $user->last_name = $data['last_name'];
-        //     $user->username = $data['username'];
-        //     $user->birthday = $data['birthday'];
-        //     $user->gender = $data['gender'];
-        //     // $user->private = $data['private'];
+           // if ($request->hasFile('image')) {
 
-        //     // error_log('imagem');
+                $nameWithExtension = $request->image->getClientOriginalExtension();
+                $path = $request->image->storeAs(
+                    '/user',
+                    $user->id . "." . $nameWithExtension,
+                    'public'
+                );
+                $user->photo = $path;
+            // } else {
+            // }
+            $user->save();
 
-        //     // $user->photo = $data['image'];
-        //     // $request->image->move(public_path('images'), $user->photo);
-
-        //     error_log("user");
-        //     $user->save();
-        //     return;
-        // }
+            return response()->json(array(
+                'success' => true
+            ), 200);
+        }
 
         return response()->json(array(
-            'success' => true
-        ), 200);;
+            'success' => false,
+            'errors' => array('password' => array('The password is incorrect.'))
+        ), 300);
     }
 
     /**
@@ -159,13 +161,13 @@ class UserController extends Controller
 
         if ($delete_content === 'true') {
             DB::transaction(function () use ($user_id) {
-                error_log($user_id);
                 DB::table('post')->where('id_author', '=', $user_id)->delete();
                 DB::table('comment')->where('id_author', '=', $user_id)->delete();
-                // DB::table('community_member')->where('id_user', '=', $user_id)->delete();
-                //verificar follows, blocks e requests e outros assim
             });
         }
+
+        // Delete user profile picture
+        //Storage::delete($user->image);
 
         Auth::logout();
 

@@ -13,12 +13,13 @@
             <div class="col-md-3 photo-upload-container">
                 <div class="text-center">
                     <div class="text-center">
-                        <img class="rounded-circle profile-pic" src="{{ asset('storage/images/avatar_male.png') }}"
+                        {{--{{ asset('storage/images/avatar_male.png') }}--}}
+                        <img class="rounded-circle profile-pic" src="{{ asset('storage/user/'.$user->photo) }}"
                             alt="Profile Image">
                     </div>
                     <div class="custom-file mt-4 mb-5">
-                        {{-- <input name="image" form="edit-user" type="file" accept="image/*" class="custom-file-input"
-                            id="customFile"> --}}
+                         <input name="image" form="edit-user" type="file" accept="image/*" class="custom-file-input"
+                            id="customFile"> 
                         <label class="custom-file-label text-left" for="customFile" id="customFileLabel">
                             No file selected.
                         </label>
@@ -125,8 +126,14 @@
                         </div>
                         <div class="form-group mx-sm-5 pl-1">
                             <div class="custom-control custom-switch">
+                                @if($user->private)
+                                <input type="checkbox" class="custom-control-input" checked id="privacyToggle">
+                                @else
                                 <input type="checkbox" class="custom-control-input" id="privacyToggle">
+                                @endif
+
                                 <label class="custom-control-label" for="privacyToggle"></label>
+
                             </div>
                         </div>
                         <div class="form-group mt-4 mx-sm-5">

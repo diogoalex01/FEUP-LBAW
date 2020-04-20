@@ -5,7 +5,8 @@
             <a href="/post/{{ $post->id }}">
                 {{--<a href="post.php?auth=&admin=--}}
                 @if($post->image != null)
-                <img class="card-img-top" style="padding: 15px 15px 0px;" src={{ $post->image }} alt="Post Image">
+                <img class="card-img-top" style="padding: 15px 15px 0px;" src={{ asset("storage/".$post->image)}}
+                    alt="Post Image">
                 @endif
             </a>
             <div style="padding: 0 12%">
@@ -28,7 +29,7 @@
                     style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
                     <div class="col-md-5 align-self-center justify-content-start">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
-                            {{-- <!-- <a href="post.php?auth=&admin=<>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>--> --}}
+                            <!-- <a href="post.php?auth=&admin=<>#new-comment-input"><i class="fas fa-reply"></i>Reply</a>-->
                             <div class="a-report">
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                     <i class="fas fa-flag"></i>Report
@@ -38,11 +39,11 @@
                     </div>
                     <div class="col-md-7">
                         <div class="row align-self-center justify-content-end">
-                            {{--<a href="/user/{{$post->user->id}}"><img height="35" width="35"
-                                src="images/{{$post->user->photo}}" alt="Profile Image"></a>--}}
+                            <!-- <a href="/user/"><img height="35" width="35"
+                                    src="images/" alt="Profile Image"></a> -->
                             <span class="px-1 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
                                 by</span>
-                            {{-- <a class="align-self-center" href="{{$post->user->id}}>@ $$poster_name" </a> --}}
+                            <!-- {{-- <a class="align-self-center" href="{{$post->user->id}}"> @ {{$poster_name}}" </a> --}} -->
                         </div>
                     </div>
                 </div>

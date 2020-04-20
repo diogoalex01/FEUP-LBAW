@@ -22,7 +22,7 @@ Route::delete('/settings', 'UserController@destroy');
 Route::get('/about', 'PageController@about')->name('about');
 
 // API
-Route::post('api/communities', 'CommunityController@getAll');
+Route::post('api/communities', 'CommunityController@get_all');
 
 //Route::get('/home', 'Auth\LoginController@home');
 // Cardss

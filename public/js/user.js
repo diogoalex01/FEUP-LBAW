@@ -41,19 +41,19 @@ function sendAjaxRequest(method, url, data, handler) {
 }
 
 function sendEditProfile() {
-    console.log("sendEdit")
     // event.preventDefault();
     let first_name = document.querySelector('input[name=first_name]').value;
     let last_name = document.querySelector('input[name=last_name]').value;
     let username = document.querySelector('input[name=username]').value;
     let email = document.querySelector('input[name=email]').value;
     let password = document.querySelector('input[name=password]').value;
-    let password_confirmation = document.querySelector('input[name=password]').value;
+    let password_confirmation = document.querySelector('input[name=password_confirmation]').value;
     let gender = document.querySelector('*[name=gender]').value;
-    // let image = document.querySelector('*[name=image]').files[0];
+    let image = document.querySelector('*[name=image]').files[0];
+    console.log(image);
     let birthday = document.querySelector('input[name=birthday]').value;
     let private = document.querySelector('#privacyToggle').checked;
-    console.log("private = " + private);
+    console.log("private = " + typeof private);
 
     sendAjaxRequest('put', '/settings', {
         username: username,
@@ -61,7 +61,7 @@ function sendEditProfile() {
         last_name: last_name,
         email: email,
         gender: gender,
-        // image: image,
+        image: image,
         birthday: birthday,
         password: password,
         password_confirmation: password_confirmation,
@@ -78,11 +78,11 @@ function sendDeleteProfile(event) {
 
 function profileDeletedHandler() {
     if (this.status == 200) {
-        console.log("200 OK!" + this.status);
+        // console.log("200 OK!" + this.status);
         window.location = '/';
     }
     else {
-        console.log(this.status);
+        // console.log(this.status);
         window.location = '/';
     }
 }
@@ -91,14 +91,14 @@ function profileEditedHandler() {
     event.preventDefault();
     console.log(this.status);
     if (this.status == 200) {
-        console.log("200 OK!" + this.status);
+        // console.log("200 OK!" + this.status);
     }
     else if (this.status == 500) {
-        console.log("hehehe");
         console.log(this.status);
     }
 
     let response = JSON.parse(this.responseText);
+    // console.log(response);
     let string = "";
     for (let s in response.errors) {
         string += "<li>" + response.errors[s] + "</li>"

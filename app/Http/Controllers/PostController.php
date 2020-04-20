@@ -78,26 +78,23 @@ class PostController extends Controller
             'id_community' => $community_id,
             'content' => $data['post_content'],
             'title' => $data['title'],
-            'image' => $request->hasFile('image') ? $data['image'] : null,
         ]);
-        
+
+        // $path = $request->file('image')->store('storage/images');
+        //$path = Storage::putFile('avatars', $request->file('avatar'));
+        if ($request->hasFile('image')) {
+            $nameWithExtension = $request->file('image')->getClientOriginalExtension();
+            $path = $request->file('image')->storeAs(
+                '/post',
+                $post->id . "." . $nameWithExtension,
+                'public'
+            );
+            $post->image = $path;
+        }
+
         $post->id_author = Auth::user()->id;
-        $post->image = $request['image'];
         $post->save();
 
-        // if ($request->hasFile('image')) {
-        //     $image = $request->file('image');
-        //     $name = time().'.'.$image->getClientOriginalExtension();
-        //     $destinationPath = public_path('/storage/images');
-        //     $image->move($destinationPath, $name);
-        //     $image->save();
-    
-        //     return back()->with('success','Image Upload successfully');
-        // }
-
-       
-
-        // redirect('/post/' . $post->id);
         return redirect('/');
     }
 

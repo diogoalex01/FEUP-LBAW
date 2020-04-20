@@ -54,7 +54,6 @@ let allCommunities = [];
 function communityCheckedHandler() {
     // if (this.status != 200) window.location = '/';
     allCommunities = JSON.parse(this.responseText);
-    // console.log(allCommunities);
 }
 
 function searching(word) {

@@ -558,7 +558,7 @@ CREATE TRIGGER change_community_privacy
 -- Populate the database
 -----------------------------------------
 
-INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('miguelGomes2', 'Miguel', 'Gomes', 'miguelGomes12@gmail.com','op[pjljkbfr','1999-10-21','male', 'photo', FALSE, -300.2);
+INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('miguelGomes2', 'Miguel', 'Gomes', 'miguelGomes12@gmail.com','op[pjljkbfr','1999-10-21','male', 'photo', FALSE, 2);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('SilvoMaria', 'Silvino', 'Martins', 'silvinitoMaria@gmail.com','uhgcvuili','1991-12-01','male', 'photo', True, 0);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('augustoSilva1', 'Augusto', 'Silva', 'augustosilva_1@gmail.com','oilhiyhg','1986-04-23','male', 'photo', FALSE, 230);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('mariaAlegre', 'Maria', 'Alegria', 'mariaAlegria10@gmail.com','llhitfrr','1999-06-15','female', 'photo', FALSE, 592);
@@ -578,6 +578,7 @@ INSERT INTO member_user (username, first_name, last_name, email, password, birth
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('Manuelsilvino', 'Manuel', 'Silvino', 'chicoSilvino@gmail.com','jyjfdsd','1987-01-21','male', 'photo', FALSE, 450);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('andreLopes2', 'Andre', 'Lopes', 'andrescuteiro@outlook.pt','44fgfeA','1979-12-21','male', 'photo', True, 554);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('PedroFute', 'Pedro', 'Firmino', 'pedroFirmino23@gmail.com','GUYIHJLP9','1981-05-21','male', 'photo', FALSE, 473);
+INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('testUser', 'Test', 'User', 'testUser@fe.up.pt','$2y$10$L3DbHwIt1nvP9oqXITMEMO.Fy5zOiwvqNB3dSmYeP6DKwgsmR/P0C','1999-01-01','male', 'photo', FALSE, 0);
  
 INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('mafaldaSntos', 'Mafalda', 'Santos', 'mafaldaSantos@gmail.com', 'admin1');
 INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('joaoLuz', 'Joao', 'Luz', 'joaoLuz@gmail.com', 'admin2');

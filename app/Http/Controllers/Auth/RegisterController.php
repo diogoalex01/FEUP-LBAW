@@ -49,7 +49,6 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        error_log("\nher1e\n");
         return Validator::make($data, [
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
@@ -77,7 +76,7 @@ class RegisterController extends Controller
             'gender' => $data['gender'],
             'birthday' => $data['birthdate'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => Hash::make(strval($data['password'])),
             'private' => false,
         ]);
     }
