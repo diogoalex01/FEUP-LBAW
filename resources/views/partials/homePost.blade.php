@@ -5,7 +5,7 @@
             <a href="/post/{{ $post->id }}">
                 {{--<a href="post.php?auth=&admin=--}}
                 @if($post->image != null)
-                <img class="card-img-top" style="padding: 15px 15px 0px;" src={{ asset("storage/".$post->image)}}
+                <img class="card-img-top" style="padding: 15px 15px 0px;" src={{ asset($post->image)}}
                     alt="Post Image">
                 @endif
             </a>

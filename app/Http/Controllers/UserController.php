@@ -121,7 +121,7 @@ class UserController extends Controller
             $user->gender = $request->gender;
             $user->private = $request->private;
 
-           // if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
 
                 $nameWithExtension = $request->image->getClientOriginalExtension();
                 $path = $request->image->storeAs(
@@ -130,8 +130,8 @@ class UserController extends Controller
                     'public'
                 );
                 $user->photo = $path;
-            // } else {
-            // }
+             } else {
+             }
             $user->save();
 
             return response()->json(array(

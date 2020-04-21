@@ -2,7 +2,7 @@ let privacyToggleLabel = document.querySelector('label[for="privacyToggle"]');
 
 function addUserEventListeners() {
     // let settingsForm = document.querySelector('form#edit-user');
-    let deleteForm = document.querySelector('form#delete-user input[type="submit"]');
+    let deleteForm = document.querySelector('form#delete-user');
 
     // if (settingsForm != null)
     //     settingsForm.addEventListener('submit', sendEditProfile);
@@ -70,6 +70,7 @@ function sendEditProfile() {
 }
 
 function sendDeleteProfile(event) {
+    console.log("send delete");
     event.preventDefault();
     let delete_content = document.querySelector('#deleteContentSwitch').checked;
     console.log("private is " + delete_content);
@@ -77,6 +78,9 @@ function sendDeleteProfile(event) {
 }
 
 function profileDeletedHandler() {
+
+    let response = JSON.parse(this.responseText);
+    console.log(response);
     if (this.status == 200) {
         // console.log("200 OK!" + this.status);
         window.location = '/';
@@ -98,7 +102,7 @@ function profileEditedHandler() {
     }
 
     let response = JSON.parse(this.responseText);
-    // console.log(response);
+    console.log(this.response);
     let string = "";
     for (let s in response.errors) {
         string += "<li>" + response.errors[s] + "</li>"
