@@ -28,8 +28,14 @@ class PostController extends Controller
     public function create()
     {
         //if (!Auth::check()) return redirect('/login');
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+        
         $this->authorize('create', Post::class);
-        return view('pages.newPost');
+        return view('pages.newPost', ['user' => $user]);
     }
 
     /**
@@ -80,7 +86,7 @@ class PostController extends Controller
             'title' => $data['title'],
         ]);
 
-        // $path = $request->file('image')->store('storage/images');
+        // $path = $request->file('image')->store('img');
         //$path = Storage::putFile('avatars', $request->file('avatar'));
         if ($request->hasFile('image')) {
             $nameWithExtension = $request->file('image')->getClientOriginalExtension();
@@ -124,10 +130,15 @@ class PostController extends Controller
         // if (!Auth::check()) return redirect('/login');
 
         //$this->authorize('list', Card::class);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
 
         $posts = DB::table('post')->orderBy('time_stamp', 'desc')->get()->take(30);
 
-        return view('pages.home', ['posts' => $posts]);
+        return view('pages.home', ['posts' => $posts, 'user' => $user]);
     }
 
     /**

@@ -285,7 +285,7 @@ function draw_report_modals()
 {
 ?>
 <!-- Report Community Modal -->
-<div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
+<div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog" aria-labelledby="modalCommunityTitle"
     aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -322,7 +322,7 @@ function draw_report_modals()
 </div>
 
 <!-- Report Post Modal -->
-<div class="modal" id="modalPostReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
+<div class="modal" id="modalPostReport" tabindex="-1" role="dialog" aria-labelledby="modalPostTitle"
     aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -358,7 +358,7 @@ function draw_report_modals()
 </div>
 
 <!-- Report Comment Modal -->
-<div class="modal" id="modalCommentReport" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
+<div class="modal" id="modalCommentReport" tabindex="-1" role="dialog" aria-labelledby="modalCommentTitle"
     aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -420,10 +420,11 @@ function draw_login_modals($auth, $admin)
                                             data-target="#modalLogin">Continue
                                             with Email</button>
                                     </div>
-                                    <div class="d-flex justify-content-center">
-                                        <a href="home.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
-                                            <img width="172px" src="./images/google.png" alt="Google OAuth">
-                                        </a>
+                                    <div class="google-btn">
+                                        <div class="google-icon-wrapper">
+                                          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                                        </div>
+                                        <p class="btn-text"><b>Continue with google</b></p>
                                     </div>
                                 </div>
                             </div>

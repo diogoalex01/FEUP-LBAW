@@ -1,4 +1,23 @@
 let privacyToggleLabel = document.querySelector('label[for="privacyToggle"]');
+let deleteToggleLabel = document.querySelector('label[for="deleteToggle"]');
+let deleteToggle = document.querySelector('#deleteToggle');
+
+function encodeForAjax(data) {
+    if (data == null) return null;
+    return Object.keys(data).map(function (k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+    }).join('&');
+}
+
+function sendAjaxRequest(method, url, data, handler) {
+    let request = new XMLHttpRequest();
+
+    request.open(method, url, true);
+    request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    request.addEventListener('load', handler);
+    request.send(encodeForAjax(data));
+}
 
 function addUserEventListeners() {
     // let settingsForm = document.querySelector('form#edit-user');
@@ -21,23 +40,18 @@ function addUserEventListeners() {
             }
         });
     }
-}
 
-function encodeForAjax(data) {
-    if (data == null) return null;
-    return Object.keys(data).map(function (k) {
-        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
-    }).join('&');
-}
-
-function sendAjaxRequest(method, url, data, handler) {
-    let request = new XMLHttpRequest();
-
-    request.open(method, url, true);
-    request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    request.addEventListener('load', handler);
-    request.send(encodeForAjax(data));
+    if (deleteToggle != null) {
+        deleteToggle.addEventListener('change', () => {
+            if (!deleteToggle.hasAttribute("checked")) {
+                deleteToggleLabel.innerHTML = "Delete my content";
+                deleteToggle.setAttribute("checked", "checked");
+            } else {
+                deleteToggleLabel.innerHTML = "Keep my content";
+                deleteToggle.removeAttribute("checked");
+            }
+        });
+    }
 }
 
 function sendEditProfile() {
@@ -46,8 +60,17 @@ function sendEditProfile() {
     let last_name = document.querySelector('input[name=last_name]').value;
     let username = document.querySelector('input[name=username]').value;
     let email = document.querySelector('input[name=email]').value;
-    let password = document.querySelector('input[name=password]').value;
-    let password_confirmation = document.querySelector('input[name=password_confirmation]').value;
+    let password = document.querySelector('input[name=password]');
+    let password_confirmation = document.querySelector('input[name=password_confirmation]');
+
+    if (password != null) {
+        password = password.value;
+        password_confirmation = password_confirmation.value;
+    } else {
+        password = "password";
+        password_confirmation = "password";
+    }
+
     let gender = document.querySelector('*[name=gender]').value;
     let image = document.querySelector('*[name=image]').files[0];
     console.log(image);
@@ -72,18 +95,26 @@ function sendEditProfile() {
 function sendDeleteProfile(event) {
     console.log("send delete");
     event.preventDefault();
-    let delete_content = document.querySelector('#deleteContentSwitch').checked;
+
+    let delete_content = document.querySelector('#deleteToggle').checked;
     console.log("private is " + delete_content);
     sendAjaxRequest('delete', '/settings', { delete_content: delete_content }, profileDeletedHandler);
 }
 
 function profileDeletedHandler() {
-
-    let response = JSON.parse(this.responseText);
-    console.log(response);
     if (this.status == 200) {
         // console.log("200 OK!" + this.status);
         window.location = '/';
+
+        let feedbackMessage = document.querySelector('#feedback-message-home');
+
+        if (feedbackMessage != null)
+            feedbackMessage.innerHTML = `
+                <div class="alert alert-success">
+                    <div class="my-auto">
+                        <p class="my-0">hanges saved successfuly!</p>
+                    </div>
+                </div>`
     }
     else {
         // console.log(this.status);
@@ -115,7 +146,7 @@ function profileEditedHandler() {
         feedbackMessage.innerHTML = `
         <div class="alert alert-success">
             <div class="my-auto">
-                <p class="text-align-center">Changes saved successfuly!</p>
+                <p class="my-0">Changes saved successfuly!</p>
             </div>
         </div>`}
     else {
@@ -129,16 +160,24 @@ function profileEditedHandler() {
 }
 
 let settingsForm = document.querySelector('#edit-user');
+let deleteUserForm = document.querySelector('#delete-user');
 let privacyToggle = document.querySelector(' #edit-user #privacyToggle');
-if (settingsForm != null && privacyToggle != null) {
-    settingsForm.reset()
-    addUserEventListeners();
-
+if (settingsForm != null && privacyToggle != null && deleteUserForm != null) {
+    settingsForm.reset();
+    deleteUserForm.reset();
     if (privacyToggle.hasAttribute('checked')) {
         privacyToggleLabel.innerHTML = "Private Account";
     } else {
         privacyToggleLabel.innerHTML = "Public Account";
     }
+
+    if (deleteToggle.hasAttribute('checked')) {
+        deleteToggleLabel.innerHTML = "Delete my content";
+    } else {
+        deleteToggleLabel.innerHTML = "Keep my content";
+    }
+
+    addUserEventListeners();
 }
 
 function mySubmitFunction() {

@@ -13,8 +13,8 @@
             <div class="col-md-3 photo-upload-container">
                 <div class="text-center">
                     <div class="text-center">
-                        {{--{{ asset('storage/images/avatar_male.png') }}--}}
-                        <img class="rounded-circle profile-pic" src="{{ asset('storage/user/'.$user->photo) }}"
+                        {{--{{ auth()->user->photo != null? auth()->user->photo : asset('img/avatar_male.png') }} --}}
+                        <img class="rounded-circle profile-pic" src="{{ $user->photo }}"
                             alt="Profile Image">
                     </div>
                     <div class="custom-file mt-4 mb-5">
@@ -69,6 +69,8 @@
                             </div>
 
                         </div>
+
+                        @if (strlen($user->password) > 32)
                         <div class="row">
                             <div class="col-sm-4 mx-sm-5">
                                 <div class="form-group">
@@ -85,31 +87,33 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-sm-4 mx-sm-5">
                                 <div class="form-group">
                                     <label class=" control-label">Gender:</label>
                                     <select class="form-control" id="gender" name="gender">
-                                        @if($user->gender == "male"){
+                                        @if ($user->gender == "male") {
                                         <option value="male" selected="selected">Male</option>
                                         }
-                                        @else{
+                                        @else {
                                         <option value="male">Male</option>
                                         }
                                         @endif
 
-                                        @if($user->gender == "female"){
+                                        @if ($user->gender == "female") {
                                         <option value="female" selected="selected">Female</option>
                                         }
-                                        @else{
+                                        @else {
                                         <option value="female">Female</option>
                                         }
                                         @endif
 
-                                        @if($user->gender == "other"){
+                                        @if ($user->gender == "other") {
                                         <option value="other" selected="selected">Other</option>
                                         }
-                                        @else{
+                                        @else {
                                         <option value="other">Other</option>
                                         }
                                         @endif
@@ -120,7 +124,7 @@
                                 <div class="form-group">
                                     <label class=" control-label">Birthdate:</label>
                                     <input class="form-control" type="date" name="birthday" id="birthday"
-                                        value="{{$user->birthday}}">
+                                        value="{{ $user->birthday }}">
                                 </div>
                             </div>
                         </div>
@@ -153,9 +157,9 @@
                                 <h5>Do you want to delete your account?</h5>
                                 <div class="form-group mx-sm-5 pl-1">
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="deleteContentSwitch">
-                                        <label class="custom-control-label" for="deleteContentSwitch">
-                                            Delete related content
+                                        <input type="checkbox" class="custom-control-input" id="deleteToggle">
+                                        <label class="custom-control-label" for="deleteToggle">
+                                            Keep my content
                                             <i class="far fa-question-circle pl-2" data-toggle="tooltip"
                                                 data-placement="top"
                                                 title="You may choose to permanently remove your posts and comments from this website"></i></label>
@@ -173,6 +177,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 

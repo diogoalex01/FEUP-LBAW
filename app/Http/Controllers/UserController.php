@@ -100,49 +100,51 @@ class UserController extends Controller
             ), 300);
         }
 
-        if (Hash::check($request->password_confirmation, Hash::make($request->password)) === false) {
-            return response()->json(array(
-                'success' => false,
-                'errors' => array('password_confirmation' => array('Passwords do not match.'))
-            ), 300);
-        } else if (Hash::check($request->password, $user->password)) {
-            if (User::where('email', $request->email)->first() !== null && $request->email != $user->email) {
+        if (strlen($user->password) > 32) {
+            if (Hash::check($request->password_confirmation, Hash::make($request->password)) === false) {
                 return response()->json(array(
                     'success' => false,
-                    'errors' => array('email' => array('The email already exists.'))
+                    'errors' => array('password_confirmation' => array('Passwords do not match.'))
+                ), 300);
+            } else if (!Hash::check($request->password, $user->password)) {
+                return response()->json(array(
+                    'success' => false,
+                    'errors' => array('password' => array('The password is incorrect.'))
                 ), 300);
             }
-
-            $user->email = $request->email;
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->username = $request->username;
-            $user->birthday = $request->birthday;
-            $user->gender = $request->gender;
-            $user->private = $request->private;
-
-            if ($request->hasFile('image')) {
-
-                $nameWithExtension = $request->image->getClientOriginalExtension();
-                $path = $request->image->storeAs(
-                    '/user',
-                    $user->id . "." . $nameWithExtension,
-                    'public'
-                );
-                $user->photo = $path;
-             } else {
-             }
-            $user->save();
-
-            return response()->json(array(
-                'success' => true
-            ), 200);
         }
 
+        if (User::where('email', $request->email)->first() !== null && $request->email != $user->email) {
+            return response()->json(array(
+                'success' => false,
+                'errors' => array('email' => array('The email already exists.'))
+            ), 300);
+        }
+
+        $user->email = $request->email;
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->username = $request->username;
+        $user->birthday = $request->birthday;
+        $user->gender = $request->gender;
+        $user->private = $request->private;
+
+        if ($request->hasFile('image')) {
+
+            $nameWithExtension = $request->image->getClientOriginalExtension();
+            $path = $request->image->storeAs(
+                '/user',
+                $user->id . "." . $nameWithExtension,
+                'public'
+            );
+            $user->photo = $path;
+        } else {
+        }
+        $user->save();
+
         return response()->json(array(
-            'success' => false,
-            'errors' => array('password' => array('The password is incorrect.'))
-        ), 300);
+            'success' => true
+        ), 200);
     }
 
     /**

@@ -54,6 +54,9 @@ draw_navigation($auth, "", $admin);
         <!-- Posts Column -->
         <div class="col-md-9">
 
+            <div id="feedback-message-home">
+            </div>
+
             @if (Auth::check())
 
                 <!-- New Post -->

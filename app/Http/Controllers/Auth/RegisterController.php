@@ -68,6 +68,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $photo = 'img/avatar_male.png';
+        $data['gender'] == 'male' ? $photo = 'img/avatar_male.png' : $photo = 'img/avatar_female.png';
+        error_log("\n\n");
+        error_log($photo);
+        error_log($data['gender']);
+        error_log("\n\n");
 
         return User::create([
             'first_name' => $data['firstName'],
@@ -75,6 +81,7 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'gender' => $data['gender'],
             'birthday' => $data['birthdate'],
+            'photo' => $data['gender'] == 'male' ? "img/avatar_male.png" : "img/avatar_female.png",
             'email' => $data['email'],
             'password' => Hash::make(strval($data['password'])),
             'private' => false,

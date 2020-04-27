@@ -32,7 +32,7 @@
                     Liliana Almeida <span class="font-weight-bold">@up201706908</span>
                 </p>
             </div>
-            <img class="card-img mt-4" src="storage/images/UPorto.png" alt="Post Image">
+            <img class="card-img mt-4" src="img/UPorto.png" alt="Post Image">
         </div>
 
     </div>

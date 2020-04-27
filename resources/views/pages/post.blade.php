@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-2 text-center community-pic-container">
-                    <img class="community-pic" src="{{ asset('storage/images/Porto.jpg') }}" alt="Community Image">
+                    <img class="community-pic" src="{{ asset('img/Porto.jpg') }}" alt="Community Image">
                 </div>
                 <div class="col-md-7">
                     <a href="community.php?auth=<?= $auth ?>">

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Socialite;
+use App\User;
+
 
 class LoginController extends Controller
 {
@@ -36,11 +39,61 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function getUser(){
+    public function getUser()
+    {
         return $request->user();
     }
 
-    public function home() {
+    public function home()
+    {
         return redirect('login');
+    }
+
+    /**
+     * Redirect the user to the Google authentication page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function redirectToProvider()
+    {
+        return Socialite::driver('google')->scopes(['profile', 'https://www.googleapis.com/auth/user.birthday.read'])->redirect();;
+    }
+
+    /**
+     * Obtain the user information from Google.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handleProviderCallback()
+    {
+        try {
+            $user = Socialite::driver('google')->user();
+            
+        } catch (\Exception $e) {
+            return redirect('/');
+        }
+        // check if they're an existing user
+        $existingUser = User::where('email', $user->email)->first();
+        if ($existingUser) {
+            // log them in
+            auth()->login($existingUser, true);
+        } else {
+            // create a new user
+            $newUser = new User;
+            $name = explode(" ", $user->name);
+            $newUser->first_name = $name[0];
+            $newUser->last_name = $name[sizeof($name) - 1];
+            $newUser->username = strtolower($name[0]) . "_" . strtolower($name[sizeof($name) - 1]) . substr($user->id, 16);
+            $newUser->gender = "male";
+            $newUser->email = $user->email;
+            $newUser->private = false;
+            $newUser->password = $user->id;
+            $newUser->photo = $user->avatar;
+            $newUser->birthday ="1990-10-10";
+            $newUser->save();
+            auth()->login($newUser, true);
+        }
+
+        return redirect()->to('/');
     }
 }

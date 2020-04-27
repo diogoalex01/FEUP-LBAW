@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="{{ asset('css/home.css')}}">
     <link rel="stylesheet" href="{{ asset('css/profile.css')}}">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ asset('storage/images/pear_logo.png') }}">
+    <link rel="icon" href="{{ asset('img/pear_logo.png') }}">
 
     <!-- Styles -->
     {{-- <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet">
@@ -51,7 +51,7 @@
     <nav id="topBar" class="navbar navbar-expand-lg navbar-dark">
 
         <a class="navbar-brand" href="{{route('home')}}">
-            <img src={{ asset('storage/images/pear_logo.png') }} width="66.66" height="50" alt="logo">
+            <img src={{ asset('img/pear_logo.png') }} width="66.66" height="50" alt="logo">
         </a>
 
         <!--<a class="navbar-brand" href="admin.php?auth=&admin=">
@@ -105,7 +105,7 @@
                                     <div class="col-3">
                                         <a href="userProfile.php">
                                             <img class="notification-pic" id="login" height="50" width="50"
-                                                src="{{ asset('storage/images/avatar_female.png') }}"
+                                                src="{{ asset('img/avatar_female.png') }}"
                                                 alt="Profile Image"></a>
                                     </div>
                                     <div class="col-7 p-0">
@@ -142,7 +142,7 @@
                                     <div class="col-3">
                                         <a href="community.php">
                                             <img class="notification-pic" id="login" height="50" width="50"
-                                                src={{ asset('storage/images/Porto.jpg')}} alt="Profile Image"></a>
+                                                src={{ asset('img/Porto.jpg')}} alt="Profile Image"></a>
                                     </div>
                                     <div class="col-7 p-0">
                                         <h4 class="item-title"><a href="userProfile.php">@someotheruser</a> asked to
@@ -177,7 +177,7 @@
                                     <div class="col-3">
                                         <a href="userProfile.php">
                                             <img class="notification-pic" id="login" height="50" width="50"
-                                                src="{{ asset('storage/images/avatar_male.png') }}"
+                                                src="{{ asset('img/avatar_male.png') }}"
                                                 alt="Profile Image"></a>
                                     </div>
                                     <div class="col-7 p-0">
@@ -210,16 +210,26 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
-                        id="login" height="50" width="50" src="{{ asset('storage/images/avatar_male.png') }}"
-                        alt="Profile Image"></a>
+                @if (strlen($user->pass) < 32)
+                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img 
+                        class="rounded-circle"
+                        id="login" height="50" width="50" src="{{ asset($user->photo) }}"
+                        alt="Profile Image">
+                    </a>
+                @else
+                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img 
+                        class="rounded-circle"
+                        id="login" height="50" width="50" src="{{ url($user->photo) }}"
+                        alt="Profile Image">
+                    </a>
+                @endif
 
                 <div class="dropdown-menu dropdown-menu-right">
 
                     {{-- if ($admin === "false") {--}}
 
                     <a class="dropdown-item" href="myProfile.php">My Account</a>
-                    <a class="dropdown-item" href={{route('settings')}}>Settings</a>
+                    <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
                     <div class="dropdown-divider"></div>
 
                     <a class="dropdown-item" href={{ url('/logout') }}>Log Out</a>
@@ -238,7 +248,7 @@
                         <div class="modal-body login-modal">
                             <div class="col">
                                 <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('storage/images/pear_logo.png') }}" width="auto" height="100"
+                                    <img src="{{ asset('img/pear_logo.png') }}" width="auto" height="100"
                                         alt="logo">
                                 </div>
 
@@ -255,10 +265,13 @@
                                                         with Email</button>
                                                 </div>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ URL::to('/') }}">
-                                                        <img width="172px"
-                                                            src="{{ asset('storage/images/google.png') }}"
-                                                            alt="Google OAuth">
+                                                    <a href={{ url('/redirect') }}>
+                                                        <div class="google-btn" style="max-width: 192px;">
+                                                            <div class="google-icon-wrapper">
+                                                                <img class="google-icon-svg" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                                                            </div>
+                                                            <p class="btn-text"><b>Continue with Google</b></p>
+                                                      </div>
                                                     </a>
                                                 </div>
                                             </div>
