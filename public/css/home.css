@@ -458,3 +458,8 @@ input[type=number] {
   color: #fff;
   user-select: none
 }
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}

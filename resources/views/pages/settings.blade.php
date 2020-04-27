@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => "Settings"])
 @section('content')
 
 <!--Settings container-->
@@ -153,22 +153,14 @@
 
                     <form id="delete-user" class="my-auto" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-9">
-                                <h5>Do you want to delete your account?</h5>
-                                <div class="form-group mx-sm-5 pl-1">
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="deleteToggle">
-                                        <label class="custom-control-label" for="deleteToggle">
-                                            Keep my content
-                                            <i class="far fa-question-circle pl-2" data-toggle="tooltip"
-                                                data-placement="top"
-                                                title="You may choose to permanently remove your posts and comments from this website"></i></label>
-                                    </div>
-                                </div>
+                            <div class="col-md-9 my-auto">
+                                <p class="my-0">Do you want to delete your account?</p>
                             </div>
                             <div class="col-md-3 delete-column">
                                 <div>
-                                    <input type="submit" class="btn btn-outline-danger my-auto" value="Delete">
+                                    <button type="button" id="delete-red-button" data-toggle="modal" data-target="#modalDelete" class="btn btn-outline-danger my-auto">
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +170,46 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<div class="modal" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalCommunityTitle" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body login-modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <section>
+                    <div id="deleteAccountForm" class="container mb-3">
+                        <h2 class="text-dark title-padding title-mobile">Delete Account
+                        </h2>
+                        <hr>
+                        <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently <b>delete</b> your account. Be prePEARed!</label>
+                        <label class="col control-label pl-0 mx-0" for="#delete-confirm-username">Enter your <b class="text-danger">username</b> to confirm:</label>
+                        <input class="form-control" type="text" name="delete-confirm-username" id="delete-confirm-username">
+                        <input hidden type="text" value="{{$user->username}}" id="delete-user-solution">
+                        <div class="form-group mx-sm-0 mt-3 pl-1">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="deleteToggle">
+                                <label class="custom-control-label" for="deleteToggle">
+                                    Keep my content
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" id="delete-warning-box" hidden = "hidden">
+                            <h4>Warning!<h4>
+                            <h6>By checking this box you agree to the deletion of all your content!</h6>
+                        </div>
+                             <div class="row justify-content-end my-2 mx-1">
+                            <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal"
+                                data-target="#">Take me back</button>
+                            <button id="deleteAccount" class="btn my-2 ml-1 text-danger" data-toggle="modal" data-dismiss="modal"
+                                data-target="#" disabled>I'm sure</button>
+                            </div>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 </div>
 

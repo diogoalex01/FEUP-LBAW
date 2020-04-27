@@ -1,6 +1,10 @@
 let privacyToggleLabel = document.querySelector('label[for="privacyToggle"]');
 let deleteToggleLabel = document.querySelector('label[for="deleteToggle"]');
 let deleteToggle = document.querySelector('#deleteToggle');
+let settingsForm = document.querySelector('#edit-user');
+let deleteUserForm = document.querySelector('#delete-user');
+let privacyToggle = document.querySelector(' #edit-user #privacyToggle');
+let deleteWarningBox = document.getElementById('delete-warning-box');
 
 function encodeForAjax(data) {
     if (data == null) return null;
@@ -20,14 +24,24 @@ function sendAjaxRequest(method, url, data, handler) {
 }
 
 function addUserEventListeners() {
-    // let settingsForm = document.querySelector('form#edit-user');
-    let deleteForm = document.querySelector('form#delete-user');
+    let deleteButton = document.getElementById('deleteAccount');
+    let deleteUserInput = document.getElementById('delete-confirm-username');
+    let deleteUserInputSolution = document.getElementById('delete-user-solution');
+    let modal = document.getElementById('modalDelete');
 
-    // if (settingsForm != null)
-    //     settingsForm.addEventListener('submit', sendEditProfile);
+    if (deleteButton != null)
+        deleteButton.addEventListener('click', sendDeleteProfile);
 
-    if (deleteForm != null)
-        deleteForm.addEventListener('submit', sendDeleteProfile);
+    if (deleteUserInput != null)
+        deleteUserInput.addEventListener('keyup', function () {
+            if (deleteUserInput.value == deleteUserInputSolution.value) {
+                deleteButton.removeAttribute("disabled");
+            }
+            else {
+                if (!deleteButton.hasAttribute("disabled"))
+                    deleteButton.setAttribute("disabled", "disabled");
+            }
+        });
 
     if (privacyToggle != null) {
         privacyToggle.addEventListener('change', () => {
@@ -44,11 +58,13 @@ function addUserEventListeners() {
     if (deleteToggle != null) {
         deleteToggle.addEventListener('change', () => {
             if (!deleteToggle.hasAttribute("checked")) {
-                deleteToggleLabel.innerHTML = "Delete my content";
                 deleteToggle.setAttribute("checked", "checked");
+                deleteToggleLabel.innerHTML = "Delete my content";
+                deleteWarningBox.removeAttribute("hidden");
             } else {
-                deleteToggleLabel.innerHTML = "Keep my content";
                 deleteToggle.removeAttribute("checked");
+                deleteToggleLabel.innerHTML = "Keep my content";
+                deleteWarningBox.setAttribute("hidden", "hidden");
             }
         });
     }
@@ -97,7 +113,6 @@ function sendDeleteProfile(event) {
     event.preventDefault();
 
     let delete_content = document.querySelector('#deleteToggle').checked;
-    console.log("private is " + delete_content);
     sendAjaxRequest('delete', '/settings', { delete_content: delete_content }, profileDeletedHandler);
 }
 
@@ -115,6 +130,7 @@ function profileDeletedHandler() {
                         <p class="my-0">hanges saved successfuly!</p>
                     </div>
                 </div>`
+
     }
     else {
         // console.log(this.status);
@@ -143,6 +159,11 @@ function profileEditedHandler() {
     let feedbackMessage = document.querySelector('#feedback-message');
 
     if (response.success == true) {
+        let username = document.querySelector('input[name=username]').value;
+        let deleteUserInputSolution = document.getElementById('delete-user-solution');
+
+        deleteUserInputSolution.value = username;
+
         feedbackMessage.innerHTML = `
         <div class="alert alert-success">
             <div class="my-auto">
@@ -159,22 +180,25 @@ function profileEditedHandler() {
     }
 }
 
-let settingsForm = document.querySelector('#edit-user');
-let deleteUserForm = document.querySelector('#delete-user');
-let privacyToggle = document.querySelector(' #edit-user #privacyToggle');
-if (settingsForm != null && privacyToggle != null && deleteUserForm != null) {
+//  if (deleteToggle != null) {
+//     if (deleteToggle.hasAttribute('checked')) {
+//         console.log("TA checked")
+//         deleteToggleLabel.innerHTML = "Delete my content";
+//         deleteWarningBox.removeAttribute("hidden");
+//     } else {
+//         console.log("nao TA checked");
+//         deleteToggleLabel.innerHTML = "Keep my content";
+//         deleteWarningBox.setAttribute("hidden", "hidden");
+//     }
+// }
+
+if (settingsForm != null && privacyToggle != null) {
     settingsForm.reset();
-    deleteUserForm.reset();
+
     if (privacyToggle.hasAttribute('checked')) {
         privacyToggleLabel.innerHTML = "Private Account";
     } else {
         privacyToggleLabel.innerHTML = "Public Account";
-    }
-
-    if (deleteToggle.hasAttribute('checked')) {
-        deleteToggleLabel.innerHTML = "Delete my content";
-    } else {
-        deleteToggleLabel.innerHTML = "Keep my content";
     }
 
     addUserEventListeners();
@@ -183,4 +207,25 @@ if (settingsForm != null && privacyToggle != null && deleteUserForm != null) {
 function mySubmitFunction() {
     sendEditProfile();
     return false;
+}
+
+$(window).bind('load', resetDeleteForm);
+
+$('#modalDelete').on('hidden.bs.modal', resetDeleteForm);
+
+function resetDeleteForm() {
+    $('#deleteAccountForm')
+        .find("input#delete-confirm-username,select")
+        .val('')
+        .end()
+        .find("input[type=checkbox]")
+        .prop("checked", false)
+        .removeAttr("checked")
+        .end()
+        .find("#delete-warning-box")
+        .prop("hidden", "hidden")
+        .end()
+        .find("label[for='deleteToggle']")
+        .html("Keep my content")
+        .end();
 }

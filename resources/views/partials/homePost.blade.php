@@ -39,11 +39,24 @@
                     </div>
                     <div class="col-md-7">
                         <div class="row align-self-center justify-content-end">
-                            <!-- <a href="/user/"><img height="35" width="35"
-                                    src="images/" alt="Profile Image"></a> -->
+
+                            {{-- @if (strlen($post->user->password) < 32)
+                            <a href="user/{{$post->id_author}}"> <img 
+                                class="rounded-circle"
+                                height="35" width="35" src="{{ asset($post->user->photo) }}"
+                                alt="Profile Image">
+                            </a>
+                            @else
+                                <a href="user/{{$post->id_author}}"> <img 
+                                    class="rounded-circle"
+                                    height="35" width="35" src="{{ url($post->id_author->photo) }}"
+                                    alt="Profile Image">
+                                </a>
+                            @endif --}}
+
                             <span class="px-1 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
                                 by</span>
-                            <!-- {{-- <a class="align-self-center" href="{{$post->user->id}}"> @ {{$poster_name}}" </a> --}} -->
+                            {{-- <a class="align-self-center" href="{{$post->id_author->id}}">@ {{$post->id_author->username}} </a> --}}
                         </div>
                     </div>
                 </div>

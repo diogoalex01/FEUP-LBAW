@@ -14,7 +14,7 @@ if (!isset($_GET['admin'])) {
 draw_navigation($auth, "", $admin);
  */ --}}
 
-@extends('layouts.app')
+@extends('layouts.app', ['title' => "PearToPear"])
 @section('content')
 
 <!-- Page Content -->

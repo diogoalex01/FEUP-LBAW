@@ -42,7 +42,7 @@
     <script type="text/javascript" src={{ asset('js/post.js') }} defer></script>
     <script type="text/javascript" src={{ asset('js/user.js') }} defer></script>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title> {{$title}} </title>
 </head>
 
 <body>
@@ -210,7 +210,7 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                @if (strlen($user->pass) < 32)
+                @if (strlen($user->password) < 32)
                     <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img 
                         class="rounded-circle"
                         id="login" height="50" width="50" src="{{ asset($user->photo) }}"

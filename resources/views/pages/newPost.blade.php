@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => "New Post"])
 @section('content')
 
 <!-- Page Content -->
