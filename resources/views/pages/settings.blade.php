@@ -14,7 +14,7 @@
                 <div class="text-center">
                     <div class="text-center">
                         {{--{{ auth()->user->photo != null? auth()->user->photo : asset('img/avatar_male.png') }} --}}
-                        <img class="rounded-circle profile-pic" src="{{ $user->photo }}"
+                        <img id="photoSettings" class="profile-pic" src="{{ asset($user->photo) }}"
                             alt="Profile Image">
                     </div>
                     <div class="custom-file mt-4 mb-5">
@@ -32,8 +32,7 @@
                 <div id="feedback-message">
                 </div>
 
-                <!-- enctype="multipart/form-data"-->
-                <form id="edit-user" class="settings" onsubmit="return mySubmitFunction()">
+                <form id="edit-user" class="settings" method="post" onsubmit="mySubmitFunction()">
                     @csrf
                     <div class="col">
                         <div class="row">
@@ -75,14 +74,14 @@
                             <div class="col-sm-4 mx-sm-5">
                                 <div class="form-group">
                                     <label class=" control-label">Password:</label>
-                                    <input class="form-control" type="password" name="password" id="password"
+                                    <input class="form-control" type="password" id="password"
                                         placeholder="Password" required>
                                 </div>
                             </div>
                             <div class="col-sm-4 ml-sm-5">
                                 <div class="form-group">
                                     <label class=" control-label">Confirm password:</label>
-                                    <input class="form-control" type="password" name="password_confirmation"
+                                    <input class="form-control" type="password"
                                         id="password_confirmation" placeholder="Confirm your password" required>
                                 </div>
                             </div>

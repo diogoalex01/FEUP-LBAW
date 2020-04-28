@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
 use App\User;
+use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
 
 
 class UserController extends Controller
@@ -54,9 +53,16 @@ class UserController extends Controller
      * @param  \App\MemberUser  $memberUser
      * @return \Illuminate\Http\Response
      */
-    public function show(User $memberUser)
+    public function show($user_id)
     {
-        //
+        $member_users = User::all();
+        $member_user = $member_users->find($user_id);
+        $postN = Post::where('id_author', '=', $user_id)->count();
+        $age = \Carbon\Carbon::parse($member_user->birthday)->age;
+
+        $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
+        //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+        return view('pages.myProfile', ['user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts]);
     }
 
     /**
@@ -68,7 +74,7 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $this->authorize('update',User::class);
+        $this->authorize('update', User::class);
         return view('pages.settings', compact('user'));
     }
 
@@ -82,8 +88,76 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        error_log($request->image);
-        $data = Validator::make($request->all(), [
+
+        // Fetch content and determine boundary
+        $raw_data = file_get_contents('php://input');
+        $boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
+
+        /** Get Form Inputs (with image) for multipart/form-data PUT requests **/
+        // Fetch each part
+        $parts = array_slice(explode($boundary, $raw_data), 1);
+        $data = array();
+
+        foreach ($parts as $part) {
+            // If this is the last part, break
+            if ($part == "--\r\n") break;
+
+            // Separate content from headers
+            $part = ltrim($part, "\r\n");
+            list($raw_headers, $body) = explode("\r\n\r\n", $part, 2);
+
+            // Parse the headers list
+            $raw_headers = explode("\r\n", $raw_headers);
+            $headers = array();
+            foreach ($raw_headers as $header) {
+                list($name, $value) = explode(':', $header);
+                $headers[strtolower($name)] = ltrim($value, ' ');
+            }
+
+            // Parse the Content-Disposition to get the field name, etc.
+            if (isset($headers['content-disposition'])) {
+                $filename = null;
+                preg_match(
+                    '/^(.+); *name="([^"]+)"(; *filename="([^"]+)")?/',
+                    $headers['content-disposition'],
+                    $matches
+                );
+                list(, $type, $name) = $matches;
+                isset($matches[4]) and $filename = $matches[4];
+
+                // handle your fields here
+                switch ($name) {
+                        // this is a file upload
+                    case 'image':
+                        if ($filename != null) {
+                            if (!file_exists('user/')) {
+                                mkdir('user/', 0777, true);
+                            }
+                            $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+                            $filePath = 'user/' . $user->id . "." . $fileExtension;
+
+                            $files = glob('user/*'); // get all files
+
+                            foreach ($files as $file) { // iterate files
+                                $fileBaseName = pathinfo($file, PATHINFO_BASENAME);
+                                if ($fileBaseName == $user->id)
+                                    unlink($file); // delete file
+                            }
+
+                            file_put_contents($filePath, $body);
+                            $user->photo = $filePath;
+                        }
+                        break;
+
+                        // default for all other files is to populate $data
+                    default:
+                        $data[$name] = substr($body, 0, strlen($body) - 2);
+                        break;
+                }
+            }
+        }
+
+        $dataValidated = Validator::make($data, [
             'first_name' => 'string|max:255',
             'last_name' => 'string|max:255',
             'username' => 'string|max:255',
@@ -91,24 +165,24 @@ class UserController extends Controller
             'email' => 'string|email|max:255',
             'gender' => 'in:male,female,other',
             'password' => 'required|string|min:6|confirmed',
-            //'image' => 'nullable|mimes:jpeg,jpg,png,gif',
+            'image' => 'mimes:jpeg,jpg,png,gif',
             'private' => 'in:true,false'
         ]);
 
-        if ($data->fails()) {
+        if ($dataValidated->fails()) {
             return response()->json(array(
                 'success' => false,
-                'errors' => $data->errors()
+                'errors' => $dataValidated->errors()
             ), 300);
         }
 
         if (strlen($user->password) > 32) {
-            if (Hash::check($request->password_confirmation, Hash::make($request->password)) === false) {
+            if (Hash::check($data['password_confirmation'], Hash::make($data['password'])) === false) {
                 return response()->json(array(
                     'success' => false,
                     'errors' => array('password_confirmation' => array('Passwords do not match.'))
                 ), 300);
-            } else if (!Hash::check($request->password, $user->password)) {
+            } else if (!Hash::check($data['password'], $user->password)) {
                 return response()->json(array(
                     'success' => false,
                     'errors' => array('password' => array('The password is incorrect.'))
@@ -116,36 +190,26 @@ class UserController extends Controller
             }
         }
 
-        if (User::where('email', $request->email)->first() !== null && $request->email != $user->email) {
+        if (User::where('email', $data['email'])->first() !== null && $data['email'] != $user->email) {
             return response()->json(array(
                 'success' => false,
                 'errors' => array('email' => array('The email already exists.'))
             ), 300);
         }
 
-        $user->email = $request->email;
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
-        $user->username = $request->username;
-        $user->birthday = $request->birthday;
-        $user->gender = $request->gender;
-        $user->private = $request->private;
+        $user->email = $data['email'];
+        $user->first_name = $data['first_name'];
+        $user->last_name = $data['last_name'];
+        $user->username = $data['username'];
+        $user->birthday = $data['birthday'];
+        $user->gender = $data['gender'];
+        $user->private = $data['private'];
 
-        if ($request->hasFile('image')) {
-
-            $nameWithExtension = $request->image->getClientOriginalExtension();
-            $path = $request->image->storeAs(
-                '/user',
-                $user->id . "." . $nameWithExtension,
-                'public'
-            );
-            $user->photo = $path;
-        } else {
-        }
         $user->save();
 
         return response()->json(array(
-            'success' => true
+            'success' => true,
+            'imgPath' => $user->photo
         ), 200);
     }
 
@@ -171,7 +235,9 @@ class UserController extends Controller
         }
 
         // Delete user profile picture
-        //Storage::delete($user->image);
+        if (file_exists($user->photo)) {
+            unlink($user->photo); // delete file
+        }
 
         Auth::logout();
 

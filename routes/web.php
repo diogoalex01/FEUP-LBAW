@@ -11,12 +11,18 @@
 |
 */
 
+// New Post 
 Route::get('/', 'PostController@list')->name('home');
 Route::get('/new_post', 'PostController@create')->name('new_post');
 Route::post('/new_post', 'PostController@store');
 
+// Post 
 Route::get('/post/{post_id}', 'PostController@show')->name('post');
 Route::put('/comment', 'CommentController@store');
+Route::put('/reply', 'CommentController@storeReply');
+
+// User
+Route::get('/user/{user_id}', 'UserController@show')->name('profile');
 
 Route::get('/settings', 'UserController@edit')->name('settings');
 Route::put('/settings', 'UserController@update');

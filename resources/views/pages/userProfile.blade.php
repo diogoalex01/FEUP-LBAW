@@ -15,6 +15,7 @@ if (!isset($_GET['admin'])) {
 
 draw_navigation($auth, "", $admin);
 ?>
+
 <!-- Page Content -->
 <div class="container">
 
@@ -25,7 +26,7 @@ draw_navigation($auth, "", $admin);
 
             <!-- <div class="container"> -->
             <div class="profile-pic-container text-center">
-                <img class="rounded-circle profile-pic " src="./images/avatar_female.png" alt="Profile Image">
+                <img class="profile-pic" src="./images/avatar_female.png" alt="Profile Image">
             </div>
             <!-- </div> -->
             <?php if ($auth === "true") { ?>

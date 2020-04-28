@@ -1,5 +1,5 @@
 <!-- Comment -->
-<div id="{{$comment->id}}" class="card mb-2 post-container post-comment">
+<div id="comment{{$comment->id}}" class="card mb-2 post-container post-comment">
     <div class="row pt-4">
 
         {{-- Votes --}}
@@ -43,10 +43,12 @@
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
             <div class="card-footer-buttons row align-content-center justify-content-start">
-                <a href="/post/{{$comment->id_post}} #new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+            <a href="" data-target="comment{{$comment->id}}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                @if($comment->id !== $user->id)
                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
                     <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                 </a>
+                @endif
             </div>
         </div>
         <div class="col-md-6">
@@ -56,7 +58,6 @@
                 <span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>
                 <a class="align-self-center">
                     {{-- href="="@ --}}
-                </a>
             </div>
         </div>
     </div>

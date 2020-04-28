@@ -49,7 +49,8 @@ class PostController extends Controller
     {
         //$post = new Post();
         //$this->authorize('create', $post);
-
+        // error_log($request->image);
+        // dd($request);
         $data = $request->validate([
             'community' => 'required',
             'title' => 'required',
@@ -121,7 +122,8 @@ class PostController extends Controller
             $user = null;
         }
 
-        $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+        $parent_comments = ['id_post' => $id, 'id_parent' => null];
+        $comments = DB::table('comment')->where($parent_comments)->orderBy('time_stamp', 'desc')->get();
         return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments]);
     }
 

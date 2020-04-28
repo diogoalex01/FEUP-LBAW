@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-md-7">
                     {{-- <a href="community.php?auth="> --}}
-                    <h1 class="my-5">/Porto</h1>
+                    <h1 class="my-4">/Porto</h1>
                     {{-- </a> --}}
                 </div>
             </div>
@@ -22,7 +22,8 @@
 
         <!-- Post -->
         <div class="card mb-4 post-container">
-            <img class="card-img-top pl-5 pr-5 pt-5 pb-2 m-0" src="{{ asset($post->image)}}" alt="Post Image">
+            <img class="card-img-top pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{ asset($post->image)}}"
+                alt="Post Image">
 
             <div style="padding: 0 12%">
 
@@ -69,10 +70,13 @@
                     <div class="col-md-6 align-self-center ">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
                             <a href="/post/{{$post->id}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                            @if($user->id !== $post->id_author)
                             <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
+                            @else
                             <a href="#"><i class="fas fa-trash-alt"></i>Delete</a>
+                            @endif
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -95,7 +99,7 @@
         <div class="card post-container" id="new-comment-container">
             <div class="card-body">
                 <form id="new-comment-form">
-                <div class="row" style="font-size: 0.45rem;">
+                    <div class="row" style="font-size: 0.45rem;">
                         @csrf
                         <div class="col-md-10 pr-md-0">
                             <input hidden name="user_id" value={{$user->id}}>
@@ -116,7 +120,10 @@
 
         <!-- Comment -->
         <div id="post-comment-section">
-            @each('partials.comment', $comments, 'comment')
+            {{-- @each('partials.comment', $comments, 'comment') --}}
+            @foreach($comments as $comment)
+                @include('partials.comment', ['comment'=>$comment, 'user'=>$user])
+            @endforeach
         </div>
     </div>
 </div>

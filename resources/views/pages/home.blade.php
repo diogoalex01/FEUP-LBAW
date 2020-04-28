@@ -65,7 +65,7 @@ draw_navigation($auth, "", $admin);
                         <div class="card-body">
                             <div class="row" style="font-size: 0.45rem;">
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="Write your own article">
+                                    <input type="text" class="form-control" placeholder="Write your own post">
                                 </div>
                                 <div class="col-1 pl-0 my-auto">
                                     <i class="fas fa-plus-circle fa-4x"></i>

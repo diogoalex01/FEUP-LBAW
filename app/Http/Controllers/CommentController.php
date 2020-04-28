@@ -24,7 +24,7 @@ class CommentController extends Controller
      */
     public function create()
     {
-         //
+        //
     }
 
     /**
@@ -42,20 +42,18 @@ class CommentController extends Controller
             'content' => 'required',
         ]);
 
-          /* Create Post */
-          $comment = Comment::create([
+        /* Create Comment */
+        $comment = Comment::create([
             'id_author' => $data['user_id'],
             'id_post' => $data['post_id'],
             'content' => $data['content'],
         ]);
 
         $comment->save();
-
         return response()->json(array(
             'success' => true,
             'comment' => $comment
         ), 200);
-
     }
 
     /**
@@ -101,5 +99,32 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         //
+    }
+
+    public function storeReply(Request $request)
+    {
+
+        //
+        $data = $request->validate([
+            'user_id' => 'required',
+            'post_id' => 'required',
+            'comment_id' => 'required',
+            'reply' => 'required',
+        ]);
+
+        /* Create Comment */
+        $comment = Comment::create([
+            'id_author' => $data['user_id'],
+            'id_post' => $data['post_id'],
+            'content' => $data['reply'],
+            'id_parent' => $data['comment_id']
+        ]);
+
+        $comment->save();
+
+        return response()->json(array(
+            'success' => true,
+            'comment' => $comment
+        ), 200);
     }
 }

@@ -18,7 +18,7 @@
                     to find, so does misinformation. Intended to deceive, the so-called 'fake news' spread like a
                     virus, thus making it important that the information comes from reliable sources. Therefore, a
                     collaborative news platform is a good way to prevent this malice, granting each user the right
-                    to upvote or downvote an article, acting as a social quality filter. Furthermore, it also
+                    to upvote or downvote an post, acting as a social quality filter. Furthermore, it also
                     provides a good way of bringing students from different institutions and backgrounds together.
                 </p>
                 <p class="card-text">This project aims to provide an online collaborative news platform for

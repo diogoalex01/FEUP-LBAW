@@ -6,6 +6,8 @@ let privacy = document.querySelector('.privacy-toggle');
 let allCommunities = [];
 let addCommentForm = document.querySelector("#new-comment-form");
 let addCommentInput = document.querySelector("#new-comment-input");
+let replyButtons = document.querySelectorAll(".reply-btn");
+let sendReplyButton = document.querySelector("#send-reply-btn");
 
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
@@ -14,7 +16,6 @@ function addPostEventListeners() {
 
     if (newPostPrivacyToggle != null) {
         newPostPrivacyToggle.addEventListener('change', () => {
-
             if (!newPostPrivacyToggle.hasAttribute("checked")) {
                 newPostPrivacyToggleLabel.innerHTML = "Private Account";
                 newPostPrivacyToggle.setAttribute("checked", "checked");
@@ -26,9 +27,18 @@ function addPostEventListeners() {
     }
 
     if (addCommentForm != null) {
-        console.log("existe");
         addCommentForm.addEventListener('submit', sendNewComment);
+    }
 
+    if (replyButtons != null) {
+        replyButtons.forEach(function (item, idx) {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let id = item.getAttribute('data-target');
+                addReplyForm(id);
+            });
+        });
     }
 }
 
@@ -58,7 +68,6 @@ function sendCheckCommunityRequest(event) {
 
     event.preventDefault();
 }
-
 
 function communityCheckedHandler() {
     // if (this.status != 200) window.location = '/';
@@ -142,7 +151,7 @@ function newCommentHandler() {
             style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
-                    <a href="/post/${commentPost}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                <a href="" data-target="comment${commentId}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
                     <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
                         <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                     </a>
@@ -161,8 +170,73 @@ function newCommentHandler() {
     console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
 
-
     //todo add comment
+}
+
+function addReplyForm(id) {
+    let replyFormContainer = document.getElementById("reply-container");
+    if (replyFormContainer == null) {
+        let comment_id = id.substring(7, id.length);
+        let targetComment = document.getElementById(id);
+        targetComment.parentElement
+        replyFormContainer = document.createElement('div');
+        replyFormContainer.innerHTML = `
+        <div class="card post-container reply-container" id="reply-container">
+            <div class="card-body">
+                <form id="reply-form">
+                    <input hidden name="comment_id" value="${comment_id}">
+                    <div class="row" style="font-size: 0.45rem;">
+                        <div class="col-md-10 pr-md-0">
+                            <textarea id="reply-input" rows="1" onclick="this.rows = '8';" type="text" class="form-control mr-0"
+                                placeholder="New Comment"></textarea>
+                        </div>
+                        <!--<div class="col-md-1 my-auto mx-auto text-right">-->
+                        <div class="col-md-1 my-auto mx-auto text-right px-0 text-center comment-button">
+                            <button type="submit" class="btn btn-md btn-dark" id ="send-reply-btn"> Add reply </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>`;
+
+        targetComment.insertAdjacentElement('afterend', replyFormContainer);
+        let replyForm = document.querySelector("#reply-form");
+        if (replyForm != null) {
+            replyForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                sendCommentReply();
+            });
+        }
+        // let replyInput = document.getElementById("reply-input-" + id);
+        // replyInput.addEventListener('blur', () => { replyFormContainer.remove(); });
+    }
+}
+
+function sendCommentReply() {
+    console.log("ppppp");
+
+    let user_id = document.querySelector('input[name=user_id]').value;
+    let post_id = document.querySelector('input[name=post_id]').value;
+    let comment_id = document.querySelector('input[name=comment_id]').value;
+
+    let replyBody = document.getElementById("reply-input").value;
+    let targetComment = document.getElementById(comment_id);
+    console.log(user_id);
+    console.log(post_id);
+    console.log(comment_id);
+    console.log(replyBody);
+
+    sendAjaxRequest('put', '/reply', {
+        user_id: user_id,
+        post_id: post_id,
+        comment_id: comment_id,
+        reply: replyBody,
+    }, newReplyHandler);
+}
+
+function newReplyHandler() {
+    console.log(this.responseText);
 }
 
 function searchArray() {
@@ -272,3 +346,9 @@ addPostEventListeners();
     }, false);
 })();
 
+$(document).mouseup(function (e) {
+    if ($(e.target).closest("#reply-container").length
+        == 0) {
+        $("#reply-container").remove();
+    }
+}); 

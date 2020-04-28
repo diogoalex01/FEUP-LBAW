@@ -25,6 +25,17 @@ function sendAjaxRequest(method, url, data, handler) {
     request.send(encodeForAjax(data));
 }
 
+function sendAjaxRequestImage(method, url, data, handler) {
+    let request = new XMLHttpRequest();
+
+    request.open(method, url, true);
+    request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+
+    request.setRequestHeader('Content-type', 'multipart/form-data');
+    request.addEventListener('load', handler);
+    request.send(encodeForAjax(data));
+}
+
 function addUserEventListeners() {
     let deleteButton = document.getElementById('deleteAccount');
     let deleteUserInput = document.getElementById('delete-confirm-username');
@@ -92,7 +103,7 @@ function resetPassHandler() {
 
     if (this.status != 200) {
         console.log("500 it");
-        console.log(this.responseText)
+        console.log(response)
         let response = JSON.parse(this.responseText);
         // window.location = '/';
         let string = "";
@@ -119,43 +130,44 @@ function resetPassHandler() {
     }
 }
 
-function sendEditProfile() {
-    // event.preventDefault();
-    let first_name = document.querySelector('input[name=first_name]').value;
-    let last_name = document.querySelector('input[name=last_name]').value;
-    let username = document.querySelector('input[name=username]').value;
-    let email = document.querySelector('input[name=email]').value;
-    let password = document.querySelector('input[name=password]');
-    let password_confirmation = document.querySelector('input[name=password_confirmation]');
+// function sendEditProfile() {
+//     event.preventDefault();
+//     event.stopPropagation();
+//     let first_name = document.querySelector('input[name=first_name]').value;
+//     let last_name = document.querySelector('input[name=last_name]').value;
+//     let username = document.querySelector('input[name=username]').value;
+//     let email = document.querySelector('input[name=email]').value;
+//     let password = document.querySelector('input[name=password]');
+//     let password_confirmation = document.querySelector('input[name=password_confirmation]');
 
-    if (password != null) {
-        password = password.value;
-        password_confirmation = password_confirmation.value;
-    } else {
-        password = "password";
-        password_confirmation = "password";
-    }
+//     if (password != null) {
+//         password = password.value;
+//         password_confirmation = password_confirmation.value;
+//     } else {
+//         password = "password";
+//         password_confirmation = "password";
+//     }
 
-    let gender = document.querySelector('*[name=gender]').value;
-    let image = document.querySelector('*[name=image]').files[0];
-    console.log(image);
-    let birthday = document.querySelector('input[name=birthday]').value;
-    let private = document.querySelector('#privacyToggle').checked;
-    console.log("private = " + typeof private);
+//     let gender = document.querySelector('*[name=gender]').value;
+//     let image = document.querySelector('*[name=image]').files[0];
+//     console.log(image);
+//     let birthday = document.querySelector('input[name=birthday]').value;
+//     let private = document.querySelector('#privacyToggle').checked;
+//     console.log("private = " + typeof private);
 
-    sendAjaxRequest('put', '/settings', {
-        username: username,
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        gender: gender,
-        image: image,
-        birthday: birthday,
-        password: password,
-        password_confirmation: password_confirmation,
-        private: private
-    }, profileEditedHandler);
-}
+//     sendAjaxRequestImage('put', '/settings', {
+//         username: username,
+//         first_name: first_name,
+//         last_name: last_name,
+//         email: email,
+//         gender: gender,
+//         image: image,
+//         birthday: birthday,
+//         password: password,
+//         password_confirmation: password_confirmation,
+//         private: private
+//     }, profileEditedHandler);
+// }
 
 function sendDeleteProfile(event) {
     console.log("send delete");
@@ -180,7 +192,6 @@ function profileDeletedHandler() {
                     </div>
                 </div>`
 
-
         window.clearTimeout(timeoutHandlerDelete);
         timeoutHandlerDelete = setTimeout(function () {
             feedbackMessage.innerHTML = ``
@@ -192,18 +203,10 @@ function profileDeletedHandler() {
     }
 }
 
-function profileEditedHandler() {
-    event.preventDefault();
-    console.log(this.status);
-    if (this.status == 200) {
-        // console.log("200 OK!" + this.status);
-    }
-    else if (this.status == 500) {
-        console.log(this.status);
-    }
-
-    let response = JSON.parse(this.responseText);
-    console.log(this.response);
+function profileEditedHandler(responseText) {
+    console.log(responseText);
+    let response = JSON.parse(responseText);
+    console.log(response);
     let string = "";
     for (let s in response.errors) {
         string += "<li>" + response.errors[s] + "</li>"
@@ -215,6 +218,12 @@ function profileEditedHandler() {
     if (response.success == true) {
         let username = document.querySelector('input[name=username]').value;
         let deleteUserInputSolution = document.getElementById('delete-user-solution');
+        let imgPath = response.imgPath;
+        let photoSettings = document.getElementById('photoSettings');
+        let photoNavbar = document.getElementById('profileNav');
+
+        photoSettings.src = imgPath;
+        photoNavbar.src = imgPath;
 
         deleteUserInputSolution.value = username;
 
@@ -234,6 +243,13 @@ function profileEditedHandler() {
         </div>`
     }
 
+    let password_confirmation = document.getElementById('password_confirmation');
+    password_confirmation.value = "";
+    password_confirmation.style.boxShadow = "initial";
+
+    let fileLabel = document.getElementById('customFileLabel');
+    fileLabel.innerHTML = "No file selected.";
+
     window.clearTimeout(timeoutHandlerEdit);
     timeoutHandlerEdit = setTimeout(function () {
         feedbackMessage.innerHTML = ``
@@ -252,7 +268,7 @@ if (settingsForm != null && privacyToggle != null) {
 addUserEventListeners();
 
 function mySubmitFunction() {
-    sendEditProfile();
+    // sendEditProfile();
     return false;
 }
 
@@ -276,3 +292,49 @@ function resetDeleteForm() {
         .html("Keep my content")
         .end();
 }
+
+$(document).ready(function () {
+    $('#edit-user').on('submit', function (event) {
+        event.preventDefault();
+        let private = $('#privacyToggle').attr('checked');
+        if (private == null) {
+            private = false;
+        } else {
+            private = true;
+        }
+
+        let password = document.querySelector('#password');
+        let password_confirmation = document.querySelector('#password_confirmation');
+        if (password != null) {
+            password = password.value;
+            password_confirmation = password_confirmation.value;
+        } else {
+            password = "password";
+            password_confirmation = "password";
+        }
+
+        let data = new FormData(this);
+        data.append('private', private);
+        data.append('password', password);
+        data.append('password_confirmation', password_confirmation);
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "/settings",
+            method: "PUT",
+            data: data,
+            dataType: 'JSON',
+            contentType: "multipart/form-data",
+            cache: false,
+            processData: false,
+            success: function (response) {
+                profileEditedHandler(JSON.stringify(response));
+            },
+            error: function (response) {
+                profileEditedHandler(response.responseText);
+            }
+        })
+    });
+});

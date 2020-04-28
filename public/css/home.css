@@ -72,6 +72,11 @@ section#content {
   align-content: flex-start;
 }
 
+.lg-post-image{
+  object-fit: scale-down;
+  max-height: 700px;
+}
+
 .community-tag {
   background-color: #4c191b;
   border: 0px;
@@ -162,7 +167,7 @@ body * {
 .community-pic-container {
   display: flex;
   align-items: center;
-  padding: 20;
+  padding: 20px;
   width: 100%
 }
 
@@ -407,15 +412,15 @@ input[type=number] {
 
 #continue-email-button {
   height: 42px;
-  width: 197px;
+  width: 220px;
   border-radius: 3px;
   box-shadow: 0 3px 4px 0 rgba(0, 0, 0, .2);
 }
 
 .google-btn {
-  width: 80%;
-  min-width: 197px;
-  max-width: 197px;
+  /* width: 80%; */
+  min-width: 220px;
+  max-width: 220px;
   height: 42px;
   background-color: #fcfcfc;
   border-radius: 3px;

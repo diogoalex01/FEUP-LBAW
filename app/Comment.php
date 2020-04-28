@@ -22,7 +22,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'id_post', 'content', 'id_author', 'upvotes','downvotes','time_stamp',
+        'id_post', 'content', 'id_author', 'upvotes','downvotes','time_stamp','id_parent',
     ];
 
     /**
@@ -31,5 +31,21 @@ class Comment extends Model
      public function Post()
     {
         return $this->hasOne('App\Post', 'id_post');
+    }
+
+     /**
+     * The comment this reply belongs to
+     */
+     public function parent()
+    {
+        return $this->hasOne('App\Comment', 'id_parent');
+    }
+
+     /**
+     * The replies this comment has.
+     */
+     public function replies()
+    {
+        return $this->hasMany('App\Comment');
     }
 }

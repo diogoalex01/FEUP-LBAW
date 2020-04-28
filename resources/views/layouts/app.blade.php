@@ -16,9 +16,8 @@
 
     <!-- JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"
-        defer></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"
         defer></script>
@@ -208,27 +207,21 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                @if (strlen($user->password) < 32) <a class="dropdown" href="" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false"> <img class="rounded-circle" id="login" height="50"
-                        width="50" src="{{ asset($user->photo) }}" alt="Profile Image">
-                    </a>
-                    @else
-                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
-                            class="rounded-circle" id="login" height="50" width="50" src="{{ url($user->photo) }}"
-                            alt="Profile Image">
-                    </a>
-                    @endif
+                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <img  class="profile-pic-navbar" id="profileNav" height="50" width="50" src="{{ asset($user->photo) }}"
+                        alt="Profile Image">
+                </a>
 
-                    <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-menu dropdown-menu-right">
 
-                        {{-- if ($admin === "false") {--}}
+                    {{-- if ($admin === "false") {--}}
+                    <a class="dropdown-item" href={{ route('profile', $user->id )}}>My Account</a>
+                    <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
+                    <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item" href="myProfile.php">My Account</a>
-                        <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
-                        <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item" href={{ url('/logout') }}>Log Out</a>
-                    </div>
+                    <a class="dropdown-item" href={{ url('/logout') }}>Log Out</a>
+                </div>
             </div>
 
             @else
@@ -337,7 +330,8 @@
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <button id="loginBtn" type="button" data-dismiss="modal" data-toggle="modal" data-target="#modalRecover"
+                                                    <button id="loginBtn" type="button" data-dismiss="modal"
+                                                        data-toggle="modal" data-target="#modalRecover"
                                                         class="my-auto btn">Forgot password?
                                                         <a class="mr-1 text-center" href=""></a>
                                                     </button>
@@ -498,7 +492,8 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <section>
-                                <form method="post" action="{{ url('/reset_password_form')}}" id="recoverPassword" class="container mb-3">
+                                <form method="post" action="{{ url('/reset_password_form')}}" id="recoverPassword"
+                                    class="container mb-3">
                                     @csrf
                                     <h2 class="text-dark title-padding title-mobile">Recover Password</h2>
                                     <hr>
@@ -507,11 +502,13 @@
                                     </div>
 
                                     <label class="col control-label pl-0 mx-0">E-mail Address</label>
-                                    <input class="form-control" type="email" name="email"
-                                        id="recover-password-email" required>
-                                    {{-- <input hidden type="text" value="{{$user->username}}" id="delete-user-solution"> --}}
+                                    <input class="form-control" type="email" name="email" id="recover-password-email"
+                                        required>
+                                    {{-- <input hidden type="text" value="{{$user->username}}"
+                                    id="delete-user-solution"> --}}
                                     <div class="row justify-content-end my-2 mx-1">
-                                        <button id="resetPassBtn" type="submit" class="btn btn-secondary my-2">Recover Password</button>
+                                        <button id="resetPassBtn" type="submit" class="btn btn-secondary my-2">Recover
+                                            Password</button>
                                     </div>
                                 </form>
                             </section>
