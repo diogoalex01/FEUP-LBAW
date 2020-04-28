@@ -1,3 +1,12 @@
+let input = document.querySelector('input[name="community"]');
+let search = document.querySelector('.search');
+let container = document.querySelector('.dropdown-container');
+let matches;
+let privacy = document.querySelector('.privacy-toggle');
+let allCommunities = [];
+let addCommentForm = document.querySelector("#new-comment-form");
+let addCommentInput = document.querySelector("#new-comment-input");
+
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
     if (checkCommunity != null)
@@ -14,6 +23,12 @@ function addPostEventListeners() {
                 newPostPrivacyToggle.removeAttribute("checked");
             }
         });
+    }
+
+    if (addCommentForm != null) {
+        console.log("existe");
+        addCommentForm.addEventListener('submit', sendNewComment);
+
     }
 }
 
@@ -44,12 +59,6 @@ function sendCheckCommunityRequest(event) {
     event.preventDefault();
 }
 
-let input = document.querySelector('input[name="community"]');
-let search = document.querySelector('.search');
-let container = document.querySelector('.dropdown-container');
-let matches;
-let privacy = document.querySelector('.privacy-toggle');
-let allCommunities = [];
 
 function communityCheckedHandler() {
     // if (this.status != 200) window.location = '/';
@@ -61,6 +70,99 @@ function searching(word) {
         let regex = new RegExp(word, 'gi');
         return community.name.match(regex);
     });
+}
+
+function sendNewComment(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let user_id = document.querySelector('input[name=user_id]').value;
+    let post_id = document.querySelector('input[name=post_id]').value;
+    let comment_content = addCommentInput.value;
+
+    sendAjaxRequest('put', '/comment', {
+        user_id: user_id,
+        post_id: post_id,
+        content: comment_content
+    }, newCommentHandler);
+}
+
+function newCommentHandler() {
+    console.log(this.responseText);
+    let comment = JSON.parse(this.responseText)['comment'];
+    let commentSection = document.getElementById("post-comment-section");
+    let newComment = document.createElement('div');
+
+    let commentId = comment['id'];
+    let commentContent = comment['content'];
+    let commentUser = comment['id_author'];
+    let commentPost = comment['id_post'];
+    addCommentInput.value = "";
+    addCommentInput.rows = 1;
+
+    newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-comment">
+        <div class="row pt-4">
+
+            <div class="d-flex align-items-end justify-content-end">
+                <div class="col">
+                    <div class="row">
+                        <div class="d-flex justify-content-between pr-1">
+                            <a>
+                                <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center pb-2">
+                            <a>
+                                <p class="mb-0"> 0 </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-between pr-1">
+                            <a>
+                                <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <a>
+                                <p> 0 </p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-10 mx-auto">
+                <p class="card-text">
+                    ${commentContent}
+                </p>
+            </div>
+        </div>
+        <div class="card-footer row text-muted p-3"
+            style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
+            <div class="col-md-6 align-self-center">
+                <div class="card-footer-buttons row align-content-center justify-content-start">
+                    <a href="/post/${commentPost}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
+                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row align-self-center justify-content-end">
+                    <!--<span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>-->
+                    <a class="align-self-center">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>`
+
+    console.log(commentSection);
+    commentSection.insertBefore(newComment, commentSection.childNodes[0]);
+
+
+    //todo add comment
 }
 
 function searchArray() {
@@ -145,9 +247,9 @@ if (newPostForm != null) {
     } else {
         newPostPrivacyToggleLabel.innerHTML = "Public Account";
     }
-
-    addPostEventListeners();
 }
+
+addPostEventListeners();
 
 (function () {
     'use strict';
@@ -169,3 +271,4 @@ if (newPostForm != null) {
         });
     }, false);
 })();
+

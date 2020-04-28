@@ -48,4 +48,12 @@ class Post extends Model
     {
         return $this->hasOne('App\Community', 'id_community');
     }
+
+    /**
+     * The comments this post has.
+     */
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
 }

@@ -78,7 +78,8 @@ CREATE TABLE member_user (
     photo text,
     private boolean NOT NULL,
     credibility int DEFAULT 0,
-	remember_token text
+	remember_token text,
+	recover_pass_token text
 );
 
 CREATE TABLE admin_user (

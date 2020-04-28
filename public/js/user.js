@@ -1,3 +1,5 @@
+let timeoutHandlerEdit, timeoutHandlerDelete, timeoutHandlerRecover;
+
 let privacyToggleLabel = document.querySelector('label[for="privacyToggle"]');
 let deleteToggleLabel = document.querySelector('label[for="deleteToggle"]');
 let deleteToggle = document.querySelector('#deleteToggle');
@@ -27,6 +29,7 @@ function addUserEventListeners() {
     let deleteButton = document.getElementById('deleteAccount');
     let deleteUserInput = document.getElementById('delete-confirm-username');
     let deleteUserInputSolution = document.getElementById('delete-user-solution');
+    let resetPassButton = document.getElementById('recoverPassword');
     let modal = document.getElementById('modalDelete');
 
     if (deleteButton != null)
@@ -67,6 +70,52 @@ function addUserEventListeners() {
                 deleteWarningBox.setAttribute("hidden", "hidden");
             }
         });
+    }
+
+    if (resetPassButton != null) {
+        resetPassButton.addEventListener('submit', sendResetPassword);
+    }
+}
+
+function sendResetPassword(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let email = document.querySelector('#recoverPassword input[name=email]').value;
+    sendAjaxRequest('put', '/reset_password_form', {
+        email: email
+    }, resetPassHandler);
+}
+
+function resetPassHandler() {
+    console.log("did it");
+
+    if (this.status != 200) {
+        console.log("500 it");
+        console.log(this.responseText)
+        let response = JSON.parse(this.responseText);
+        // window.location = '/';
+        let string = "";
+        for (let s in response.errors) {
+            string += "<li>" + response.errors[s] + "</li>"
+        }
+
+        let feedbackMessage = document.querySelector('#feedback-message-recover');
+
+        if (feedbackMessage != null)
+            feedbackMessage.innerHTML = `
+                <div class="alert alert-danger">
+                    <ul class="my-auto">
+                        ${string}
+                    </ul>
+                </div>`
+
+        window.clearTimeout(timeoutHandlerRecover);
+        timeoutHandlerRecover = setTimeout(function () {
+            feedbackMessage.innerHTML = ``
+        }, 5000);
+    } else {
+        window.location = 'reset_password_email_sent';
     }
 }
 
@@ -131,6 +180,11 @@ function profileDeletedHandler() {
                     </div>
                 </div>`
 
+
+        window.clearTimeout(timeoutHandlerDelete);
+        timeoutHandlerDelete = setTimeout(function () {
+            feedbackMessage.innerHTML = ``
+        }, 5000);
     }
     else {
         // console.log(this.status);
@@ -169,7 +223,8 @@ function profileEditedHandler() {
             <div class="my-auto">
                 <p class="my-0">Changes saved successfuly!</p>
             </div>
-        </div>`}
+        </div>`
+    }
     else {
         feedbackMessage.innerHTML = `
         <div class="alert alert-danger">
@@ -178,31 +233,23 @@ function profileEditedHandler() {
             </ul>
         </div>`
     }
-}
 
-//  if (deleteToggle != null) {
-//     if (deleteToggle.hasAttribute('checked')) {
-//         console.log("TA checked")
-//         deleteToggleLabel.innerHTML = "Delete my content";
-//         deleteWarningBox.removeAttribute("hidden");
-//     } else {
-//         console.log("nao TA checked");
-//         deleteToggleLabel.innerHTML = "Keep my content";
-//         deleteWarningBox.setAttribute("hidden", "hidden");
-//     }
-// }
+    window.clearTimeout(timeoutHandlerEdit);
+    timeoutHandlerEdit = setTimeout(function () {
+        feedbackMessage.innerHTML = ``
+    }, 5000);
+}
 
 if (settingsForm != null && privacyToggle != null) {
     settingsForm.reset();
-
     if (privacyToggle.hasAttribute('checked')) {
         privacyToggleLabel.innerHTML = "Private Account";
     } else {
         privacyToggleLabel.innerHTML = "Public Account";
     }
-
-    addUserEventListeners();
 }
+
+addUserEventListeners();
 
 function mySubmitFunction() {
     sendEditProfile();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\Community;
+use App\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class PostController extends Controller
         } else {
             $user = null;
         }
-        
+
         $this->authorize('create', Post::class);
         return view('pages.newPost', ['user' => $user]);
     }
@@ -112,11 +113,16 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        // $post = Card::find($id);
+        $post = Post::find($id);
 
-        //$this->authorize('show', $post);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
 
-        //return view('pages.post', ['post' => $post]);
+        $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+        return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments]);
     }
 
     /**

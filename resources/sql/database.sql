@@ -77,7 +77,9 @@ CREATE TABLE member_user (
     gender genders NOT NULL,
     photo text,
     private boolean NOT NULL,
-    credibility int DEFAULT 0
+    credibility int DEFAULT 0,
+	remember_token text,
+	recover_pass_token text
 );
 
 CREATE TABLE admin_user (

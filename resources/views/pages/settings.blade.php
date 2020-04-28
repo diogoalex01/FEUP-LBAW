@@ -35,7 +35,7 @@
                 <!-- enctype="multipart/form-data"-->
                 <form id="edit-user" class="settings" onsubmit="return mySubmitFunction()">
                     @csrf
-                    <div class="col ">
+                    <div class="col">
                         <div class="row">
                             <div class="col-sm-4 mx-sm-5">
                                 <div class="form-group">

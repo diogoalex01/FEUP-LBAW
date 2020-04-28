@@ -92,4 +92,17 @@ class UserPolicy
     {
         //
     }
+
+    public function verify(User $user)
+    {
+        // error_log("\n\n\n\nHEEEEERREEEE");
+        // if(!Auth::check()){
+        //     error_log("\n\n\nNAAAOO taaaa\n\n\n");
+        //     return true;
+        // }else{
+        //     error_log("\n\n\n taaaa\n\n\n");
+        //     return false;
+        // }
+        return true;
+    }
 }

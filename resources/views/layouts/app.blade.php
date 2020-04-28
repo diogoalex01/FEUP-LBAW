@@ -105,8 +105,7 @@
                                     <div class="col-3">
                                         <a href="userProfile.php">
                                             <img class="notification-pic" id="login" height="50" width="50"
-                                                src="{{ asset('img/avatar_female.png') }}"
-                                                alt="Profile Image"></a>
+                                                src="{{ asset('img/avatar_female.png') }}" alt="Profile Image"></a>
                                     </div>
                                     <div class="col-7 p-0">
                                         <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
@@ -177,8 +176,7 @@
                                     <div class="col-3">
                                         <a href="userProfile.php">
                                             <img class="notification-pic" id="login" height="50" width="50"
-                                                src="{{ asset('img/avatar_male.png') }}"
-                                                alt="Profile Image"></a>
+                                                src="{{ asset('img/avatar_male.png') }}" alt="Profile Image"></a>
                                     </div>
                                     <div class="col-7 p-0">
                                         <h4 class="item-title"><a>@someotheruser</a> sent you a friend request</h4>
@@ -210,30 +208,27 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                @if (strlen($user->password) < 32)
-                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img 
-                        class="rounded-circle"
-                        id="login" height="50" width="50" src="{{ asset($user->photo) }}"
-                        alt="Profile Image">
+                @if (strlen($user->password) < 32) <a class="dropdown" href="" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false"> <img class="rounded-circle" id="login" height="50"
+                        width="50" src="{{ asset($user->photo) }}" alt="Profile Image">
                     </a>
-                @else
-                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img 
-                        class="rounded-circle"
-                        id="login" height="50" width="50" src="{{ url($user->photo) }}"
-                        alt="Profile Image">
+                    @else
+                    <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img
+                            class="rounded-circle" id="login" height="50" width="50" src="{{ url($user->photo) }}"
+                            alt="Profile Image">
                     </a>
-                @endif
+                    @endif
 
-                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-menu dropdown-menu-right">
 
-                    {{-- if ($admin === "false") {--}}
+                        {{-- if ($admin === "false") {--}}
 
-                    <a class="dropdown-item" href="myProfile.php">My Account</a>
-                    <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
-                    <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="myProfile.php">My Account</a>
+                        <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
+                        <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href={{ url('/logout') }}>Log Out</a>
-                </div>
+                        <a class="dropdown-item" href={{ url('/logout') }}>Log Out</a>
+                    </div>
             </div>
 
             @else
@@ -248,8 +243,7 @@
                         <div class="modal-body login-modal">
                             <div class="col">
                                 <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('img/pear_logo.png') }}" width="auto" height="100"
-                                        alt="logo">
+                                    <img src="{{ asset('img/pear_logo.png') }}" width="auto" height="100" alt="logo">
                                 </div>
 
                                 <div>
@@ -268,10 +262,11 @@
                                                     <a href={{ url('/redirect') }}>
                                                         <div class="google-btn" style="max-width: 192px;">
                                                             <div class="google-icon-wrapper">
-                                                                <img class="google-icon-svg" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                                                                <img class="google-icon-svg"
+                                                                    src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
                                                             </div>
                                                             <p class="btn-text"><b>Continue with Google</b></p>
-                                                      </div>
+                                                        </div>
                                                     </a>
                                                 </div>
                                             </div>
@@ -305,21 +300,14 @@
                                             </h2>
                                         </div>
 
-                                        <form method="POST" action="{{ route('login') }}">
+                                        <form method="POST" action="{{ route('login') }}" id="loginForm">
                                             {{ csrf_field() }}
 
                                             <div class="row d-flex justify-content-lg-center">
                                                 <div class="col-lg-10 mb-4">
 
-                                                    @if ($errors->any())
-                                                    <div class="alert alert-danger">
-                                                        <ul class="my-auto">
-                                                            @foreach ($errors->all() as $error)
-                                                            <li>{{ $error }}</li>
-                                                            @endforeach
-                                                        </ul>
+                                                    <div id="feedback-message-login">
                                                     </div>
-                                                    @endif
 
                                                     <label for="email">Email</label>
                                                     <input id="email" name="email" type="email" class="form-control"
@@ -347,6 +335,12 @@
                                                         <button type="submit" class="btn btn-outline-dark ">Log
                                                             in</button>
                                                     </a>
+                                                </div>
+                                                <div>
+                                                    <button id="loginBtn" type="button" data-dismiss="modal" data-toggle="modal" data-target="#modalRecover"
+                                                        class="my-auto btn">Forgot password?
+                                                        <a class="mr-1 text-center" href=""></a>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </form>
@@ -488,6 +482,38 @@
                                         </div>
                                     </div>
                                 </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal" id="modalRecover" tabindex="-1" role="dialog" aria-labelledby="modalCommunityTitle"
+                aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <form method="post" action="{{ url('/reset_password_form')}}" id="recoverPassword" class="container mb-3">
+                                    @csrf
+                                    <h2 class="text-dark title-padding title-mobile">Recover Password</h2>
+                                    <hr>
+
+                                    <div id="feedback-message-recover">
+                                    </div>
+
+                                    <label class="col control-label pl-0 mx-0">E-mail Address</label>
+                                    <input class="form-control" type="email" name="email"
+                                        id="recover-password-email" required>
+                                    {{-- <input hidden type="text" value="{{$user->username}}" id="delete-user-solution"> --}}
+                                    <div class="row justify-content-end my-2 mx-1">
+                                        <button id="resetPassBtn" type="submit" class="btn btn-secondary my-2">Recover Password</button>
+                                    </div>
+                                </form>
                             </section>
                         </div>
                     </div>

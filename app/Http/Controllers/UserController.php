@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
+
 class UserController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -66,7 +68,7 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $this->authorize('update', User::class);
+        $this->authorize('update',User::class);
         return view('pages.settings', compact('user'));
     }
 
