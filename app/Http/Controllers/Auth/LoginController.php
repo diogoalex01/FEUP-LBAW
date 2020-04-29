@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Lang;
+use App\User;
+use Socialite;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Socialite;
-use App\User;
 
 
 class LoginController extends Controller
@@ -46,7 +48,7 @@ class LoginController extends Controller
 
     public function home()
     {
-        return redirect('login');
+        return redirect('/');
     }
 
     /**
@@ -56,7 +58,8 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('google')->scopes(['profile', 'https://www.googleapis.com/auth/user.birthday.read'])->redirect();;
+        return Socialite::driver('google')->scopes(['profile'])->redirect();
+        /* return Socialite::driver('google')->scopes(['profile', 'https://www.googleapis.com/auth/user.birthday.read'])->redirect(); */
     }
 
     /**
@@ -68,9 +71,8 @@ class LoginController extends Controller
     {
         try {
             $user = Socialite::driver('google')->user();
-            
         } catch (\Exception $e) {
-            return redirect('/');
+            return redirect()->back()->with('showModal', "login");
         }
         // check if they're an existing user
         $existingUser = User::where('email', $user->email)->first();
@@ -89,11 +91,24 @@ class LoginController extends Controller
             $newUser->private = false;
             $newUser->password = $user->id;
             $newUser->photo = $user->avatar;
-            $newUser->birthday ="1990-10-10";
+            $newUser->birthday = "1990-10-10";
             $newUser->save();
             auth()->login($newUser, true);
         }
 
-        return redirect()->to('/');
+        return redirect()->back();
+    }
+
+    /**
+     * Get the failed login response instance.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        return redirect()->back()->with('showModal', "login")->withErrors([
+            $this->username() => Lang::get('auth.failed'),
+        ]);
     }
 }

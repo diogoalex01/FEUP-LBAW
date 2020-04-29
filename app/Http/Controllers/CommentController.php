@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\User;
+
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -49,10 +51,13 @@ class CommentController extends Controller
             'content' => $data['content'],
         ]);
 
+        $author_username = User::find($comment['id_author'])->username;
+
         $comment->save();
         return response()->json(array(
             'success' => true,
-            'comment' => $comment
+            'comment' => $comment,
+            'extras' => ['author_username'=> $author_username]
         ), 200);
     }
 
@@ -121,10 +126,13 @@ class CommentController extends Controller
         ]);
 
         $comment->save();
+        $author_username = User::find($comment['id_author'])->username;
+
 
         return response()->json(array(
             'success' => true,
-            'comment' => $comment
+            'comment' => $comment,
+            'extras' => ['author_username'=> $author_username]
         ), 200);
     }
 }

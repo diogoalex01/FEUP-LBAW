@@ -98,7 +98,9 @@ function sendNewComment(event) {
 
 function newCommentHandler() {
     console.log(this.responseText);
-    let comment = JSON.parse(this.responseText)['comment'];
+    let response = JSON.parse(this.responseText);
+
+    let comment = response['comment'];
     let commentSection = document.getElementById("post-comment-section");
     let newComment = document.createElement('div');
 
@@ -108,6 +110,7 @@ function newCommentHandler() {
     let commentPost = comment['id_post'];
     addCommentInput.value = "";
     addCommentInput.rows = 1;
+    let authorUsername = response['extras']['author_username'];
 
     newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-comment">
         <div class="row pt-4">
@@ -159,9 +162,9 @@ function newCommentHandler() {
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                    <!--<span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>-->
-                    <a class="align-self-center">
-                    </a>
+                <span class="px-1 align-self-center">Just now</span>
+                by
+               <a> <span class="pl-1">@<span pl-0 ml-0 >${authorUsername}</span></span> </a>
                 </div>
             </div>
         </div>
@@ -181,7 +184,7 @@ function addReplyForm(id) {
         targetComment.parentElement
         replyFormContainer = document.createElement('div');
         replyFormContainer.innerHTML = `
-        <div class="card post-container reply-container" id="reply-container">
+        <div class="card post-container reply-container mb-2 " id="reply-container">
             <div class="card-body">
                 <form id="reply-form">
                     <input hidden name="comment_id" value="${comment_id}">
@@ -192,7 +195,7 @@ function addReplyForm(id) {
                         </div>
                         <!--<div class="col-md-1 my-auto mx-auto text-right">-->
                         <div class="col-md-1 my-auto mx-auto text-right px-0 text-center comment-button">
-                            <button type="submit" class="btn btn-md btn-dark" id ="send-reply-btn"> Add reply </button>
+                            <button type="submit" class="btn btn-md btn-dark" id ="send-reply-btn"> Reply </button>
                         </div>
                     </div>
                 </form>
@@ -214,7 +217,6 @@ function addReplyForm(id) {
 }
 
 function sendCommentReply() {
-    console.log("ppppp");
 
     let user_id = document.querySelector('input[name=user_id]').value;
     let post_id = document.querySelector('input[name=post_id]').value;
@@ -233,10 +235,81 @@ function sendCommentReply() {
         comment_id: comment_id,
         reply: replyBody,
     }, newReplyHandler);
+    let replyFormContainer = document.getElementById("reply-container");
+    replyFormContainer.remove();
 }
 
 function newReplyHandler() {
     console.log(this.responseText);
+    let response = JSON.parse(this.responseText);
+    console.log(response);
+    let reply = response['comment'];
+    let newComment = document.createElement('div');
+
+    let commentId = reply['id'];
+    let commentContent = reply['content'];
+    let commentUser = reply['id_author'];
+    let commentPost = reply['id_post'];
+    let commentParent = reply['id_parent'];
+    let commentSection = document.getElementById("replies" + commentParent);
+    let authorUsername =  response['extras']['author_username'];
+    newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-reply">
+        <div class="row pt-4">
+
+            <div class="d-flex align-items-end justify-content-end">
+                <div class="col">
+                    <div class="row">
+                        <div class="d-flex justify-content-between pr-1">
+                            <a>
+                                <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center pb-2">
+                            <a>
+                                <p class="mb-0"> 0 </p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-between pr-1">
+                            <a>
+                                <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <a>
+                                <p> 0 </p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-10 mx-auto">
+                <p class="card-text">
+                    ${commentContent}
+                </p>
+            </div>
+        </div>
+        <div class="card-footer row text-muted p-3"
+            style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
+            <div class="col-md-6 align-self-center">
+                <div class="card-footer-buttons row align-content-center justify-content-start">
+                <a href="" data-target="comment${commentId}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row align-self-center justify-content-end">
+                <span class="px-1 align-self-center">Just now</span>
+                by
+               <a> <span class="pl-1">@<span pl-0 ml-0 >${authorUsername}</span></span> </a>
+                </div>
+            </div>
+        </div>
+    </div>`
+
+    console.log(commentSection);
+    commentSection.insertBefore(newComment, commentSection.childNodes[0]);
 }
 
 function searchArray() {

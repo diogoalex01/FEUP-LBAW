@@ -1,5 +1,5 @@
-<!-- Comment -->
-<div id="comment{{$comment->id}}" class="card mb-2 post-container post-comment">
+@if($reply->id_parent===$comment->id)
+<div id="comment{{$reply->id}}" class="card mb-2 post-container post-reply">
     <div class="row pt-4">
 
         {{-- Votes --}}
@@ -13,7 +13,7 @@
                     </div>
                     <div class="d-flex justify-content-center pb-2">
                         <a>
-                            <p class="mb-0"> {{$comment->upvotes}} </p>
+                            <p class="mb-0"> {{$reply->upvotes}} </p>
                         </a>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                     </div>
                     <div class="d-flex justify-content-center">
                         <a>
-                            <p> {{$comment->downvotes}} </p>
+                            <p> {{$reply->downvotes}} </p>
                         </a>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
         {{-- Content --}}
         <div class="col-md-10 mx-auto">
             <p class="card-text">
-                {{$comment->content}}
+                {{$reply->content}}
             </p>
         </div>
     </div>
@@ -43,8 +43,8 @@
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
             <div class="card-footer-buttons row align-content-center justify-content-start">
-                <a href="" data-target="comment{{$comment->id}}" class="reply-btn"><i class="fas fa-reply"></i>Reply</a>
-                @if($comment->id_author !== $user->id)
+            <a href="" data-target="comment{{$reply->id}}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                @if($reply->id_author !== $user->id)
                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
                     <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                 </a>
@@ -55,15 +55,16 @@
             <div class="row align-self-center justify-content-end">
                 {{-- <a href="$commenter_page ?auth=&admin="> <img height="35" width="35"
                         src=$commenter_image ?> alt="Profile Image"> </a> --}}
-                <span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>
+                <span class="px-1 align-self-center">{{date('F d, Y', strtotime($reply->time_stamp))}}</span>
                 by
-                <a> <span class="pl-1">@<span pl-0 ml-0>{{$user->username}}</span></span> </a>
+               <a> <span class="pl-1">@<span pl-0 ml-0 >{{$user->username}}</span></span> </a>
             </div>
         </div>
     </div>
 </div>
-<div id="replies{{$comment->id}}">
-    @foreach($replies as $reply)
-        @include('partials.reply', ['user'=>$user, 'reply'=> $reply, 'comment' => $comment])
+<div id="replies{{$reply->id}}">
+    @foreach($replies as $new_reply)
+        @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply])
     @endforeach
 </div>
+@endif

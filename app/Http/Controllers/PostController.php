@@ -32,7 +32,7 @@ class PostController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
         } else {
-            $user = null;
+            return redirect()->back()->with('showModal', "welcome");
         }
 
         $this->authorize('create', Post::class);
@@ -122,9 +122,12 @@ class PostController extends Controller
             $user = null;
         }
 
-        $parent_comments = ['id_post' => $id, 'id_parent' => null];
-        $comments = DB::table('comment')->where($parent_comments)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments]);
+        $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
+        $just_replies = ['id_post' => $id, ['id_parent','<>',null]];
+        $comments = DB::table('comment')->where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
+        $replies = DB::table('comment')->where($just_replies)->orderBy('time_stamp', 'desc')->get();
+    
+        return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
     }
 
     /**

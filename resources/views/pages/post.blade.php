@@ -122,7 +122,7 @@
         <div id="post-comment-section">
             {{-- @each('partials.comment', $comments, 'comment') --}}
             @foreach($comments as $comment)
-                @include('partials.comment', ['comment'=>$comment, 'user'=>$user])
+            @include('partials.comment', ['comment'=>$comment, 'user'=>$user, 'replies'=> $replies])
             @endforeach
         </div>
     </div>

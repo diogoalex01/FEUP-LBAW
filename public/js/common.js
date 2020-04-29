@@ -25,3 +25,4 @@ if (loginButton != null) {
         continueEmailButton.setAttribute("data-target", "#modalLogin");
     });
 }
+

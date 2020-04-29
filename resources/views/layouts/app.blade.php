@@ -207,10 +207,9 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <img  class="profile-pic-navbar" id="profileNav" height="50" width="50" src="{{ asset($user->photo) }}"
-                        alt="Profile Image">
+                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="profile-pic-navbar" id="profileNav" height="50" width="50"
+                        src="{{ asset($user->photo) }}" alt="Profile Image">
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right">
@@ -295,6 +294,16 @@
 
                                         <form method="POST" action="{{ route('login') }}" id="loginForm">
                                             {{ csrf_field() }}
+
+                                            @if ($errors->any())
+                                            <div class="alert alert-danger">
+                                                <ul class="my-auto">
+                                                    @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            @endif
 
                                             <div class="row d-flex justify-content-lg-center">
                                                 <div class="col-lg-10 mb-4">
@@ -571,6 +580,28 @@
                 <a id="about" href="{{route('about')}}"> About Us</a>
             </div>
     </footer>
+
+    <?php echo Session::get('showModal')?>
+
+    @if(!empty(Session::get('showModal')) && Session::get('showModal') == "welcome")
+    <script>
+        $(function() {
+            $('#modalWelcome').modal('show');
+        });
+    </script>
+    @elseif(!empty(Session::get('showModal')) && Session::get('showModal') == "login")
+    <script>
+        $(function() {
+            $('#modalLogin').modal('show');
+        });
+    </script>
+    @elseif(!empty(Session::get('showModal')) && Session::get('showModal') == "register")
+    <script>
+        $(function() {
+            $('#modalSignup').modal('show');
+        });
+    </script>
+    @endif
 
 </body>
 <!-- Footer -->
