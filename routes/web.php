@@ -24,6 +24,9 @@ Route::put('/reply', 'CommentController@storeReply');
 // User
 Route::get('/user/{user_id}', 'UserController@show')->name('profile');
 
+//community
+Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
+
 Route::get('/settings', 'UserController@edit')->name('settings');
 Route::put('/settings', 'UserController@update');
 Route::delete('/settings', 'UserController@destroy');

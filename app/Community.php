@@ -40,4 +40,13 @@ class Community extends Model
     {
         return $this->hasOne('App\User', 'id_owner');
     }
+
+        /**
+     * The post this community belongs to
+     */
+    public function posts()
+    {
+        return $this->hasMany('App\Post');
+    }
+
 }

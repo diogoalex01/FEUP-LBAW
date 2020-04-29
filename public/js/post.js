@@ -69,18 +69,6 @@ function sendCheckCommunityRequest(event) {
     event.preventDefault();
 }
 
-function communityCheckedHandler() {
-    // if (this.status != 200) window.location = '/';
-    allCommunities = JSON.parse(this.responseText);
-}
-
-function searching(word) {
-    return allCommunities.filter(community => {
-        let regex = new RegExp(word, 'gi');
-        return community.name.match(regex);
-    });
-}
-
 function sendNewComment(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -252,7 +240,7 @@ function newReplyHandler() {
     let commentPost = reply['id_post'];
     let commentParent = reply['id_parent'];
     let commentSection = document.getElementById("replies" + commentParent);
-    let authorUsername =  response['extras']['author_username'];
+    let authorUsername = response['extras']['author_username'];
     newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-reply">
         <div class="row pt-4">
 
@@ -312,6 +300,18 @@ function newReplyHandler() {
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
 }
 
+function communityCheckedHandler() {
+    // if (this.status != 200) window.location = '/';
+    allCommunities = JSON.parse(this.responseText);
+}
+
+function searching(word) {
+    return allCommunities.filter(community => {
+        let regex = new RegExp(word, 'gi');
+        return community.name.match(regex);
+    });
+}
+
 function searchArray() {
     if (input.value.length < 2) {
         search.classList.remove('show');
@@ -321,6 +321,7 @@ function searchArray() {
     sendAjaxRequest('post', '/api/communities', '', communityCheckedHandler);
 
     matches = searching(input.value);
+    console.log(matches);
 
     let html;
 

@@ -130,45 +130,6 @@ function resetPassHandler() {
     }
 }
 
-// function sendEditProfile() {
-//     event.preventDefault();
-//     event.stopPropagation();
-//     let first_name = document.querySelector('input[name=first_name]').value;
-//     let last_name = document.querySelector('input[name=last_name]').value;
-//     let username = document.querySelector('input[name=username]').value;
-//     let email = document.querySelector('input[name=email]').value;
-//     let password = document.querySelector('input[name=password]');
-//     let password_confirmation = document.querySelector('input[name=password_confirmation]');
-
-//     if (password != null) {
-//         password = password.value;
-//         password_confirmation = password_confirmation.value;
-//     } else {
-//         password = "password";
-//         password_confirmation = "password";
-//     }
-
-//     let gender = document.querySelector('*[name=gender]').value;
-//     let image = document.querySelector('*[name=image]').files[0];
-//     console.log(image);
-//     let birthday = document.querySelector('input[name=birthday]').value;
-//     let private = document.querySelector('#privacyToggle').checked;
-//     console.log("private = " + typeof private);
-
-//     sendAjaxRequestImage('put', '/settings', {
-//         username: username,
-//         first_name: first_name,
-//         last_name: last_name,
-//         email: email,
-//         gender: gender,
-//         image: image,
-//         birthday: birthday,
-//         password: password,
-//         password_confirmation: password_confirmation,
-//         private: private
-//     }, profileEditedHandler);
-// }
-
 function sendDeleteProfile(event) {
     console.log("send delete");
     event.preventDefault();

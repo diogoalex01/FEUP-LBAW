@@ -22,8 +22,10 @@
 
         <!-- Post -->
         <div class="card mb-4 post-container">
+            @if($post->image != null)
             <img class="card-img-top pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{ asset($post->image)}}"
                 alt="Post Image">
+            @endif
 
             <div style="padding: 0 12%">
 
@@ -70,7 +72,7 @@
                     <div class="col-md-6 align-self-center ">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
                             <a href="/post/{{$post->id}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
-                            @if($user->id !== $post->id_author)
+                            @if($user != null && $user->id !== $post->id_author)
                             <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>

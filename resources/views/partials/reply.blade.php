@@ -43,8 +43,8 @@
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
             <div class="card-footer-buttons row align-content-center justify-content-start">
-            <a href="" data-target="comment{{$reply->id}}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
-                @if($reply->id_author !== $user->id)
+                <a href="" data-target="comment{{$reply->id}}" class="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                @if($user != null && $reply->id_author !== $user->id)
                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
                     <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                 </a>
@@ -57,14 +57,14 @@
                         src=$commenter_image ?> alt="Profile Image"> </a> --}}
                 <span class="px-1 align-self-center">{{date('F d, Y', strtotime($reply->time_stamp))}}</span>
                 by
-               <a> <span class="pl-1">@<span pl-0 ml-0 >{{$user->username}}</span></span> </a>
+                <a> <span class="pl-1">@<span pl-0 ml-0>{{$reply->user->username}}</span></span> </a>
             </div>
         </div>
     </div>
 </div>
 <div id="replies{{$reply->id}}">
     @foreach($replies as $new_reply)
-        @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply])
+    @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply])
     @endforeach
 </div>
 @endif

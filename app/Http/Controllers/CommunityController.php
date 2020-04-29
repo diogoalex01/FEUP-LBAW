@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Community;
+use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,9 +47,15 @@ class CommunityController extends Controller
      * @param  \App\Community  $community
      * @return \Illuminate\Http\Response
      */
-    public function show(Community $community)
+    public function show($community_id)
     {
-        //
+        $communities = Community::all();
+        $community = $communities->find($community_id);
+        $member_users = User::all();
+        $member_user = $member_users->find($user_id);
+        $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->get();
+        //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+        return view('pages.community', ['community' => $community, 'user' => $member_user, 'posts' => $posts]);
     }
 
     /**

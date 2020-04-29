@@ -44,7 +44,7 @@
         <div class="col-md-6 align-self-center">
             <div class="card-footer-buttons row align-content-center justify-content-start">
                 <a href="" data-target="comment{{$comment->id}}" class="reply-btn"><i class="fas fa-reply"></i>Reply</a>
-                @if($comment->id_author !== $user->id)
+                @if($user != null && $comment->id_author !== $user->id)
                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
                     <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                 </a>
@@ -57,7 +57,7 @@
                         src=$commenter_image ?> alt="Profile Image"> </a> --}}
                 <span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>
                 by
-                <a> <span class="pl-1">@<span pl-0 ml-0>{{$user->username}}</span></span> </a>
+                <a> <span class="pl-1">@<span pl-0 ml-0>{{$comment->user->username}}</span></span> </a>
             </div>
         </div>
     </div>

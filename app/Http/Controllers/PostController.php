@@ -124,8 +124,8 @@ class PostController extends Controller
 
         $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
         $just_replies = ['id_post' => $id, ['id_parent','<>',null]];
-        $comments = DB::table('comment')->where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
-        $replies = DB::table('comment')->where($just_replies)->orderBy('time_stamp', 'desc')->get();
+        $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->with('user')->get();
+        $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->with('user')->get();
     
         return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
     }

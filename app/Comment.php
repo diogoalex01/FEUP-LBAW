@@ -30,13 +30,11 @@ class Comment extends Model
      */
     public function user()
     {
-        error_log("\n\n");
-        error_log("helloo");
-        return $this->hasOne('App\User', 'id_author');
+        return $this->belongsTo('App\User', 'id_author');
     }
 
     /**
-     * The Postpost this comment belongs to
+     * The post this comment belongs to
      */
      public function post()
     {
