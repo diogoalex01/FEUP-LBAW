@@ -99,6 +99,8 @@ function newCommentHandler() {
     addCommentInput.value = "";
     addCommentInput.rows = 1;
     let authorUsername = response['extras']['author_username'];
+    let authorImage = response['extras']['author_photo'];
+    console.log(authorImage);
 
     newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-comment">
         <div class="row pt-4">
@@ -148,11 +150,15 @@ function newCommentHandler() {
                     </a>
                 </div>
             </div>
+            
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                <span class="px-1 align-self-center">Just now</span>
-                by
-               <a> <span class="pl-1">@<span pl-0 ml-0 >${authorUsername}</span></span> </a>
+                <a href="/user/${commentUser}">
+                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                </a>
+                <span class="px-1 align-self-center">Just now by </span>
+                <a href="/user/${commentUser}" class="my-auto">
+                <span>@</span>${authorUsername}</a>
                 </div>
             </div>
         </div>
@@ -241,6 +247,9 @@ function newReplyHandler() {
     let commentParent = reply['id_parent'];
     let commentSection = document.getElementById("replies" + commentParent);
     let authorUsername = response['extras']['author_username'];
+    let authorImage = response['extras']['author_photo'];
+    console.log(authorImage);
+
     newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-reply">
         <div class="row pt-4">
 
@@ -288,10 +297,12 @@ function newReplyHandler() {
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                <span class="px-1 align-self-center">Just now</span>
-                by
-               <a> <span class="pl-1">@<span pl-0 ml-0 >${authorUsername}</span></span> </a>
-                </div>
+                <a href="/user/${commentUser}">
+                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                </a>
+                <span class="px-1 align-self-center">Just now by</span>
+                <a href="/user/${commentUser}" class="my-auto">
+                <span>@</span>${authorUsername}</a>
             </div>
         </div>
     </div>`
@@ -425,4 +436,4 @@ $(document).mouseup(function (e) {
         == 0) {
         $("#reply-container").remove();
     }
-}); 
+});

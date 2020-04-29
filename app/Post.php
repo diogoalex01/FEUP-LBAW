@@ -27,26 +27,26 @@ class Post extends Model
 
     /**
      * The attributes that should be hidden for arrays.
-     *
+     *öu
      * @var array
      */
     // protected $hidden = [
     // ];
-
+  
     /**
      * The user this post belongs to
      */
-    public function user()
+     public function user()
     {
-        return $this->hasOne('App\User', 'id_author');
+        return $this->belongsTo('App\User', 'id_author');
     }
 
     /**
-     * The community this post belongs to
+     * This post belongs to a community 
      */
     public function community()
     {
-        return $this->hasOne('App\Community', 'id_community');
+        return $this->belongsTo('App\Community', 'id_community');
     }
 
     /**

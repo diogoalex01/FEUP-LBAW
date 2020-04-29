@@ -51,13 +51,13 @@ class CommentController extends Controller
             'content' => $data['content'],
         ]);
 
-        $author_username = User::find($comment['id_author'])->username;
+        $author = User::find($comment['id_author']);
 
         $comment->save();
         return response()->json(array(
             'success' => true,
             'comment' => $comment,
-            'extras' => ['author_username'=> $author_username]
+            'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
         ), 200);
     }
 
@@ -126,13 +126,12 @@ class CommentController extends Controller
         ]);
 
         $comment->save();
-        $author_username = User::find($comment['id_author'])->username;
-
+        $author = User::find($comment['id_author']);
 
         return response()->json(array(
             'success' => true,
             'comment' => $comment,
-            'extras' => ['author_username'=> $author_username]
+            'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
         ), 200);
     }
 }

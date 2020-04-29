@@ -25,21 +25,19 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"
         defer></script>
 
+    <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/home.css')}}">
     <link rel="stylesheet" href="{{ asset('css/profile.css')}}">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="icon" href="{{ asset('img/pear_logo.png') }}">
 
-    <!-- Styles -->
-    {{-- <link href="{{ asset('css/milligram.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-    <script type="text/javascript">
+    <script>
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
     </script>
-    <script type="text/javascript" src={{ asset('js/common.js') }} defer></script>
-    <script type="text/javascript" src={{ asset('js/post.js') }} defer></script>
-    <script type="text/javascript" src={{ asset('js/user.js') }} defer></script>
+    <script src={{ asset('js/common.js') }} defer></script>
+    <script src={{ asset('js/post.js') }} defer></script>
+    <script src={{ asset('js/user.js') }} defer></script>
 
     <title> {{$title}} </title>
 </head>
@@ -50,11 +48,11 @@
     <nav id="topBar" class="navbar navbar-expand-lg navbar-dark">
 
         <a class="navbar-brand" href="{{route('home')}}">
-            <img src={{ asset('img/pear_logo.png') }} width="66.66" height="50" alt="logo">
+            <img src={{ asset('img/pear_logo.png') }} width="67" height="50" alt="logo">
         </a>
 
         <!--<a class="navbar-brand" href="admin.php?auth=&admin=">
-            <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+            <img src="./images/pear_logo.png" width="67" height="50" alt="logo">
         </a>-->
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -208,7 +206,7 @@
 
             <div class="dropdown dropdown-nav">
                 <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="profile-pic-navbar" id="profileNav" height="50" width="50"
+                    <img class="profile-pic-small" id="profileNav" height="50" width="50"
                         src="{{ asset($user->photo) }}" alt="Profile Image">
                 </a>
 
@@ -563,7 +561,7 @@
                     <div class="mb-5 flex-center">
                         <!-- Logo -->
                         <!-- <div>
-                      <img src="./images/pear_logo.png" width="66.66" height="50" alt="logo">
+                      <img src="./images/pear_logo.png" width="67" height="50" alt="logo">
                   </div> -->
                     </div>
                 </div>
@@ -572,13 +570,14 @@
         <!-- Footer Elements -->
 
         <!-- Copyright -->
-        <div class="footer-copyright py-3 medium text-white-50 text-center" row>
+        <div class="footer-copyright py-3 medium text-white-50 text-center">
             <div class="mx-auto">
                 LBAW © 2020 Copyright
             </div>
             <div class="mx-auto">
                 <a id="about" href="{{route('about')}}"> About Us</a>
             </div>
+        </div>
     </footer>
 
     <?php echo Session::get('showModal')?>

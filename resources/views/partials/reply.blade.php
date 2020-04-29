@@ -53,11 +53,19 @@
         </div>
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
-                {{-- <a href="$commenter_page ?auth=&admin="> <img height="35" width="35"
-                        src=$commenter_image ?> alt="Profile Image"> </a> --}}
-                <span class="px-1 align-self-center">{{date('F d, Y', strtotime($reply->time_stamp))}}</span>
-                by
-                <a> <span class="pl-1">@<span pl-0 ml-0>{{$reply->user->username}}</span></span> </a>
+                @if($comment->user != null)
+                <a href="{{route('profile', $comment->user->id)}}">
+                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}" alt="">
+                </a>
+                @endif
+
+                <span class="px-1 align-self-center">{{date('F d, Y', strtotime($reply->time_stamp))}} by </span>
+                @if($reply->user == null)
+                <a>@unknown</a>
+                @else
+                <a href={{ route('profile', $reply->user->id) }} class="my-auto">
+                    <span>@</span>{{$reply->user->username}}</a>
+                @endif
             </div>
         </div>
     </div>

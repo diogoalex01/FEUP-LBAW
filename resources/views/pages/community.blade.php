@@ -35,6 +35,7 @@
                 </div>
             </div>
         </div>
+
         {{-- //Admin
         <div class="col-md-3 aside" style="padding-top: 20px;">
 
@@ -63,13 +64,13 @@
         <!-- Posts Column -->
         <div class="col-md-9">
 
-            <div class="row">
-                <div class="col-md-2 text-center community-pic-container">
-                    <img class="community-pic" src="./images/Porto.jpg" alt="Community Image">
+            <div class="row my-auto">
+                <div class="col-md-2 text-center community-pic-container-comm">
+                    <img class="community-pic" src="{{ asset($community->image)}}" alt="Community Image">
                 </div>
 
-                <div class="col-md-7">
-                    <h1 class="my-4">/{{community->name}}</h1>
+                <div class="col-md-7 my-auto">
+                    <h1 class="my-0">{{$community->name}}</h1>
                 </div>
                 <div class="col-md-1 text-center d-flex align-items-center">
                     <input type="button" class="btn btn-dark" value="Join">
@@ -88,9 +89,10 @@
                  --}}
             </div>
 
+            @if (Auth::check())
             <!-- New Post -->
             <a href="{{ route('new_post')}}">
-                <div class="mt-4 mt-md-0 card mb-4 post-container">
+                <div class="mt-4 mt-md-1 card mb-4 mr-md-2 mr-lg-4 post-container">
                     <div class="card-body">
                         <div class="row" style="font-size: 0.45rem;">
                             <div class="col">
@@ -103,7 +105,9 @@
                     </div>
                 </div>
             </a>
+            @endif
 
+            @each('partials.homePost', $posts, 'post')
             <!-- Post -->
             {{--  home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am in the first semester of my CS uni and i just realised that i dont know how to start learning a new course. I tried reading the provided book / searching on

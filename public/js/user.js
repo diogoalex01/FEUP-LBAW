@@ -99,10 +99,7 @@ function sendResetPassword(e) {
 }
 
 function resetPassHandler() {
-    console.log("did it");
-
     if (this.status != 200) {
-        console.log("500 it");
         console.log(response)
         let response = JSON.parse(this.responseText);
         // window.location = '/';
@@ -189,7 +186,7 @@ function profileEditedHandler(responseText) {
         deleteUserInputSolution.value = username;
 
         feedbackMessage.innerHTML = `
-        <div class="alert alert-success">
+        <div class="alert alemt-md-0 card mb-4rt-success">
             <div class="my-auto">
                 <p class="my-0">Changes saved successfuly!</p>
             </div>
@@ -299,3 +296,58 @@ $(document).ready(function () {
         })
     });
 });
+
+let activities = document.querySelectorAll('.sidebar-box');
+if (activities.length != 0) {
+    let height;
+    let readMore;
+    activities.forEach((activity) => {
+        height = activity.clientHeight;
+        readMore = activity.querySelector('.read-more');
+        if (height < 80) {
+            readMore.style.padding = 0;
+        }
+    });
+}
+
+let profile_aside = document.querySelectorAll(".profile-aside");
+
+if (profile_aside != null) {
+    function profile_tabs() {
+        let profile_content = document.querySelectorAll(".profile-content");
+
+        if (profile_content != null) {
+            profile_content.forEach(tab => {
+                if (tab.classList.contains("active-tab")) {
+                    tab.classList.remove("active-tab");
+                    tab.classList.add("hidden-tab");
+                    tab.style.display = "none";
+                }
+                else {
+                    tab.classList.remove("hidden-tab");
+                    tab.classList.add("active-tab");
+                    tab.style.display = "block";
+                }
+            });
+        }
+
+        for (let i = 0; i < profile_aside.length; i++) {
+            // remove selected
+            if (profile_aside[i].classList.contains("nav-border-active")) {
+                profile_aside[i].classList.remove("nav-border-active");
+                profile_aside[i].classList.add("nav-border");
+                profile_aside[i].addEventListener("click", profile_tabs);
+            }
+            //add selected
+            else { 
+                profile_aside[i].classList.remove("nav-border");
+                profile_aside[i].classList.add("nav-border-active");
+                profile_aside[i].removeEventListener("click", profile_tabs);
+            }
+        }
+    }
+}
+
+let communities_menu = document.getElementById("community_menu")
+if (communities_menu != null)
+    communities_menu.addEventListener("click", profile_tabs);

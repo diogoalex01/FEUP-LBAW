@@ -7,12 +7,10 @@
     <!-- About Column -->
     <div class="col-md-8 mx-auto">
 
-        <h1 class="my-4"></h1>
-
         <!-- About -->
         <div class="mb-4">
             <div class="card-body">
-                <h3 class="card-title">About Us</h3>
+                <h2 class="card-title mt-3">About Us</h2>
                 <p class="card-text"> In an ever-changing world, knowledge is power. However, as information becomes
                     easier and easier
                     to find, so does misinformation. Intended to deceive, the so-called 'fake news' spread like a
@@ -25,7 +23,7 @@
                     students. People can post about their favorite topics and share some knowledge with the academic
                     community. Sharing is caring.
                 </p>
-                <h3 class="card-title">Team</h3>
+                <h2 class="card-title">Team</h2>
                 <p class="card-text">Ana Mafalda Santos <span class="font-weight-bold">@up201706791</span> <br>
                     Diogo Silva <span class="font-weight-bold">@up201706892</span> <br>
                     João Luz <span class="font-weight-bold">@up201703782</span> <br>

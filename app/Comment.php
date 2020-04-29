@@ -38,7 +38,7 @@ class Comment extends Model
      */
      public function post()
     {
-        return $this->hasOne('App\Post', 'id_post');
+        return $this->belongsTo('App\Post', 'id_post');
     }
 
      /**
@@ -46,7 +46,7 @@ class Comment extends Model
      */
      public function parent()
     {
-        return $this->hasOne('App\Comment', 'id_parent');
+        return $this->belongsTo('App\Comment', 'id_parent');
     }
 
      /**

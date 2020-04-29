@@ -71,10 +71,6 @@ class RegisterController extends Controller
     {
         $photo = 'img/avatar_male.png';
         $data['gender'] == 'male' ? $photo = 'img/avatar_male.png' : $photo = 'img/avatar_female.png';
-        error_log("\n\n");
-        error_log($photo);
-        error_log($data['gender']);
-        error_log("\n\n");
 
         return User::create([
             'first_name' => $data['firstName'],
@@ -92,19 +88,18 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $validator = $this->validator($request->all());
-    
+
         if ($validator->fails()) {
             return redirect()->back()->with('showModal', "register")
                 ->withErrors($validator)
                 ->withInput();
         }
-    
-        event(new Registered($user = $this->create($request->all())));
-    
-        $this->guard()->login($user);
-    
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
-    }
 
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
 }

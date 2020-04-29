@@ -14,12 +14,11 @@
                 <div class="text-center">
                     <div class="text-center">
                         {{--{{ auth()->user->photo != null? auth()->user->photo : asset('img/avatar_male.png') }} --}}
-                        <img id="photoSettings" class="profile-pic" src="{{ asset($user->photo) }}"
-                            alt="Profile Image">
+                        <img id="photoSettings" class="profile-pic" src="{{ asset($user->photo) }}" alt="Profile Image">
                     </div>
                     <div class="custom-file mt-4 mb-5">
-                         <input name="image" form="edit-user" type="file" accept="image/*" class="custom-file-input"
-                            id="customFile"> 
+                        <input name="image" form="edit-user" type="file" accept="image/*" class="custom-file-input"
+                            id="customFile">
                         <label class="custom-file-label text-left" for="customFile" id="customFileLabel">
                             No file selected.
                         </label>
@@ -74,15 +73,15 @@
                             <div class="col-sm-4 mx-sm-5">
                                 <div class="form-group">
                                     <label class=" control-label">Password:</label>
-                                    <input class="form-control" type="password" id="password"
-                                        placeholder="Password" required>
+                                    <input class="form-control" type="password" id="password" placeholder="Password"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-sm-4 ml-sm-5">
                                 <div class="form-group">
                                     <label class=" control-label">Confirm password:</label>
-                                    <input class="form-control" type="password"
-                                        id="password_confirmation" placeholder="Confirm your password" required>
+                                    <input class="form-control" type="password" id="password_confirmation"
+                                        placeholder="Confirm your password" required>
                                 </div>
                             </div>
                         </div>
@@ -93,28 +92,20 @@
                                 <div class="form-group">
                                     <label class=" control-label">Gender:</label>
                                     <select class="form-control" id="gender" name="gender">
-                                        @if ($user->gender == "male") {
-                                        <option value="male" selected="selected">Male</option>
-                                        }
-                                        @else {
+                                        @if ($user->gender == "male")
+                                        <option value="Male" selected="selected">Male</option>
+                                        @else
                                         <option value="male">Male</option>
-                                        }
                                         @endif
-
-                                        @if ($user->gender == "female") {
+                                        @if ($user->gender == "female")
                                         <option value="female" selected="selected">Female</option>
-                                        }
-                                        @else {
+                                        @else
                                         <option value="female">Female</option>
-                                        }
                                         @endif
-
-                                        @if ($user->gender == "other") {
+                                        @if ($user->gender == "other")
                                         <option value="other" selected="selected">Other</option>
-                                        }
-                                        @else {
+                                        @else
                                         <option value="other">Other</option>
-                                        }
                                         @endif
                                     </select>
                                 </div>
@@ -157,7 +148,8 @@
                             </div>
                             <div class="col-md-3 delete-column">
                                 <div>
-                                    <button type="button" id="delete-red-button" data-toggle="modal" data-target="#modalDelete" class="btn btn-outline-danger my-auto">
+                                    <button type="button" id="delete-red-button" data-toggle="modal"
+                                        data-target="#modalDelete" class="btn btn-outline-danger my-auto">
                                         Delete
                                     </button>
                                 </div>
@@ -172,7 +164,7 @@
     </div>
 </div>
 
-<div class="modal" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalCommunityTitle" aria-hidden="false">
+<div class="modal" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
         <div class="modal-content">
             <div class="modal-body login-modal">
@@ -184,27 +176,31 @@
                         <h2 class="text-dark title-padding title-mobile">Delete Account
                         </h2>
                         <hr>
-                        <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently <b>delete</b> your account. Be prePEARed!</label>
-                        <label class="col control-label pl-0 mx-0" for="#delete-confirm-username">Enter your <b class="text-danger">username</b> to confirm:</label>
-                        <input class="form-control" type="text" name="delete-confirm-username" id="delete-confirm-username">
+                        <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently
+                            <b>delete</b> your account. Be prePEARed!</label>
+                        <label class="col control-label pl-0 mx-0" for="delete-confirm-username">Enter your <b
+                                class="text-danger">username</b> to confirm:</label>
+                        <input class="form-control" type="text" name="delete-confirm-username"
+                            id="delete-confirm-username">
                         <input hidden type="text" value="{{$user->username}}" id="delete-user-solution">
                         <div class="form-group mx-sm-0 mt-3 pl-1">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="deleteToggle">
                                 <label class="custom-control-label" for="deleteToggle">
                                     Keep my content
+                                </label>
                             </div>
                         </div>
-                        <div class="alert alert-danger" id="delete-warning-box" hidden = "hidden">
-                            <h4>Warning!<h4>
+                        <div class="alert alert-danger" id="delete-warning-box" hidden="hidden">
+                            <h4>Warning!</h4>
                             <h6>By checking this box you agree to the deletion of all your content!</h6>
                         </div>
-                             <div class="row justify-content-end my-2 mx-1">
+                        <div class="row justify-content-end my-2 mx-1">
                             <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal"
                                 data-target="#">Take me back</button>
-                            <button id="deleteAccount" class="btn my-2 ml-1 text-danger" data-toggle="modal" data-dismiss="modal"
-                                data-target="#" disabled>I'm sure</button>
-                            </div>
+                            <button id="deleteAccount" class="btn my-2 ml-1 text-danger" data-toggle="modal"
+                                data-dismiss="modal" data-target="#" disabled>I'm sure</button>
+                        </div>
                     </div>
                 </section>
             </div>

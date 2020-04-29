@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Post;
+use App\Community;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -61,8 +62,9 @@ class UserController extends Controller
         $age = \Carbon\Carbon::parse($member_user->birthday)->age;
 
         $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
+        $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
         //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.myProfile', ['user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts]);
+        return view('pages.myProfile', ['user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities]);
     }
 
     /**

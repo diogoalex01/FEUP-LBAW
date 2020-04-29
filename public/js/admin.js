@@ -6,9 +6,9 @@ let all_menu = document.getElementById("all_menu")
 all_menu.addEventListener("click", function () {
     admin_title.innerHTML = "All Reports"
     for (let i = 0; i < admin_aside.length; i++) {
-        admin_aside[i].setAttribute("class", "nav-border")
+        admin_aside[i].classList.add("nav-border")
     }
-    all_menu.setAttribute("class", "nav-border-active")
+    all_menu.classList.add("nav-border-active")
 
     for (let i = 0; i < all_rep.length; i++) {
         if (all_rep[i].style.display === "none") {
@@ -20,11 +20,13 @@ all_menu.addEventListener("click", function () {
 function report_tabs(type) {
     admin_title.innerHTML = type.charAt(0).toUpperCase() + type.substring(1) + " Reports"
     for (let i = 0; i < admin_aside.length; i++) {
-        if (admin_aside[i].hasAttribute("nav-border-active"))
-            admin_aside[i].removeAttribute("class", "nav-border-active")
-        admin_aside[i].setAttribute("class", "nav-border")
+        if (admin_aside[i].classList.contains("nav-border-active"))
+            admin_aside[i].classList.remove("nav-border-active")
+        admin_aside[i].classList.add("nav-border")
     }
-    users_menu.setAttribute("class", "nav-border-active")
+
+    let active = document.getElementById(type + "_menu")
+    active.classList.add("nav-border-active")
 
     for (let i = 0; i < all_rep.length; i++) {
         if (all_rep[i].classList.contains(type + "-report")) {
@@ -36,13 +38,13 @@ function report_tabs(type) {
 }
 
 let users_menu = document.getElementById("users_menu")
-users_menu.addEventListener("click", report_tabs.bind(this,"user"))
+users_menu.addEventListener("click", report_tabs.bind(this, "user"))
 
 let comments_menu = document.getElementById("comments_menu")
-comments_menu.addEventListener("click", report_tabs.bind(this,"comment"))
+comments_menu.addEventListener("click", report_tabs.bind(this, "comment"))
 
 let posts_menu = document.getElementById("posts_menu")
-posts_menu.addEventListener("click", report_tabs.bind(this,"post"))
+posts_menu.addEventListener("click", report_tabs.bind(this, "post"))
 
 let communities_menu = document.getElementById("communities_menu")
-communities_menu.addEventListener("click", report_tabs.bind(this,"community"))
+communities_menu.addEventListener("click", report_tabs.bind(this, "community"))

@@ -422,7 +422,8 @@ function draw_login_modals($auth, $admin)
                                     </div>
                                     <div class="google-btn">
                                         <div class="google-icon-wrapper">
-                                          <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                                            <img class="google-icon"
+                                                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
                                         </div>
                                         <p class="btn-text"><b>Continue with google</b></p>
                                     </div>
@@ -640,8 +641,8 @@ function profile_post_user($auth, $poster_name, $poster_page, $community_name, $
             <?php vote_content($up_votes, $down_votes); ?>
 
             <div class="col-md-10 mx-auto pb-3">
-                <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> <img
-                        class="card-img-top thumbnail mr-2 my-0 pl-0 py-0 text-center" height="35" width="35"
+                <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+                    <img class="card-img-top card-img thumbnail mr-2 my-0 pl-0 py-0 text-center" height="35" width="35"
                         src=<?= $image ?> alt="Post Image" style="object-fit: contain;">
                     <?= $title ?></a>
                 <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
@@ -664,8 +665,9 @@ function profile_post_myProfile($auth, $poster_name, $poster_page, $community_na
         <a href="<?= $poster_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">@<?= $poster_name ?></a> <span
             class="text-muted"> posted on</span> <a
             href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">/<?= $community_name ?></a></h6>
-    <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>"> <img class="card-img-top thumbnail mr-2 mb-1 my-1"
-            height="35" width="35" src=<?= $image ?> alt="Post Image">
+    <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+        <img class="card-img-top card-img thumbnail mr-2 mb-1 my-1" height="35" width="35" src=<?= $image ?>
+            alt="Post Image">
         <?= $title ?></a>
 
     <div class="card-body post-thbn-body">
@@ -844,8 +846,8 @@ function report_post($auth, $reporter_name, $reporter_name_page, $reporter_image
 <!-- Reported Post -->
 <div class="post-report report card mb-4 post-container">
     <div class="card-body">
-        <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35"
-                src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
+        <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+            <img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
         <a href="post.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
             <h5 class="mt-1"><?= $title ?></h5>
             <p class="card-text"><?= $content ?>
@@ -882,8 +884,8 @@ function report_user($auth, $reporter_name, $reporter_name_page, $reporter_image
 <!-- Reported User -->
 <div id="r-user-1" class="user-report report card mb-4 post-container">
     <div class="card-body">
-        <a href="<?= $reported_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35"
-                src=<?= $reported_image ?> alt="Profile Image"> @<?= $reported_name ?> </a>
+        <a href="<?= $reported_page ?>?auth=<?= $auth ?>&admin=<?= $admin ?>">
+            <img height="35" width="35" src=<?= $reported_image ?> alt="Profile Image"> @<?= $reported_name ?> </a>
         <p class="card-text mt-2"> <i class="fas fa-exclamation-triangle mr-1"></i><?= $content ?></p>
     </div>
     <div class="card-footer row text-muted mx-0">
@@ -912,8 +914,8 @@ function report_community($auth, $reporter_name, $reporter_name_page, $reporter_
 <!-- Reported Community -->
 <div id="r-community-1" class="community-report report card mb-4 post-container">
     <div class="card-body">
-        <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>"><img height="35" width="35"
-                src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
+        <a href="community.php?auth=<?= $auth ?>&admin=<?= $admin ?>">
+            <img height="35" width="35" src=<?= $community_image ?> alt="Profile Image"> /<?= $community_name ?> </a>
         <p class="card-text mt-2"> <i class="fas fa-exclamation-triangle mr-1"></i><?= $content ?></p>
     </div>
     <div class="card-footer row text-muted mx-0">

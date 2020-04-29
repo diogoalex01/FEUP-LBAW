@@ -38,7 +38,7 @@ class Community extends Model
      */
     public function user()
     {
-        return $this->hasOne('App\User', 'id_owner');
+        return $this->belongsTo('App\User', 'id_owner');
     }
 
         /**

@@ -53,17 +53,25 @@
         </div>
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
-                {{-- <a href="$commenter_page ?auth=&admin="> <img height="35" width="35"
-                        src=$commenter_image ?> alt="Profile Image"> </a> --}}
-                <span class="px-1 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}}</span>
-                by
-                <a> <span class="pl-1">@<span pl-0 ml-0>{{$comment->user->username}}</span></span> </a>
+                @if($comment->user != null)
+                <a href="{{route('profile', $comment->user->id)}}">
+                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}" alt="">
+                </a>
+                @endif
+
+                <span class="px-1 pl-2 align-self-center">{{date('F d, Y', strtotime($comment->time_stamp))}} by </span>
+                @if($comment->user == null)
+                <a>@unknown</a>
+                @else
+                <a href={{ route('profile', $comment->user->id)}} class="my-auto">
+                    <span>@</span>{{$comment->user->username}}</a>
+                @endif
             </div>
         </div>
     </div>
 </div>
 <div id="replies{{$comment->id}}">
     @foreach($replies as $reply)
-        @include('partials.reply', ['user'=>$user, 'reply'=> $reply, 'comment' => $comment])
+    @include('partials.reply', ['user'=>$user, 'reply'=> $reply, 'comment' => $comment])
     @endforeach
 </div>

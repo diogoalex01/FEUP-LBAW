@@ -10,12 +10,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-2 text-center community-pic-container">
-                    <img class="community-pic" src="{{ asset('img/Porto.jpg') }}" alt="Community Image">
+                    <a href="{{ route('community', $post->community->id)}}">
+                        <img class="community-pic" src="{{ asset($post->community->image) }}" alt="Community Image">
+                    </a>
                 </div>
-                <div class="col-md-7">
-                    {{-- <a href="community.php?auth="> --}}
-                    <h1 class="my-4">/Porto</h1>
-                    {{-- </a> --}}
+                <div class="col-md-7 my-auto">
+                    <h1 class="my-4"> <a href="{{ route('community', $post->community->id)}}">
+                            {{$post->community->name}} </a></h1>
                 </div>
             </div>
         </div>
@@ -23,7 +24,7 @@
         <!-- Post -->
         <div class="card mb-4 post-container">
             @if($post->image != null)
-            <img class="card-img-top pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{ asset($post->image)}}"
+            <img class="card-img-top card-img pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{ asset($post->image)}}"
                 alt="Post Image">
             @endif
 
@@ -83,18 +84,31 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row align-self-center justify-content-end">
-                            {{-- <a href=""><img height="35" width="35" 
-                                    src="./images/avatar_male.png" alt="Profile Image"></a> --}}
-                            <span class="px-1 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
+                            @if($post->user != null)
+                            <a href="{{route('profile', $post->user->id)}}">
+                                <img class="profile-pic-small" height="35" width="35" src="{{ asset($post->user->photo) }}"
+                                    alt="">
+                            </a>
+                            @endif
+                            
+                            <span class="px-1 pl-2 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
                                 by</span>
+                            @if($post->user == null)
+                            <a class="align-self-center">
+                                @unknown </a>
+                            @else
+                            <a class="align-self-center" href={{ route('profile', $post->user->id)}}>
+                                <span>@</span>{{$post->user->username}}</a>
                             {{-- <a class="align-self-center" href="myProfile.php?auth=&admin=">
                                 @someusername</a> --}}
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <hr>
 
         <!-- Add Comment -->
         @if (Auth::check())

@@ -53,5 +53,13 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Comment');
     }
+
+    /**
+     * The communities this user owns.
+     */
+    public function communities()
+    {
+        return $this->hasMany('App\Community');
+    }
     
 }

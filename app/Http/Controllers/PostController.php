@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\User;
 use App\Community;
 use App\Comment;
 use Illuminate\Http\Request;
@@ -47,10 +48,8 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //$post = new Post();
         //$this->authorize('create', $post);
-        // error_log($request->image);
-        // dd($request);
+
         $data = $request->validate([
             'community' => 'required',
             'title' => 'required',
@@ -63,8 +62,11 @@ class PostController extends Controller
         $communities = DB::table('community')->pluck('name')->toArray();
         $community_name = $data['community'];
 
-        if (in_array($community_name, $communities)) {
-            $community_id = DB::table('community')->where('name', '=', $community_name)->get()->first()->id;
+        $lowerCommunities = array_map('strtolower', $communities);
+        $lowerCommunityName = strtolower($community_name);
+
+        if (in_array($lowerCommunityName, $lowerCommunities)) {
+            $community_id = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first()->id;
         } else {
             if (!in_array('private', $data)) {
                 $data['private'] = 'false';
@@ -76,6 +78,8 @@ class PostController extends Controller
                 'name' => $community_name,
                 'private' => $data['private'],
             ]);
+            
+            $community->image = "img/default_community.jpg";
             $community->id_owner = Auth::user()->id;
             $community->save();
             $community_id = $community->id;
@@ -88,8 +92,6 @@ class PostController extends Controller
             'title' => $data['title'],
         ]);
 
-        // $path = $request->file('image')->store('img');
-        //$path = Storage::putFile('avatars', $request->file('avatar'));
         if ($request->hasFile('image')) {
             $nameWithExtension = $request->file('image')->getClientOriginalExtension();
             $path = $request->file('image')->storeAs(
@@ -123,10 +125,10 @@ class PostController extends Controller
         }
 
         $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
-        $just_replies = ['id_post' => $id, ['id_parent','<>',null]];
-        $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->with('user')->get();
-        $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->with('user')->get();
-    
+        $just_replies = ['id_post' => $id, ['id_parent', '<>', null]];
+        $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
+        $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->get();
+
         return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
     }
 
@@ -147,7 +149,7 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = DB::table('post')->orderBy('time_stamp', 'desc')->get()->take(30);
+        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(30);
 
         return view('pages.home', ['posts' => $posts, 'user' => $user]);
     }

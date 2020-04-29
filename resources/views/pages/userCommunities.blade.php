@@ -73,8 +73,9 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
-                                    height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
+                            <a href="community.php?auth=<?= $auth ?>">
+                                <img class="card-img-top card-img thumbnail mr-2 mb-1" height="35" width="35"
+                                    src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
                     </div>
@@ -86,7 +87,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -99,7 +100,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -112,7 +113,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -125,7 +126,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -138,7 +139,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -151,7 +152,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -164,7 +165,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
@@ -177,7 +178,7 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body community-thumbnail">
                     <div class="community-thumbnail-row">
                         <div>
-                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top thumbnail mr-2 mb-1"
+                            <a href="community.php?auth=<?= $auth ?>"> <img class="card-img-top card-img thumbnail mr-2 mb-1"
                                     height="35" width="35" src="./images/Porto.jpg" alt="Post Image">
                                 /Porto</a>
                         </div>
