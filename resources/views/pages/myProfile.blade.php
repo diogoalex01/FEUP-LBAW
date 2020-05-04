@@ -10,7 +10,7 @@
         <div class="col-md-3 aside">
 
             <div class="profile-pic-container text-center">
-                <img class="profile-pic" src={{ asset($user->photo) }} alt="Profile Image">
+                <img class="profile-pic" src={{ asset($other_user->photo) }} alt="Profile Image">
             </div>
 
             {{-- <div class="row">
@@ -31,7 +31,7 @@
                             <i class="fas fa-star"></i>
                         </div>
                         <div class="col">
-                            {{ $user->credibility }} points
+                            {{ $other_user->credibility }} points
                         </div>
                     </div>
                     <div class="row mb-2 ml-1 d-flex justify-content-start align-items-center">
@@ -56,7 +56,7 @@
                             <i class="fas fa-venus-mars"></i>
                         </div>
                         <div class="col">
-                            {{ $user->gender }}
+                            {{ $other_user->gender }}
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
         <!-- Posts Column -->
         <div class="col-md-9">
 
-            <h1 class="my-4 username-header"> <span>@</span>{{$user->username}}</h1>
+            <h1 class="my-4 username-header"> <span>@</span>{{$other_user->username}}</h1>
 
             <!-- New Post -->
             <a href="/new_post">
@@ -102,14 +102,14 @@
 
             <div class="active-tab profile-content">
                 @foreach($posts as $post)
-                @include('partials.myProfilePost', ['post' => $post, 'user' => $user ])
+                @include('partials.myProfilePost', ['post' => $post, 'user' => $other_user ])
                 @endforeach
             </div>
 
             <!-- Communities -->
             <div class="hidden-tab profile-content" style="display: none;">
                 @foreach($communities as $community)
-                @include('partials.myProfileCommunity', ['community' => $community, 'user' => $user ])
+                @include('partials.myProfileCommunity', ['community' => $community, 'user' => $other_user ])
                 @endforeach
             </div>
 

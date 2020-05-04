@@ -56,15 +56,20 @@ class UserController extends Controller
      */
     public function show($user_id)
     {
+        $this_user = Auth::user();
         $member_users = User::all();
         $member_user = $member_users->find($user_id);
-        $postN = Post::where('id_author', '=', $user_id)->count();
-        $age = \Carbon\Carbon::parse($member_user->birthday)->age;
+        if($member_user != NULL){
+            $postN = Post::where('id_author', '=', $user_id)->count();
+            $age = \Carbon\Carbon::parse($member_user->birthday)->age;
 
         $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
         $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
         //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.myProfile', ['user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities]);
+        return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user]);
+        }
+        return view('pages.notFound', ['user'=> $this_user]);
+
     }
 
     /**

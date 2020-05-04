@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
+use Sendpulse\RestApi\ApiClient;
 use App\User;
 
 class AccountsController extends Controller
@@ -55,13 +56,58 @@ class AccountsController extends Controller
     }
 
     private function sendResetEmail($email, $token)
-    { //Retrieve the user from the database
-        $user = User::where('email', $email)->select('first_name', 'email')->first();
+    {
+        //Retrieve the user from the database
+        $user = User::where('email', $email)->select('first_name', 'last_name', 'email')->first();
         //Generate, the password reset link. The token generated is embedded in the link
-        $link = config('base_url') . 'reset/' . $token . '?email=' . urlencode($user->email);
+        $link = config('APP_URL') . '/reset/' . $token . '?email=' . urlencode($user->email);
 
+        error_log("\n\n");
+        error_log($user->email);
+        error_log($link);
+     
         try {
-            //Here send the link with CURL with an external email API         
+
+            define('API_USER_ID', '362ccba54c8e19e839a7a823d9fac4de');
+            define('API_SECRET', 'c5e009beb89e4a70fd7c64fbe822caa6');
+
+            $SPApiClient = new ApiClient(API_USER_ID, API_SECRET);
+
+            // Send mail using SMTP
+            $email = array(
+                'html'    => 'Your email content goes here',
+                'text'    => 'Your email text version goes here ' . $link,
+                'subject' => 'Testing SendPulse API',
+                'from'    => array(
+                    'name'  => 'PearToPear',
+                    'email' => 'noreply@peartopear.com'
+                ),
+                'to'      => array(
+                    array(
+                        'name'  => $user->first_name . " " . $user->last_name,
+                        'email' => $user->email
+                    )
+                )
+            );
+            var_dump($SPApiClient->smtpSendMail($email));
+
+            // $email = array(
+            //     'html'    => 'Your email content goes here',
+            //     'text'    => 'Your email text version goes here ' . $link,
+            //     'subject' => 'Testing SendPulse API',
+            //     'from'    => array(
+            //         'name'  => 'PearToPear',
+            //         'email' => 'noreply@peartopear.com'
+            //     ),
+            //     'to'      => array(
+            //         array(
+            //             'name'  => $user->first_name . " " . $user->last_name,
+            //             'email' => $user->email
+            //         )
+            //     )
+            // );
+            // var_dump($SPApiProxy->smtpSendMail($email));
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -121,6 +167,7 @@ class AccountsController extends Controller
         if (Auth::check()) {
             return redirect('/');
         }
+
         $email = urldecode(Input::get('email'));
 
         return view('auth.passwords.reset', ['email' => $email, 'token' => $request->token]);

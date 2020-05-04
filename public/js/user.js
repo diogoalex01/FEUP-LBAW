@@ -62,6 +62,7 @@ function addUserEventListeners() {
             if (!privacyToggle.hasAttribute("checked")) {
                 privacyToggleLabel.innerHTML = "Private Account";
                 privacyToggle.setAttribute("checked", "checked");
+
             } else {
                 privacyToggleLabel.innerHTML = "Public Account";
                 privacyToggle.removeAttribute("checked");
@@ -100,7 +101,7 @@ function sendResetPassword(e) {
 
 function resetPassHandler() {
     if (this.status != 200) {
-        console.log(response)
+        console.log(this.responseText)
         let response = JSON.parse(this.responseText);
         // window.location = '/';
         let string = "";
