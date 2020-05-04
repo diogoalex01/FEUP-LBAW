@@ -119,7 +119,7 @@ CREATE TABLE comment (
     downvotes int NOT NULL DEFAULT 0,
     id_author int REFERENCES member_user ON DELETE SET NULL,
     id_post int NOT NULL REFERENCES post ON DELETE CASCADE,
-	id_parent int REFERENCES comment
+	id_parent int REFERENCES comment ON DELETE CASCADE
 );
 
 CREATE TABLE post_vote (
