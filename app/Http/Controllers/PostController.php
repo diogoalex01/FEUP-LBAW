@@ -141,7 +141,6 @@ class PostController extends Controller
     public function list()
     {
         // if (!Auth::check()) return redirect('/login');
-
         //$this->authorize('list', Card::class);
         if (Auth::check()) {
             $user = Auth::user();
@@ -149,9 +148,30 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(30);
+        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
 
         return view('pages.home', ['posts' => $posts, 'user' => $user]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::orderBy('time_stamp', 'desc')->skip($data['num_posts'])->take(5)->get();
+        return response()->json(array(
+            'success' => true,
+            'post' => $posts
+        ), 200);
     }
 
     /**
@@ -186,5 +206,33 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+    public function vote(Request $request){
+        // post_id: targetId, vote_type: 'up'
+
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if($user == null)
+        return redirect('/');
+
+        $data = $request->validate([
+            'post_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $post = Post::where('id', '=', $data['post_id'])->get();
+        //TODO: alterar pivot table
+
+        if (strcmp("up", $data[vote_type]) == 0){
+            $post->upvotes = $post->upvotes + 1;
+        } else if (strcmp("down", $data[vote_type]) == 0){
+            $post->downvotes = $post->downvotes + 1;
+        }
+        
     }
 }

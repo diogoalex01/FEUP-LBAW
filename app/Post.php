@@ -36,7 +36,7 @@ class Post extends Model
     /**
      * The user this post belongs to
      */
-     public function user()
+    public function user()
     {
         return $this->belongsTo('App\User', 'id_author');
     }
@@ -56,4 +56,13 @@ class Post extends Model
     {
         return $this->hasMany('App\Comment');
     }
+
+    /**
+    * Users who have voted on this post 
+    */
+    public function voters()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
 }

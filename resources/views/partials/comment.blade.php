@@ -3,34 +3,7 @@
     <div class="row pt-4">
 
         {{-- Votes --}}
-        <div class="d-flex align-items-end justify-content-end">
-            <div class="col">
-                <div class="row">
-                    <div class="d-flex justify-content-between pr-1">
-                        <a>
-                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex justify-content-center pb-2">
-                        <a>
-                            <p class="mb-0"> {{$comment->upvotes}} </p>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="d-flex justify-content-between pr-1">
-                        <a>
-                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <a>
-                            <p> {{$comment->downvotes}} </p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('partials.vote', ['route'=>'/comment/'.$comment->id."/vote", 'user'=>$user, 'object'=>$comment])
 
         {{-- Content --}}
         <div class="col-md-10 mx-auto">
@@ -55,7 +28,8 @@
             <div class="row align-self-center justify-content-end">
                 @if($comment->user != null)
                 <a href="{{route('profile', $comment->user->id)}}">
-                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}"
+                        alt="">
                 </a>
                 @endif
 

@@ -496,3 +496,12 @@ button:disabled {
 .error-header{
   color: #4c191b;
 }
+
+.vote:hover {
+  cursor: pointer;
+}
+
+.dropdown:hover {
+  cursor: pointer;
+}
+

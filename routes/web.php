@@ -11,30 +11,11 @@
 |
 */
 
-// New Post 
-Route::get('/', 'PostController@list')->name('home');
-Route::get('/new_post', 'PostController@create')->name('new_post');
-Route::post('/new_post', 'PostController@store');
-
-// Post 
-Route::get('/post/{post_id}', 'PostController@show')->name('post');
-Route::put('/comment', 'CommentController@store');
-Route::put('/reply', 'CommentController@storeReply');
-
 // User
 Route::get('/user/{user_id}', 'UserController@show')->name('profile');
-
-//community
-Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
-
 Route::get('/settings', 'UserController@edit')->name('settings');
 Route::put('/settings', 'UserController@update');
 Route::delete('/settings', 'UserController@destroy');
-
-Route::get('/about', 'PageController@about')->name('about');
-
-// API
-Route::post('/api/communities', 'CommunityController@get_all');
 
 // Authentication
 Route::post('/login', 'Auth\LoginController@login')->name('login');
@@ -50,3 +31,35 @@ Route::post('/reset_password_token', 'AccountsController@resetPassword');
 
 Route::get('/reset_password_email_sent', 'AccountsController@verifyEmail');
 Route::get('/reset/{token}', 'AccountsController@reset');
+
+// Home
+Route::get('/', 'PostController@list')->name('home');
+
+// Community
+Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
+
+// New Post 
+Route::get('/new_post', 'PostController@create')->name('new_post');
+Route::post('/new_post', 'PostController@store');
+
+// Post 
+Route::get('/post/{post_id}', 'PostController@show')->name('post');
+Route::put('/post/{post_id}/vote', 'PostController@vote')->name('post_vote');
+Route::post('/post/{post_id}/vote', 'PostController@vote_edit')->name('post_edit_vote');
+Route::delete('/post/{post_id}/vote', 'PostController@vote_delete')->name('post_delete_vote');
+
+// Comment
+Route::put('/comment', 'CommentController@store');
+Route::put('/reply', 'CommentController@storeReply');
+
+// Search
+Route::get('/search/{query}', 'CommunityController@get_all');
+Route::post('/search', 'CommunityController@get_all');
+
+// API
+Route::post('/api/communities', 'CommunityController@get_all');
+Route::get('/api/search', 'CommunityController@get_all');
+Route::post('/api/home', 'PostController@refresh')->name('refresh_home');
+
+// Static Pages
+Route::get('/about', 'PageController@about')->name('about');

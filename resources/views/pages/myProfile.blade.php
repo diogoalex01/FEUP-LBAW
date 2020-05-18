@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "MyProfile"])
+@extends('layouts.app', ['title' => $other_user->first_name . " ". $other_user->last_name . " | PearToPear"])
 @section('content')
 
 <!-- Page Content -->

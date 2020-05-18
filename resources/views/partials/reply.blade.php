@@ -3,34 +3,7 @@
     <div class="row pt-4">
 
         {{-- Votes --}}
-        <div class="d-flex align-items-end justify-content-end">
-            <div class="col">
-                <div class="row">
-                    <div class="d-flex justify-content-between pr-1">
-                        <a>
-                            <i class="fas fa-chevron-up fa-lg pb-2"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex justify-content-center pb-2">
-                        <a>
-                            <p class="mb-0"> {{$reply->upvotes}} </p>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="d-flex justify-content-between pr-1">
-                        <a>
-                            <i class="fas fa-chevron-down fa-lg pb-2"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <a>
-                            <p> {{$reply->downvotes}} </p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('partials.vote', ['route'=>'/comment/'.$reply->id."/vote", 'user'=>$user, 'object'=>$reply])
 
         {{-- Content --}}
         <div class="col-md-10 mx-auto">

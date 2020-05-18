@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "Community"])
+@extends('layouts.app', ['title' => $community->name ." | Community"])
 @section('content')
 
 <!-- Page Content -->
@@ -106,8 +106,10 @@
                 </div>
             </a>
             @endif
-
-            @each('partials.homePost', $posts, 'post')
+            {{-- @each('partials.homePost', $posts, 'post') --}}
+            @foreach($posts as $post)
+            @include('partials.homePost', ['post'=>$post, 'user'=>$user])
+            @endforeach
             <!-- Post -->
             {{--  home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am in the first semester of my CS uni and i just realised that i dont know how to start learning a new course. I tried reading the provided book / searching on

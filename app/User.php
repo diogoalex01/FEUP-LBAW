@@ -62,4 +62,17 @@ class User extends Authenticatable
         return $this->hasMany('App\Community');
     }
     
+    /**
+     * The Post this user voted on.
+     */
+     public function votedPosts()
+    {
+        return $this->belongsToMany('App\Post', 'post_votes', 'user_id', 'post_id');
+        return $this->belongsToMany('App\Post')
+                        ->using('App\PostVote')
+                        ->withPivot([
+                            'vote_type',
+                        ]);
+    }
+
 }

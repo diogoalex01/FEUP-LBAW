@@ -205,7 +205,7 @@
             </div>
 
             <div class="dropdown dropdown-nav">
-                <a class="dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img class="profile-pic-small" id="profileNav" height="50" width="50"
                         src="{{ asset($user->photo) }}" alt="Profile Image">
                 </a>

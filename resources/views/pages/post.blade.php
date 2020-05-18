@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "Post"])
+@extends('layouts.app', ['title' => $post->title])
 @section('content')
 
 <!-- Page Content -->
@@ -32,31 +32,8 @@
 
                 <div class="row">
 
-                    {{--  vote_content(12, 2);  --}}
-                    <div class="d-flex align-items-end justify-content-end">
-                        <div class="col-2">
-                            <div class="d-flex justify-content-center pb-2">
-                                <a>
-                                    <p class="mb-0"> {{$post->upvotes}} </p>
-                                </a>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <a>
-                                    <i class="fas fa-chevron-up fa-lg pb-2"></i>
-                                </a>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <a>
-                                    <i class="fas fa-chevron-down fa-lg pb-2"></i>
-                                </a>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <a>
-                                    <p> {{$post->downvotes}} </p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- Votes --}}
+                    @include('partials.vote', ['route'=>'/post/'.$post->id."/vote", 'user'=>$user, 'object'=> $post])
 
                     <div class="col-md-10 mx-auto">
                         <div style="padding-top: 15px;">
@@ -86,11 +63,11 @@
                         <div class="row align-self-center justify-content-end">
                             @if($post->user != null)
                             <a href="{{route('profile', $post->user->id)}}">
-                                <img class="profile-pic-small" height="35" width="35" src="{{ asset($post->user->photo) }}"
-                                    alt="">
+                                <img class="profile-pic-small" height="35" width="35"
+                                    src="{{ asset($post->user->photo) }}" alt="">
                             </a>
                             @endif
-                            
+
                             <span class="px-1 pl-2 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
                                 by</span>
                             @if($post->user == null)

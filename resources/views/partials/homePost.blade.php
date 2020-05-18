@@ -12,8 +12,9 @@
             <div style="padding: 0 12%">
                 <div class="row">
 
-                    {{--p //vote_content($up_votes, $down_votes);  --}}
-
+                    {{-- Votes --}}
+                    @include('partials.vote', ['route'=>'/post/'.$post->id, 'user'=>$user, 'object'=> $post])
+                    
                     <div class="col-md-10 mx-auto">
                         <a href="/post/{{ $post->id }}">
                             <div style="padding: 15px 0;">

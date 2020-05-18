@@ -8,6 +8,7 @@ let addCommentForm = document.querySelector("#new-comment-form");
 let addCommentInput = document.querySelector("#new-comment-input");
 let replyButtons = document.querySelectorAll(".reply-btn");
 let sendReplyButton = document.querySelector("#send-reply-btn");
+let voteButtons = document.querySelectorAll(".vote-button");
 
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
@@ -40,6 +41,18 @@ function addPostEventListeners() {
             });
         });
     }
+
+    if (voteButtons != null) {
+        console.log("not null" + voteButtons.length)
+        voteButtons.forEach(function (item, idx) {
+            console.log("here");
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                voteButtonClicked(item);
+            });
+        });
+    }
 }
 
 function encodeForAjax(data) {
@@ -57,6 +70,82 @@ function sendAjaxRequest(method, url, data, handler) {
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.addEventListener('load', handler);
     request.send(encodeForAjax(data));
+}
+
+function voteButtonClicked(item) {
+    // method = "put", route, targetId, voteType
+    let route = item.getAttribute('data-route');
+    let voteType = item.getAttribute('data-vote-type');
+    let targetId = item.getAttribute('data-target-id');
+    let argumentsObject;
+    let pattern = /\/post\/[0-9]+\/vote/i;
+
+    let upvoteLableId = "upvote-label-" + targetId;
+    let upvoteLable = document.getElementById(upvoteLableId);
+    let downvoteLableId = "downvote-label-" + targetId;
+    let downvoteLable = document.getElementById(downvoteLableId)
+
+
+    console.log(voteType);
+    if (item.children[0].hasAttribute('data-checked')) {
+        item.children[0].style.color = "black";
+        method = 'delete';
+        item.children[0].removeAttribute('data-checked');
+        if (voteType == "up") {
+            upvoteLable.innerHTML = parseInt(upvoteLable.innerHTML) - 1;
+        } else {
+            downvoteLable.innerHTML = parseInt(downvoteLable.innerHTML) - 1;
+        }
+        method = "delete";
+    } else if (voteType == "up") {
+        item.children[0].style.color = "green";
+        item.children[0].setAttribute("data-checked", "data-checked");
+        upvoteLable.innerHTML = parseInt(upvoteLable.innerHTML) + 1;
+
+        let otherButton = document.getElementById("downvote-button-" + targetId);
+        if (otherButton.hasAttribute('data-checked')) {
+            // Frontend changes
+            downvoteLable.innerHTML = parseInt(downvoteLable.innerHTML) - 1;
+            otherButton.style.color = "black";
+            otherButton.removeAttribute('data-checked');
+            //Backend Changes
+            method = "post";
+        } else {
+            console.log("putting");
+            method = "put";
+        }
+    } else {
+        item.children[0].style.color = "red";
+        item.children[0].setAttribute("data-checked", "data-checked");
+        downvoteLable.innerHTML = parseInt(downvoteLable.innerHTML) + 1;
+
+        let otherButton = document.getElementById("upvote-button-" + targetId);
+        if (otherButton.hasAttribute('data-checked')) {
+            // Frontend changes
+            upvoteLable.innerHTML = parseInt(upvoteLable.innerHTML) - 1;
+            otherButton.style.color = "black";
+            otherButton.removeAttribute('data-checked');
+            //Backend Changes
+            method = "post";
+        } else {
+            method = "put"
+        }
+    }
+
+    console.log("route ->" + route);
+    if (route.match(pattern)) {
+        console.log("match");
+        argumentsObject = { post_id: targetId, vote_type: voteType }
+    } else {
+        console.log("doesnt match");
+        argumentsObject = { comment_id: targetId, vote_type: voteType };
+    }
+    sendAjaxRequest(method, route, argumentsObject, displayResponse);
+}
+
+function displayResponse() {
+    let response = JSON.parse(this.responseText);
+    console.log(response)
 }
 
 function sendCheckCommunityRequest(event) {
@@ -110,7 +199,7 @@ function newCommentHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                <i class="fas fa-chevron-up fa-lg pb-2 text-muted"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center pb-2">
@@ -122,7 +211,7 @@ function newCommentHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                <i class="fas fa-chevron-down fa-lg pb-2 text-muted"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -211,13 +300,12 @@ function addReplyForm(id) {
 }
 
 function sendCommentReply() {
-
     let user_id = document.querySelector('input[name=user_id]').value;
     let post_id = document.querySelector('input[name=post_id]').value;
     let comment_id = document.querySelector('input[name=comment_id]').value;
-
     let replyBody = document.getElementById("reply-input").value;
     let targetComment = document.getElementById(comment_id);
+
     console.log(user_id);
     console.log(post_id);
     console.log(comment_id);
@@ -406,6 +494,53 @@ if (newPostForm != null) {
     } else {
         newPostPrivacyToggleLabel.innerHTML = "Public Account";
     }
+}
+
+$(document).ready(function () {
+    let posts_column = document.getElementById("posts-column"); // outer container of messages
+    let loader = document.getElementById("loader"); // outer container of messages
+    let num_posts = 20;
+
+    if (posts_column != null) {
+        let lock = false;
+        loader.style.display = 'none';
+
+        $(window).scroll(function () {
+
+            if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+
+                if (lock == true) {
+                    return;
+                }
+
+                loader.style.display = 'block';
+                lock = true;
+
+                $.ajax({
+                    url: '/api/home/',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { num_posts: num_posts },
+                    success: function (data) {
+                        refreshHomeHandler(data, lock);
+                    }
+                });
+            }
+        });
+    }
+});
+
+function refreshHomeHandler(data, lock) {
+    console.log(data);
+    let response = JSON.parse(data);
+    console.log(response);
+
+    lock = false;
+    loader.style.display = 'none';
+    alert(data);
+    num_posts += 5;
+
+    $('#posts-column').append("<div>Some new chat..." + "</div>").fadeIn("slow");
 }
 
 addPostEventListeners();
