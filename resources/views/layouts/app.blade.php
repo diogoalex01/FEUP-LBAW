@@ -223,7 +223,18 @@
 
             @else
 
-            {{-- draw_login_modals("true", $admin); --}}
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="" id="sign-up-nav-btn" data-toggle="modal"
+                        data-target="#modalWelcome">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" id="log-in-nav-btn" data-toggle="modal" data-target="#modalWelcome">Log
+                        in</a>
+                </li>
+            </ul>
+
+            @endif
 
             <!-- Modal -->
             <div class="modal p-0" id="modalWelcome" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
@@ -524,18 +535,115 @@
                 </div>
             </div>
 
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="" id="sign-up-nav-btn" data-toggle="modal"
-                        data-target="#modalWelcome">Sign up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="" id="log-in-nav-btn" data-toggle="modal" data-target="#modalWelcome">Log
-                        in</a>
-                </li>
-            </ul>
+            <!-- Report Community Modal -->
+            <div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog"
+                aria-labelledby="modalCommunityTitle" aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-dark title-padding title-mobile">Report Post
+                                    </h2>
+                                    <hr>
+                                    <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                        <option value="spam">It's spam</option>
+                                        <option value="copy">It infringes my copyright</option>
+                                        <option value="innapropriate">Inappropriate Content</option>
+                                        <option value="irrelevant">Irrelevant Content</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="row justify-content-end my-2 mx-1">
 
-            @endif
+                                        <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Close</button>
+                                        <button class="btn btn-danger my-2 ml-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Send
+                                            Report</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Post Modal -->
+            <div class="modal" id="modalPostReport" tabindex="-1" role="dialog" aria-labelledby="modalPostTitle"
+                aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-dark title-padding title-mobile">Report Post
+                                    </h2>
+                                    <hr>
+                                    <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                        <option value="spam">It's spam</option>
+                                        <option value="copy">It infringes my copyright</option>
+                                        <option value="innapropriate">Inappropriate Content</option>
+                                        <option value="irrelevant">Irrelevant Content</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="row justify-content-end my-2 mx-1">
+                                        <button class="btn btn-outline-dark my-2 mr-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Close</button>
+                                        <button class="btn btn-danger my-2 ml-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Send
+                                            Report</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Comment Modal -->
+            <div class="modal" id="modalCommentReport" tabindex="-1" role="dialog" aria-labelledby="modalCommentTitle"
+                aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-dark title-padding title-mobile">Report Comment
+                                    </h2>
+                                    <hr>
+                                    <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                        <option value="spam">It's spam</option>
+                                        <option value="copy">It infringes my copyright</option>
+                                        <option value="innapropriate">Inappropriate Content</option>
+                                        <option value="irrelevant">Irrelevant Content</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="row justify-content-end my-2 mx-1">
+
+                                        <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Close</button>
+                                        <button class="btn btn-danger my-2 ml-1" data-toggle="modal"
+                                            data-dismiss="modal" data-target="#modalLogin">Send
+                                            Report</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </nav>

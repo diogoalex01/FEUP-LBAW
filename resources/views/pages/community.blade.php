@@ -2,7 +2,7 @@
 @section('content')
 
 <!-- Page Content -->
-<div class="container">
+<div class="container community-page-container" data-object-id="{{$community->id}}">
     <div class="row">
 
         <!-- Aside -->
@@ -107,9 +107,18 @@
             </a>
             @endif
             {{-- @each('partials.homePost', $posts, 'post') --}}
-            @foreach($posts as $post)
-            @include('partials.homePost', ['post'=>$post, 'user'=>$user])
-            @endforeach
+
+            <div id="posts-column-community">
+                @foreach($posts as $post)
+                @include('partials.homePost', ['post'=>$post, 'user'=>$user])
+                @endforeach
+            </div>
+
+            <div class="d-flex justify-content-center col-md-11 mt-2">
+                <div id="loader" class="spinner-border text-secondary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
             <!-- Post -->
             {{--  home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am in the first semester of my CS uni and i just realised that i dont know how to start learning a new course. I tried reading the provided book / searching on

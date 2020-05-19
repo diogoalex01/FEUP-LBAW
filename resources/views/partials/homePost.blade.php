@@ -13,8 +13,14 @@
                 <div class="row">
 
                     {{-- Votes --}}
-                    @include('partials.vote', ['route'=>'/post/'.$post->id, 'user'=>$user, 'object'=> $post])
-                    
+                    @if($user == null || $post->votedUsers->where('id', "=", $user->id)->first() == null)
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
+                    'vote_type' => "null"])
+                    @else
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
+                    'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
+                    @endif
+
                     <div class="col-md-10 mx-auto">
                         <a href="/post/{{ $post->id }}">
                             <div style="padding: 15px 0;">
@@ -30,12 +36,22 @@
                     style="border-top: 1px solid rgb(76, 25, 27); background-color: white;">
                     <div class="col-md-5 align-self-center justify-content-start">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
-                            <a href="{{route('post',$post->id)}}#new-comment-input"><i
-                                    class="fas fa-reply"></i>Reply</a>
+                            @if(Auth::guest())
+                            <a href="{{route('post',$post->id)}}"><i class="fas fa-reply"></i>Reply</a>
+                            @else
+                            <a href="{{route('post',$post->id)}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                            @endif
+
                             <div class="a-report">
+                                @if(Auth::guest())
+                                <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
+                                    <i class="fas fa-flag"></i>Report
+                                </a>
+                                @else
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                     <i class="fas fa-flag"></i>Report
                                 </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -48,23 +64,14 @@
                             </a>
                             @endif
 
-                            {{-- @if (strlen($post->user->password) < 32)
-                            <a href="user/{{$post->id_author}}"> <img class="rounded-circle" height="35" width="35"
-                                src="{{ asset($post->user->photo) }}" alt="Profile Image">
-                            </a>
-                            @else
-                            <a href="user/{{$post->id_author}}"> <img class="rounded-circle" height="35" width="35"
-                                    src="{{ url($post->id_author->photo) }}" alt="Profile Image">
-                            </a>
-                            @endif --}}
-
                             <span class="px-1 pl-2 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
                                 by</span>
                             @if($post->user == null)
                             <a class="align-self-center"> @unknown </a>
                             @else
                             <a class="align-self-center" href={{ route('profile', $post->user->id)}}>
-                                <span>@</span>{{$post->user->username}} </a>
+                                <span>@</span>{{$post->user->username}} 
+                            </a>
                             @endif
                         </div>
                     </div>

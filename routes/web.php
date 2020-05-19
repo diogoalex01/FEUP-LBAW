@@ -44,13 +44,16 @@ Route::post('/new_post', 'PostController@store');
 
 // Post 
 Route::get('/post/{post_id}', 'PostController@show')->name('post');
-Route::put('/post/{post_id}/vote', 'PostController@vote')->name('post_vote');
-Route::post('/post/{post_id}/vote', 'PostController@vote_edit')->name('post_edit_vote');
+Route::post('/post/{post_id}/vote', 'PostController@vote')->name('post_vote');
+Route::put('/post/{post_id}/vote', 'PostController@vote_edit')->name('post_edit_vote');
 Route::delete('/post/{post_id}/vote', 'PostController@vote_delete')->name('post_delete_vote');
 
 // Comment
 Route::put('/comment', 'CommentController@store');
 Route::put('/reply', 'CommentController@storeReply');
+Route::post('/comment/{comment_id}/vote', 'CommentController@vote')->name('comment_vote');
+Route::put('/comment/{comment_id}/vote', 'CommentController@vote_edit')->name('comment_edit_vote');
+Route::delete('/comment/{comment_id}/vote', 'CommentController@vote_delete')->name('comment_delete_vote');
 
 // Search
 Route::get('/search/{query}', 'CommunityController@get_all');
@@ -60,6 +63,7 @@ Route::post('/search', 'CommunityController@get_all');
 Route::post('/api/communities', 'CommunityController@get_all');
 Route::get('/api/search', 'CommunityController@get_all');
 Route::post('/api/home', 'PostController@refresh')->name('refresh_home');
+Route::post('/api/community', 'CommunityController@refresh')->name('refresh_community');
 
 // Static Pages
 Route::get('/about', 'PageController@about')->name('about');

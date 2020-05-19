@@ -56,4 +56,14 @@ class Comment extends Model
     {
         return $this->hasMany('App\Comment');
     }
+
+     /**
+     * Users who have voted on this comment 
+     */
+     public function votedUsers()
+    {
+        return $this->belongsToMany('App\User', 'comment_vote', 'id_comment', 'id_user')->withPivot([
+            'vote_type',
+        ]);
+    }
 }

@@ -22,7 +22,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'id_community', 'content', 'title', 'id_author', 'image',
+        'id_community', 'content', 'title', 'id_author', 'image', 'upvotes', 'downvotes',
     ];
 
     /**
@@ -32,7 +32,7 @@ class Post extends Model
      */
     // protected $hidden = [
     // ];
-  
+
     /**
      * The user this post belongs to
      */
@@ -57,12 +57,15 @@ class Post extends Model
         return $this->hasMany('App\Comment');
     }
 
-    /**
-    * Users who have voted on this post 
-    */
-    public function voters()
-    {
-        return $this->belongsToMany('App\User');
-    }
+    //return $this->belongsToMany('App\Role', 'role_user', 'user_id', 'role_id');
 
+    /**
+     * Users who have voted on this post 
+     */
+    public function votedUsers()
+    {
+        return $this->belongsToMany('App\User', 'post_vote', 'id_post', 'id_user')->withPivot([
+            'vote_type',
+        ]);
+    }
 }

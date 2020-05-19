@@ -271,49 +271,89 @@ CREATE TRIGGER block_user
 
 CREATE FUNCTION vote_on_comment() RETURNS TRIGGER AS
 $BODY$
+declare commentID INT;
 BEGIN
-    IF EXISTS (
+    -- IF EXISTS (
+	-- 	SELECT *
+	-- 		FROM comment
+	-- 		WHERE NEW.id_comment = comment.id AND NEW.id_user = comment.id_author)
+	-- 	THEN
+	-- 		RAISE EXCEPTION 'A user cannot vote on their own comments.';
+
+	-- ELSIF NEW.vote_type = 'up'
+	-- THEN
+	-- 	UPDATE comment
+	-- 		SET upvotes = upvotes + 1
+	-- 		WHERE id = NEW.id_comment;
+	-- ELSIF NEW.vote_type = 'down'
+	-- THEN
+	-- 	UPDATE comment
+	-- 		SET downvotes = downvotes + 1
+	-- 		WHERE id = NEW.id_comment;
+    -- END IF;
+	IF TG_OP = 'INSERT' THEN
+		commentID := NEW.id_comment;
+		IF EXISTS (
 		SELECT *
 			FROM comment
 			WHERE NEW.id_comment = comment.id AND NEW.id_user = comment.id_author)
 		THEN
 			RAISE EXCEPTION 'A user cannot vote on their own comments.';
-	ELSIF NEW.vote_type = 'up'
-	THEN
-		UPDATE comment
-			SET upvotes = upvotes + 1
-			WHERE id = NEW.id_comment;
-	ELSIF NEW.vote_type = 'down'
-	THEN
-		UPDATE comment
-			SET downvotes = downvotes + 1
-			WHERE id = NEW.id_comment;
-    END IF;
+		END IF;
 	
+	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN 
+		commentID := OLD.id_comment;
+		IF OLD.vote_type = 'up' THEN
+			UPDATE comment
+				SET upvotes = upvotes - 1
+				WHERE id = OLD.id_comment;
+		ELSIF OLD.vote_type = 'down' THEN
+			UPDATE comment
+				SET downvotes = downvotes - 1
+				WHERE id = OLD.id_comment;
+		END IF;
+	END IF;
+	
+	IF TG_OP = 'UPDATE' OR TG_OP = 'INSERT' THEN
+		IF NEW.vote_type = 'up'
+		THEN
+			UPDATE comment
+				SET upvotes = upvotes + 1
+				WHERE id = NEW.id_comment;
+		ELSIF NEW.vote_type = 'down'
+		THEN
+			UPDATE comment
+				SET downvotes = downvotes + 1
+				WHERE id = NEW.id_comment;
+		END IF;
+	END IF;
+
 	UPDATE member_user 
 		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
 		FROM 
 			(SELECT comment.id_author AS author, comment.upvotes AS upvotes, comment.downvotes AS downvotes
 				FROM comment
-				WHERE comment.id = NEW.id_comment) AS subquery 
+				WHERE comment.id = commentID) AS subquery 
 		WHERE member_user.id = subquery.author;
 	
-    RETURN NEW;
+    RETURN NULL;
 END
 $BODY$
 LANGUAGE plpgsql;
  
 CREATE TRIGGER vote_on_comment
-    AFTER INSERT ON comment_vote
+    AFTER INSERT OR UPDATE OR DELETE ON comment_vote
     FOR EACH ROW
     EXECUTE PROCEDURE vote_on_comment();
 
 
 CREATE FUNCTION vote_on_post() RETURNS TRIGGER AS
 $BODY$
+declare postID INT;
 BEGIN
-	IF TG_OP = 'INSERT'
-	THEN IF EXISTS (
+	IF TG_OP = 'INSERT' THEN
+		postID := NEW.id_post;
+		IF EXISTS (
 		SELECT *
 			FROM post
 			WHERE NEW.id_post = post.id AND NEW.id_user = post.id_author )
@@ -321,47 +361,48 @@ BEGIN
 			RAISE EXCEPTION 'A user cannot vote on their own posts.';
 		END IF;
         
-	ELSIF TG_OP = 'UPDATE'
-	THEN IF OLD.vote_type = 'up'
-		THEN
+	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN 
+		postID := OLD.id_post;
+		IF OLD.vote_type = 'up' THEN
 			UPDATE post
 				SET upvotes = upvotes - 1
 				WHERE id = OLD.id_post;
-	ELSIF OLD.vote_type = 'down'
-		THEN
+		ELSIF OLD.vote_type = 'down' THEN
 			UPDATE post
 				SET downvotes = downvotes - 1
 				WHERE id = OLD.id_post;
-    	END IF;
+		END IF;
 	END IF;
 	
-	IF NEW.vote_type = 'up'
-	THEN
-		UPDATE post
-			SET upvotes = upvotes + 1
-			WHERE id = NEW.id_post;
-	ELSIF NEW.vote_type = 'down'
-	THEN
-		UPDATE post
-			SET downvotes = downvotes + 1
-			WHERE id = NEW.id_post;
-    END IF;
+	IF TG_OP = 'UPDATE' OR TG_OP = 'INSERT' THEN
+		IF NEW.vote_type = 'up'
+		THEN
+			UPDATE post
+				SET upvotes = upvotes + 1
+				WHERE id = NEW.id_post;
+		ELSIF NEW.vote_type = 'down'
+		THEN
+			UPDATE post
+				SET downvotes = downvotes + 1
+				WHERE id = NEW.id_post;
+		END IF;
+	END IF;
 	
 	UPDATE member_user 
 		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
 		FROM (
 			SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes
 				FROM post
-				WHERE post.id = NEW.id_post) AS subquery 
+				WHERE post.id = postID) AS subquery 
 		WHERE member_user.id = subquery.author;
 	
-    RETURN NEW;
+    RETURN NULL;
 END
 $BODY$
 LANGUAGE plpgsql;
  
 CREATE TRIGGER vote_on_post
-    AFTER INSERT OR UPDATE ON post_vote
+    AFTER INSERT OR UPDATE OR DELETE ON post_vote
     FOR EACH ROW
     EXECUTE PROCEDURE vote_on_post(); 
 

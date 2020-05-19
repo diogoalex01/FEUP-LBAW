@@ -6,6 +6,8 @@ use App\Comment;
 use App\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class CommentController extends Controller
 {
@@ -133,5 +135,90 @@ class CommentController extends Controller
             'comment' => $comment,
             'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
         ), 200);
+    }
+
+    public function vote(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'comment_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $comment = Comment::find($data['comment_id']);
+
+        // if (strcmp("up", $data['vote_type']) == 0) {
+        //     $post->upvotes = $post->upvotes + 1;
+        // } else if (strcmp("down", $data['vote_type']) == 0) {
+        //     $post->downvotes = $post->downvotes + 1;
+        // }1, ['products_amount' => 100, 'price' => 49.99]
+
+        $comment->votedUsers()->attach($user->id, ['vote_type' => $data['vote_type']]);
+
+        $comment->save();
+
+        return response([
+            'success' => true,
+        ]);
+    }
+
+    public function vote_edit(Request $request)
+    {
+
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'comment_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $comment = Comment::find($data['comment_id']);
+
+        
+        $comment->votedUsers()->updateExistingPivot($user->id, ['vote_type' => $data['vote_type']]);
+
+        return response([
+            'success' => true,
+        ]);
+    }
+
+    public function vote_delete(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'comment_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $comment = Comment::find($data['comment_id']);
+
+        $comment->votedUsers()->detach($user->id);
+
+        return response([
+            'success' => true,
+        ]);
     }
 }

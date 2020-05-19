@@ -78,7 +78,7 @@ class PostController extends Controller
                 'name' => $community_name,
                 'private' => $data['private'],
             ]);
-            
+
             $community->image = "img/default_community.jpg";
             $community->id_owner = Auth::user()->id;
             $community->save();
@@ -159,7 +159,7 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();
@@ -167,11 +167,22 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->skip($data['num_posts'])->take(5)->get();
-        return response()->json(array(
+        $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        // return response()->json(array(
+        //     'success' => true,
+        //     'post' => $posts
+        // ), 200);
+
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
             'success' => true,
-            'post' => $posts
-        ), 200);
+            'html'    => $htmlView
+        ]);
     }
 
     /**
@@ -208,7 +219,8 @@ class PostController extends Controller
         //
     }
 
-    public function vote(Request $request){
+    public function vote(Request $request)
+    {
         // post_id: targetId, vote_type: 'up'
 
         if (Auth::check()) {
@@ -217,22 +229,80 @@ class PostController extends Controller
             $user = null;
         }
 
-        if($user == null)
-        return redirect('/');
+        if ($user == null)
+            return redirect('/');
 
         $data = $request->validate([
             'post_id' => 'required',
             'vote_type' => 'required',
         ]);
 
-        $post = Post::where('id', '=', $data['post_id'])->get();
-        //TODO: alterar pivot table
+        $post = Post::find($data['post_id']);
 
-        if (strcmp("up", $data[vote_type]) == 0){
-            $post->upvotes = $post->upvotes + 1;
-        } else if (strcmp("down", $data[vote_type]) == 0){
-            $post->downvotes = $post->downvotes + 1;
+        // if (strcmp("up", $data['vote_type']) == 0) {
+        //     $post->upvotes = $post->upvotes + 1;
+        // } else if (strcmp("down", $data['vote_type']) == 0) {
+        //     $post->downvotes = $post->downvotes + 1;
+        // }1, ['products_amount' => 100, 'price' => 49.99]
+
+        $post->votedUsers()->attach($user->id, ['vote_type' => $data['vote_type']]);
+
+        $post->save();
+
+        return response([
+            'success' => true,
+        ]);
+    }
+
+    public function vote_edit(Request $request)
+    {
+
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
         }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'post_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $post = Post::find($data['post_id']);
+
         
+        $post->votedUsers()->updateExistingPivot($user->id, ['vote_type' => $data['vote_type']]);
+
+        return response([
+            'success' => true,
+        ]);
+    }
+
+    public function vote_delete(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'post_id' => 'required',
+            'vote_type' => 'required',
+        ]);
+
+        $post = Post::find($data['post_id']);
+
+        $post->votedUsers()->detach($user->id);
+
+        return response([
+            'success' => true,
+        ]);
     }
 }

@@ -78,12 +78,11 @@ draw_navigation($auth, "", $admin);
 
             @endif
 
-            <div id="posts-column">
+            <div id="posts-column-home">
                 {{-- @each('partials.homePost', $posts, 'post', $user => 'user') --}}
                 @foreach($posts as $post)
                 @include('partials.homePost', ['post'=>$post, 'user'=>$user])
                 @endforeach
-
             </div>
 
             <div class="d-flex justify-content-center col-md-11 mt-2">

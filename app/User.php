@@ -49,7 +49,7 @@ class User extends Authenticatable
     /**
      * The comments this user owns.
      */
-     public function comments()
+    public function comments()
     {
         return $this->hasMany('App\Comment');
     }
@@ -61,18 +61,33 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Community');
     }
-    
+
     /**
      * The Post this user voted on.
      */
-     public function votedPosts()
+    public function votedPosts()
     {
-        return $this->belongsToMany('App\Post', 'post_votes', 'user_id', 'post_id');
-        return $this->belongsToMany('App\Post')
-                        ->using('App\PostVote')
-                        ->withPivot([
-                            'vote_type',
-                        ]);
+        return $this->belongsToMany('App\Post', 'post_vote', 'id_user', 'id_post')->withPivot([
+            'vote_type',
+        ]);
     }
 
+     /**
+     * The Comment this user voted on.
+     */
+     public function votedComments()
+    {
+        return $this->belongsToMany('App\Comment', 'comment_vote', 'id_user', 'id_comment')->withPivot([
+            'vote_type',
+        ]);
+    }
+
+    // public function get_post_vote(Post $post)
+    // {
+    //     return $this->belongsToMany('App\Post')
+    //         ->using('App\PostVote')
+    //         ->withPivot([
+    //             'vote_type',
+    //         ]);
+    // }
 }

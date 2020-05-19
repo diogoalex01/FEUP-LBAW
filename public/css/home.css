@@ -493,15 +493,19 @@ button:disabled {
   pointer-events: all !important;
 }
 
-.error-header{
-  color: #4c191b;
+.disabled-voting {
+  cursor: not-allowed;
+  pointer-events: all !important;
 }
 
-.vote:hover {
-  cursor: pointer;
+.error-header {
+  color: #4c191b;
 }
 
 .dropdown:hover {
   cursor: pointer;
 }
 
+.vote-button:hover {
+  cursor: pointer;
+}

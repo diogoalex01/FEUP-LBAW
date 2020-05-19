@@ -52,16 +52,52 @@ class CommunityController extends Controller
     {
         $communities = Community::all();
         $community = $communities->find($community_id);
-       
+
         if (Auth::check()) {
             $user = Auth::user();
         } else {
             $user = null;
         }
 
-        $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->get();
+        $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
         //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
         return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user]);
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Post  $post
+     * @return \Illuminate\Http\Response
+     */
+    public function refresh(Request $request)
+    {
+        $communities = Community::all();
+        $community = $communities->find($request['community_id']);
+        
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        // return response()->json(array(
+        //     'success' => true,
+        //     'post' => $posts
+        // ), 200);
+
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
     }
 
     /**

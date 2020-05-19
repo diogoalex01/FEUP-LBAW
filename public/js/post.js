@@ -8,7 +8,6 @@ let addCommentForm = document.querySelector("#new-comment-form");
 let addCommentInput = document.querySelector("#new-comment-input");
 let replyButtons = document.querySelectorAll(".reply-btn");
 let sendReplyButton = document.querySelector("#send-reply-btn");
-let voteButtons = document.querySelectorAll(".vote-button");
 
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
@@ -27,30 +26,45 @@ function addPostEventListeners() {
         });
     }
 
-    if (addCommentForm != null) {
+    if (addCommentForm != null)
         addCommentForm.addEventListener('submit', sendNewComment);
-    }
 
+    addReplyButtonsListener();
+    addVotesEventListener();
+}
+
+function addReplyButtonsListener() {
+    replyButtons = document.querySelectorAll(".reply-btn");
     if (replyButtons != null) {
         replyButtons.forEach(function (item, idx) {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                let id = item.getAttribute('data-target');
-                addReplyForm(id);
-            });
+            if (item.getAttribute('data-target').match(/comment[0-9]+/))
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    let id = item.getAttribute('data-target');
+                    addReplyForm(id);
+                });
         });
     }
+}
+
+function addVotesEventListener() {
+    let voteButtons = document.querySelectorAll(".vote-button");
 
     if (voteButtons != null) {
-        console.log("not null" + voteButtons.length)
         voteButtons.forEach(function (item, idx) {
-            console.log("here");
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                voteButtonClicked(item);
-            });
+            //console.log("here");
+            if (!item.classList.contains('disabled-voting')) {
+                changeVoteColor(item);
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    voteButtonClicked(item);
+                });
+            }
+            else {
+                item.classList.remove('vote-button');
+            }
         });
     }
 }
@@ -72,6 +86,14 @@ function sendAjaxRequest(method, url, data, handler) {
     request.send(encodeForAjax(data));
 }
 
+function changeVoteColor(item) {
+    if (item.getAttribute('data-vote-type') == "up" && item.children[0].hasAttribute('data-checked')) {
+        item.children[0].style.color = "green";
+    } else if (item.getAttribute('data-vote-type') == "down" && item.children[0].hasAttribute('data-checked')) {
+        item.children[0].style.color = "red";
+    }
+}
+
 function voteButtonClicked(item) {
     // method = "put", route, targetId, voteType
     let route = item.getAttribute('data-route');
@@ -85,11 +107,8 @@ function voteButtonClicked(item) {
     let downvoteLableId = "downvote-label-" + targetId;
     let downvoteLable = document.getElementById(downvoteLableId)
 
-
-    console.log(voteType);
     if (item.children[0].hasAttribute('data-checked')) {
         item.children[0].style.color = "black";
-        method = 'delete';
         item.children[0].removeAttribute('data-checked');
         if (voteType == "up") {
             upvoteLable.innerHTML = parseInt(upvoteLable.innerHTML) - 1;
@@ -101,7 +120,6 @@ function voteButtonClicked(item) {
         item.children[0].style.color = "green";
         item.children[0].setAttribute("data-checked", "data-checked");
         upvoteLable.innerHTML = parseInt(upvoteLable.innerHTML) + 1;
-
         let otherButton = document.getElementById("downvote-button-" + targetId);
         if (otherButton.hasAttribute('data-checked')) {
             // Frontend changes
@@ -109,16 +127,15 @@ function voteButtonClicked(item) {
             otherButton.style.color = "black";
             otherButton.removeAttribute('data-checked');
             //Backend Changes
-            method = "post";
-        } else {
-            console.log("putting");
+            //Edit Vote
             method = "put";
+        } else {
+            method = "post";
         }
     } else {
         item.children[0].style.color = "red";
         item.children[0].setAttribute("data-checked", "data-checked");
         downvoteLable.innerHTML = parseInt(downvoteLable.innerHTML) + 1;
-
         let otherButton = document.getElementById("upvote-button-" + targetId);
         if (otherButton.hasAttribute('data-checked')) {
             // Frontend changes
@@ -126,18 +143,17 @@ function voteButtonClicked(item) {
             otherButton.style.color = "black";
             otherButton.removeAttribute('data-checked');
             //Backend Changes
-            method = "post";
+            //Edit Vote
+            method = "put";
         } else {
-            method = "put"
+            method = "post"
         }
     }
 
-    console.log("route ->" + route);
+    // console.log("route ->" + route);
     if (route.match(pattern)) {
-        console.log("match");
         argumentsObject = { post_id: targetId, vote_type: voteType }
     } else {
-        console.log("doesnt match");
         argumentsObject = { comment_id: targetId, vote_type: voteType };
     }
     sendAjaxRequest(method, route, argumentsObject, displayResponse);
@@ -145,7 +161,7 @@ function voteButtonClicked(item) {
 
 function displayResponse() {
     let response = JSON.parse(this.responseText);
-    console.log(response)
+    // console.log(response)
 }
 
 function sendCheckCommunityRequest(event) {
@@ -174,7 +190,7 @@ function sendNewComment(event) {
 }
 
 function newCommentHandler() {
-    console.log(this.responseText);
+    // console.log(this.responseText);
     let response = JSON.parse(this.responseText);
 
     let comment = response['comment'];
@@ -182,6 +198,7 @@ function newCommentHandler() {
     let newComment = document.createElement('div');
 
     let commentId = comment['id'];
+    // console.log("O novo comentario tem id " + commentId);
     let commentContent = comment['content'];
     let commentUser = comment['id_author'];
     let commentPost = comment['id_post'];
@@ -189,9 +206,9 @@ function newCommentHandler() {
     addCommentInput.rows = 1;
     let authorUsername = response['extras']['author_username'];
     let authorImage = response['extras']['author_photo'];
-    console.log(authorImage);
+    // console.log(authorImage);
 
-    newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-comment">
+    newComment.innerHTML = `<div id="comment${commentId}" class="card mb-2 post-container post-comment">
         <div class="row pt-4">
 
             <div class="d-flex align-items-end justify-content-end">
@@ -199,7 +216,7 @@ function newCommentHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-up fa-lg pb-2 text-muted"></i>
+                                <i class="fas fa-chevron-up fa-lg pb-2 disabled-voting"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center pb-2">
@@ -211,7 +228,7 @@ function newCommentHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-down fa-lg pb-2 text-muted"></i>
+                                <i class="fas fa-chevron-down fa-lg pb-2 disabled-voting"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -243,7 +260,7 @@ function newCommentHandler() {
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by </span>
                 <a href="/user/${commentUser}" class="my-auto">
@@ -251,12 +268,12 @@ function newCommentHandler() {
                 </div>
             </div>
         </div>
-    </div>`
+    </div>
+    <div id="replies${commentId}"></div>`
 
-    console.log(commentSection);
+    // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
-
-    //todo add comment
+    addReplyButtonsListener();
 }
 
 function addReplyForm(id) {
@@ -264,7 +281,7 @@ function addReplyForm(id) {
     if (replyFormContainer == null) {
         let comment_id = id.substring(7, id.length);
         let targetComment = document.getElementById(id);
-        targetComment.parentElement
+        targetComment.parentElement;
         replyFormContainer = document.createElement('div');
         replyFormContainer.innerHTML = `
         <div class="card post-container reply-container mb-2 " id="reply-container">
@@ -306,10 +323,10 @@ function sendCommentReply() {
     let replyBody = document.getElementById("reply-input").value;
     let targetComment = document.getElementById(comment_id);
 
-    console.log(user_id);
-    console.log(post_id);
-    console.log(comment_id);
-    console.log(replyBody);
+    // console.log(user_id);
+    // console.log(post_id);
+    // console.log(comment_id);
+    // console.log(replyBody);
 
     sendAjaxRequest('put', '/reply', {
         user_id: user_id,
@@ -322,7 +339,7 @@ function sendCommentReply() {
 }
 
 function newReplyHandler() {
-    console.log(this.responseText);
+    // console.log(this.responseText);
     let response = JSON.parse(this.responseText);
     console.log(response);
     let reply = response['comment'];
@@ -336,9 +353,10 @@ function newReplyHandler() {
     let commentSection = document.getElementById("replies" + commentParent);
     let authorUsername = response['extras']['author_username'];
     let authorImage = response['extras']['author_photo'];
-    console.log(authorImage);
+    // console.log(authorImage);
 
-    newComment.innerHTML = `<div id=${commentId} class="card mb-2 post-container post-reply">
+    newComment.innerHTML = `
+    <div id="comment${commentId}" class="card mb-2 post-container post-reply">
         <div class="row pt-4">
 
             <div class="d-flex align-items-end justify-content-end">
@@ -346,7 +364,7 @@ function newReplyHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-up fa-lg pb-2"></i>
+                                <i class="fas fa-chevron-up fa-lg pb-2 disabled-voting"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center pb-2">
@@ -358,7 +376,7 @@ function newReplyHandler() {
                     <div class="row">
                         <div class="d-flex justify-content-between pr-1">
                             <a>
-                                <i class="fas fa-chevron-down fa-lg pb-2"></i>
+                                <i class="fas fa-chevron-down fa-lg pb-2 disabled-voting"></i>
                             </a>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -386,17 +404,20 @@ function newReplyHandler() {
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by</span>
                 <a href="/user/${commentUser}" class="my-auto">
                 <span>@</span>${authorUsername}</a>
             </div>
         </div>
-    </div>`
+    </div>
+    </div>
+    <div id="replies${commentId}"></div>`
 
-    console.log(commentSection);
+    // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
+    addReplyButtonsListener();
 }
 
 function communityCheckedHandler() {
@@ -420,7 +441,7 @@ function searchArray() {
     sendAjaxRequest('post', '/api/communities', '', communityCheckedHandler);
 
     matches = searching(input.value);
-    console.log(matches);
+    // console.log(matches);
 
     let html;
 
@@ -497,17 +518,30 @@ if (newPostForm != null) {
 }
 
 $(document).ready(function () {
-    let posts_column = document.getElementById("posts-column"); // outer container of messages
-    let loader = document.getElementById("loader"); // outer container of messages
+    let posts_column_home = document.getElementById("posts-column-home");
+    let posts_column_community = document.getElementById("posts-column-community");
+    let loader = document.getElementById("loader");
     let num_posts = 20;
+    let api_route;
+    let page;
+    let data_route;
 
-    if (posts_column != null) {
+    if (posts_column_home != null || posts_column_community != null) {
         let lock = false;
         loader.style.display = 'none';
 
         $(window).scroll(function () {
-
             if ($(window).scrollTop() + $(window).height() > $(document).height() - 200) {
+                if (posts_column_home != null) {
+                    api_route = '/api/home';
+                    page = "#posts-column-home";
+                    data_route = { num_posts: num_posts };
+                }
+                else if (posts_column_community != null) {
+                    api_route = '/api/community';
+                    page = "#posts-column-community";
+                    data_route = { num_posts: num_posts, community_id: document.querySelector('.community-page-container').getAttribute('data-object-id') };
+                }
 
                 if (lock == true) {
                     return;
@@ -517,12 +551,24 @@ $(document).ready(function () {
                 lock = true;
 
                 $.ajax({
-                    url: '/api/home/',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: api_route,
                     type: 'POST',
                     dataType: 'json',
-                    data: { num_posts: num_posts },
+                    data: data_route,
                     success: function (data) {
-                        refreshHomeHandler(data, lock);
+                        if (data.html.length == 0) {
+                            lock = true;
+                            loader.style.display = 'none';
+                            return;
+                        }
+
+                        refreshPostHandler(data, page);
+                        lock = false;
+                        num_posts += 5;
+                        loader.style.display = 'none';
                     }
                 });
             }
@@ -530,17 +576,11 @@ $(document).ready(function () {
     }
 });
 
-function refreshHomeHandler(data, lock) {
-    console.log(data);
-    let response = JSON.parse(data);
-    console.log(response);
-
-    lock = false;
-    loader.style.display = 'none';
-    alert(data);
-    num_posts += 5;
-
-    $('#posts-column').append("<div>Some new chat..." + "</div>").fadeIn("slow");
+function refreshPostHandler(response, page) {
+    if (response.success === true) {
+        $(page).append(response.html).fadeIn("slow");
+        addVotesEventListener();
+    }
 }
 
 addPostEventListeners();

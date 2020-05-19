@@ -33,7 +33,13 @@
                 <div class="row">
 
                     {{-- Votes --}}
-                    @include('partials.vote', ['route'=>'/post/'.$post->id."/vote", 'user'=>$user, 'object'=> $post])
+                    @if($user == null || $post->votedUsers->where('id', "=", $user->id)->first() == null)
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
+                    'vote_type' => "null"])
+                    @else
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
+                    'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
+                    @endif
 
                     <div class="col-md-10 mx-auto">
                         <div style="padding-top: 15px;">
@@ -49,13 +55,24 @@
                     style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
                     <div class="col-md-6 align-self-center ">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
+                            @if($user != null)
                             <a href="/post/{{$post->id}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
-                            @if($user != null && $user->id !== $post->id_author)
-                            <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
-                                <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                            </a>
                             @else
-                            <a href="#"><i class="fas fa-trash-alt"></i>Delete</a>
+                            <a href="" data-toggle="modal" data-target="#modalWelcome"><i class="fas fa-reply"></i>Reply</a>
+                            @endif
+
+                            @if($user === null || $user->id !== $post->id_author)
+                                @if($user === null)
+                                <a href="" data-toggle="modal" data-target="#modalWelcome">
+                                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                </a>
+                                @else
+                                <a href="" data-toggle="modal" data-target="#modalPostReport">
+                                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                                </a>
+                                @endif
+                            @elseif($user !== null && $user->id === $post->id_author)
+                            <a href=""><i class="fas fa-trash-alt"></i>Delete</a>
                             @endif
                         </div>
                     </div>
