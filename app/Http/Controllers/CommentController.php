@@ -103,9 +103,34 @@ class CommentController extends Controller
      * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy(Request $request)
     {
-        //
+        //TODO: add policy
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+        error_log("2\n\n");
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'comment_id' => 'required',
+        ]);
+
+        $comment = Comment::find($data['comment_id']);
+
+        if ($comment->delete()) {
+            return response([
+            'success' => true
+        ]);
+        } else {
+            return response([
+            'success' => false
+        ]);
+        }
     }
 
     public function storeReply(Request $request)

@@ -203,10 +203,42 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request)
     {
-        //
+        //TODO: add policy
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null){
+        return response([
+            'success' => false
+        ]);}
+        $data = $request->validate([
+            'post_id' => 'required',
+            'new_content' => 'required',
+        ]);
+
+        $post = Post::find($data['post_id']);
+
+        if ($post!=null) {
+            $post->content = $data['new_content'];
+            $post->save();
+            return response([
+            'success' => true,
+            'type' => "post",
+            "post_id" => $post->id,
+            "new_content" => $post->content
+        ]);
+        } else {
+            return response([
+            'success' => false
+        ]);
+        }  
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -214,9 +246,33 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Request $request)
     {
-        //
+        //TODO: add policy
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null)
+            return redirect('/');
+
+        $data = $request->validate([
+            'post_id' => 'required',
+        ]);
+
+        $post = Post::find($data['post_id']);
+
+        if ($post->delete()) {
+            return response([
+            'success' => true
+        ]);
+        } else {
+            return response([
+            'success' => false
+        ]);
+        }  
     }
 
     public function vote(Request $request)
@@ -280,6 +336,7 @@ class PostController extends Controller
             'success' => true,
         ]);
     }
+
 
     public function vote_delete(Request $request)
     {

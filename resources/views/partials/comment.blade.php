@@ -32,18 +32,20 @@
                 @endif
 
                 @if($user === null || $user->id !== $comment->id_author)
-                    @if($user === null)
-                    <a href="" data-toggle="modal" data-target="#modalWelcome">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
-                    @else
-                    <a href="" data-toggle="modal" data-target="#modalCommentReport">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
-                    @endif
-                @elseif($user !== null && $user->id === $comment->id_author)
-                <a href=""><i class="fas fa-trash-alt"></i>Delete</a>
+                @if($user === null)
+                <a href="" data-toggle="modal" data-target="#modalWelcome">
+                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                </a>
+                @else
+                <a href="" data-toggle="modal" data-target="#modalCommentReport">
+                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                </a>
                 @endif
+                @elseif($user !== null && $user->id === $comment->id_author)
+                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                    data-object="{{$comment->id}}" data-route="/comment/{{$comment->id}}" data-type="comment">
+                    <i class="fas fa-trash-alt"></i>Delete
+                </a> @endif
             </div>
         </div>
         <div class="col-md-6">

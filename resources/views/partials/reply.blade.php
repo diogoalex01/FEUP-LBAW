@@ -31,25 +31,28 @@
                 @endif
 
                 @if($user === null || $user->id !== $reply->id_author)
-                    @if($user === null)
-                    <a href="" data-toggle="modal" data-target="#modalWelcome">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
-                    @else
-                    <a href="" data-toggle="modal" data-target="#modalCommentReport">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
-                    @endif
-                @elseif($user !== null && $user->id === $reply->id_author)
-                <a href=""><i class="fas fa-trash-alt"></i>Delete</a>
+                @if($user === null)
+                <a href="" data-toggle="modal" data-target="#modalWelcome">
+                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                </a>
+                @else
+                <a href="" data-toggle="modal" data-target="#modalCommentReport">
+                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                </a>
                 @endif
+                @elseif($user !== null && $user->id === $reply->id_author)
+                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                    data-object="{{$reply->id}}" data-route="/comment/{{$reply->id}}" data-type="comment">
+                    <i class="fas fa-trash-alt"></i>Delete
+                </a> @endif
             </div>
         </div>
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
                 @if($comment->user != null)
                 <a href="{{route('profile', $comment->user->id)}}">
-                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}"
+                        alt="">
                 </a>
                 @endif
 

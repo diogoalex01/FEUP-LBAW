@@ -41,10 +41,10 @@
                     'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
                     @endif
 
-                    <div class="col-md-10 mx-auto">
+                    <div class="col-md-10 mx-auto" id="post-content-container">
                         <div style="padding-top: 15px;">
                             <h2 class="card-title">{{ $post->title}}</h2>
-                            <p class="card-text post-body pb-5">
+                            <p class="card-text post-body pb-5" id="post-{{$post->id}}">
                                 {{$post->content}}
                             </p>
                         </div>
@@ -58,21 +58,27 @@
                             @if($user != null)
                             <a href="/post/{{$post->id}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
                             @else
-                            <a href="" data-toggle="modal" data-target="#modalWelcome"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="" data-toggle="modal" data-target="#modalWelcome"><i
+                                    class="fas fa-reply"></i>Reply</a>
                             @endif
 
                             @if($user === null || $user->id !== $post->id_author)
-                                @if($user === null)
-                                <a href="" data-toggle="modal" data-target="#modalWelcome">
-                                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                                </a>
-                                @else
-                                <a href="" data-toggle="modal" data-target="#modalPostReport">
-                                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                                </a>
-                                @endif
+                            @if($user === null)
+                            <a href="" data-toggle="modal" data-target="#modalWelcome">
+                                <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                            </a>
+                            @else
+                            <a href="" data-toggle="modal" data-target="#modalPostReport">
+                                <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                            </a>
+                            @endif
                             @elseif($user !== null && $user->id === $post->id_author)
-                            <a href=""><i class="fas fa-trash-alt"></i>Delete</a>
+                            <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeletePost"
+                                data-object="{{$post->id}}" data-route="/post/{{$post->id}}" data-type="post">
+                                <i class="fas fa-trash-alt"></i>Delete
+                            </a>
+                            <a href="" class="edit-btn" data-object-id="{{$post->id}}"><i
+                                    class="fas fa-eraser"></i>Edit</a>
                             @endif
                         </div>
                     </div>
@@ -134,6 +140,63 @@
             @foreach($comments as $comment)
             @include('partials.comment', ['comment'=>$comment, 'user'=>$user, 'replies'=> $replies])
             @endforeach
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalDeletePost" tabindex="-1" role="dialog" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body login-modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <section>
+                    <div id="deleteAccountForm" class="container mb-3">
+                        <h2 class="text-dark title-padding title-mobile">Delete Post
+                            {{-- <i class="fas fa-exclamation-circle pl-2 text-danger"></i> --}}
+                        </h2>
+                        <hr>
+                        <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently
+                            <b>delete</b> your post.</label>
+
+                        <div class="row justify-content-end my-2 mx-1">
+                            <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal"
+                                data-target="#">Take me back</button>
+                            <button id="confirm-delete-post" class="btn my-2 ml-1 text-danger delete-confirm"
+                                data-toggle="modal" data-dismiss="modal">I'm sure</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalDeleteComment" tabindex="-1" role="dialog" aria-hidden="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body login-modal">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <section>
+                    <div id="deleteAccountForm" class="container mb-3">
+                        <h2 class="text-dark title-padding title-mobile">Delete Comment
+                        </h2>
+                        <hr>
+                        <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently
+                            <b>delete</b> your comment.</label>
+
+                        <div class="row justify-content-end my-2 mx-1">
+                            <button class="btn btn-secondary my-2" data-toggle="modal" data-dismiss="modal"
+                                data-target="#">Take me back</button>
+                            <button id="confirm-delete-comment" class="btn my-2 ml-1 text-danger delete-confirm"
+                                data-toggle="modal" data-dismiss="modal">I'm sure</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
 </div>

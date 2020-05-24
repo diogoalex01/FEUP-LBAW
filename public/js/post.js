@@ -1,3 +1,4 @@
+let timeoutHandlerCommentDelete, timeoutHandlerPostDelete;
 let input = document.querySelector('input[name="community"]');
 let search = document.querySelector('.search');
 let container = document.querySelector('.dropdown-container');
@@ -8,6 +9,10 @@ let addCommentForm = document.querySelector("#new-comment-form");
 let addCommentInput = document.querySelector("#new-comment-input");
 let replyButtons = document.querySelectorAll(".reply-btn");
 let sendReplyButton = document.querySelector("#send-reply-btn");
+let editButtons = document.querySelectorAll(".edit-btn");
+let deleteConfirmButtons = document.getElementsByClassName("delete-confirm");
+let deleteButtons = document.querySelectorAll(".delete-btn");
+let comment;
 
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
@@ -31,6 +36,9 @@ function addPostEventListeners() {
 
     addReplyButtonsListener();
     addVotesEventListener();
+    addEditButtonsListener();
+    addDeleteButtonsListener();
+    addDeleteConfirmButtonsListener();
 }
 
 function addReplyButtonsListener() {
@@ -65,6 +73,47 @@ function addVotesEventListener() {
             else {
                 item.classList.remove('vote-button');
             }
+        });
+    }
+}
+
+function addEditButtonsListener() {
+    editButtons = document.querySelectorAll(".edit-btn");
+    if (editButtons != null) {
+        editButtons.forEach(function (item) {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                let id = item.getAttribute('data-object-id');
+                addEditForm(id);
+            });
+        });
+    }
+}
+
+function addDeleteButtonsListener() {
+    deleteButtons = document.querySelectorAll(".delete-btn");
+    if (deleteButtons != null) {
+        deleteButtons.forEach(function (item) {
+            item.addEventListener('click', function (event) {
+                // event.preventDefault();
+                // event.stopPropagation();
+                openDeleteConfirmModal(item);
+            });
+        });
+    }
+}
+
+function addDeleteConfirmButtonsListener() {
+    deleteConfirmButtons = document.querySelectorAll(".delete-confirm");
+    if (deleteConfirmButtons != null) {
+        console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
+        deleteConfirmButtons.forEach(function (item) {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                sendDeleteConfirmObject(item);
+            });
         });
     }
 }
@@ -161,7 +210,7 @@ function voteButtonClicked(item) {
 
 function displayResponse() {
     let response = JSON.parse(this.responseText);
-    // console.log(response)
+    console.log(response)
 }
 
 function sendCheckCommunityRequest(event) {
@@ -251,16 +300,17 @@ function newCommentHandler() {
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
                 <a href="" data-target="comment${commentId}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
-                    <a data-toggle="modal" data-dismiss="modal" data-target="#modalCommentReport">
-                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                    </a>
+                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
+                <i class="fas fa-trash-alt"></i>Delete
+                </a>
                 </div>
             </div>
             
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by </span>
                 <a href="/user/${commentUser}" class="my-auto">
@@ -274,6 +324,8 @@ function newCommentHandler() {
     // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
     addReplyButtonsListener();
+    addDeleteButtonsListener();
+    addDeleteConfirmButtonsListener();
 }
 
 function addReplyForm(id) {
@@ -314,6 +366,101 @@ function addReplyForm(id) {
         // let replyInput = document.getElementById("reply-input-" + id);
         // replyInput.addEventListener('blur', () => { replyFormContainer.remove(); });
     }
+}
+
+
+function addEditForm(id) {
+    let editFormContainer = document.getElementById("edit-container");
+    if (editFormContainer == null) {
+        let content = document.getElementById("post-content-container");
+        let postBody = document.getElementById("post-" + id);
+        editFormContainer = document.createElement('div');
+        editFormContainer.innerHTML = `
+        <div class="edit-container mb-2 " id="edit-container">
+                <form id="edit-form">
+                    <input hidden name="post_id" value="${id}">
+                    <div class="row" style="font-size: 0.45rem;">
+                        <div class="col-md-10 pr-md-0">
+                            <textarea id="edit-input" rows="8" type="text" class="form-control mr-0 text-justify" 
+                                >${postBody.innerText}
+                                </textarea>
+                        </div>
+                        <!--<div class="col-md-1 my-auto mx-auto text-right">-->
+                        <div class="col-md-1 my-auto mx-auto text-right px-0 text-center comment-button">
+                            <button type="submit" class="btn btn-md btn-dark" id ="send-edit-btn"> edit </button>
+                        </div>
+                    </div>
+                </form>
+        </div>`;
+
+        console.log(content);
+        content.appendChild(editFormContainer);
+        let editForm = document.querySelector("#edit-form");
+        if (editForm != null) {
+            editForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                sendEdit();
+            });
+        }
+        postBody.remove();
+        //  content.remove(postBody);
+
+        // let editInput = document.getElementById("edit-input-" + id);
+        // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
+    }
+}
+
+function openDeleteConfirmModal(item) {
+    console.log(item);
+
+    let type = item.getAttribute("data-type");
+    console.log(type);
+    let target = item.getAttribute("data-object");
+    console.log(target);
+    let route = item.getAttribute("data-route");
+    console.log(route);
+    let modal = null;
+    if (type == "comment") {
+        console.log("comment");
+        modal = document.getElementById("confirm-delete-comment");
+        console.log(modal);
+    } else if (type == "post") {
+        console.log("post");
+        modal = document.getElementById("confirm-delete-post");
+    }
+    modal.setAttribute("data-target", target);
+    modal.setAttribute("data-route", route);
+    console.log("ROTA :" + modal.getAttribute("data-route"));
+
+    addDeleteConfirmButtonsListener();
+}
+
+function sendDeleteConfirmObject(item) {
+    console.log("send delete");
+    let id = item.getAttribute('data-target');
+    let pattern = /\/post\/[0-9]+/i;
+    console.log(pattern);
+    let route = item.getAttribute('data-route');
+    let argumentsObject = null;
+    let handlerFunction = null;
+    console.log(route);
+    if (route.match(pattern)) {
+        console.log("post delete");
+        argumentsObject = { post_id: id }
+        sendAjaxRequest("delete", route, argumentsObject, deletePostHandler);
+    } else {
+        console.log("comment delete");
+        argumentsObject = { comment_id: id };
+        comment = document.getElementById("comment" + id);
+        console.log("ID is *" + id + "*");
+        console.log(comment);
+        sendAjaxRequest("delete", route, argumentsObject, deleteCommentHandler(id));
+    }
+
+    $('#modalDeleteComment').modal('hide');
+    $('#modalDeletePost').modal('hide');
+
 }
 
 function sendCommentReply() {
@@ -399,12 +546,16 @@ function newReplyHandler() {
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
                 <a href="" data-target="comment${commentId}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
+                <i class="fas fa-trash-alt"></i>Delete
+                </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by</span>
                 <a href="/user/${commentUser}" class="my-auto">
@@ -419,6 +570,100 @@ function newReplyHandler() {
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
     addReplyButtonsListener();
 }
+
+function sendEdit(){
+    let post_id = document.querySelector('input[name=post_id]').value;
+    let newPostBody = document.getElementById("edit-input").value;
+    // console.log(user_id);
+    // console.log(post_id);
+    // console.log(comment_id);
+    // console.log(replyBody);
+
+    sendAjaxRequest('put', '/post/'+ post_id, {
+        post_id: post_id,
+        new_content:newPostBody
+    }, newContentHandler);
+    let editFormContainer = document.getElementById("edit-container");
+    editFormContainer.remove();
+}
+
+function newContentHandler(){
+    let response = JSON.parse(this.responseText);
+    console.log(response);
+    let type = response['type'];
+    if(type =="post"){
+        let postId = response['post_id'];
+        let postContentContainerDiv = document.querySelector("#post-content-container div");
+        let postBody = document.createElement("p");
+        postBody.classList.add("card-text");
+        postBody.classList.add("post-body");
+        postBody.classList.add("pb-5");
+        postContentContainerDiv.appendChild(postBody);
+        postBody.innerText = response['new_content'];
+    }else if(type == "comment"){
+
+    }
+}
+
+function deleteCommentHandler(id) {
+    let replies = document.querySelector('#replies' + id);
+
+    if (replies != null) {
+        replies.remove();
+    }
+
+    if (comment != null) {
+        comment.classList.forEach((commentClass) => {
+            comment.classList.remove(commentClass);
+        });
+        comment.classList.add("my-auto")
+        comment.innerHTML = `
+                <div class=" alert alert-success my-auto">
+                    <div class= "my-auto">
+                        <p class="my-0">Your comment and its replies were deleted successfuly!</p>
+                    </div>
+                </div>`
+        window.clearTimeout(timeoutHandlerCommentDelete);
+        timeoutHandlerCommentDelete = setTimeout(function () {
+            comment.outerHTML = ``;
+        }, 5000);
+    }
+
+    // let content = document.querySelector("#"+item.id+" p[class='card-text']");
+    // console.dir(content);
+    // let modal = document.getElementById("#modalDeleteComment");
+    // content.classList.add("alert-danger")
+    // content.innerHTML ="Your comment was deleted";
+}
+
+function deletePostHandler() {
+    console.log("RESPOSTA " + this.responseText);
+    if (this.status == 200) {
+        console.log("200 OK!" + this.status);
+        window.location = '/';
+
+        let feedbackMessage = document.querySelector('#feedback-message-home');
+
+        if (feedbackMessage != null)
+            feedbackMessage.innerHTML = `
+                <div class="alert alert-success">
+                    <div class="my-auto">
+                        <p class="my-0">Your post deleted successfuly!</p>
+                    </div>
+                </div>`
+
+        window.clearTimeout(timeoutHandlerPostDelete);
+        timeoutHandlerPostDelete = setTimeout(function () {
+            feedbackMessage.innerHTML = ``
+        }, 5000);
+    }
+    else {
+        // console.log(this.status);
+        // window.location = '/';
+        alert("Something went wrong!");
+    }
+}
+
 
 function communityCheckedHandler() {
     // if (this.status != 200) window.location = '/';
