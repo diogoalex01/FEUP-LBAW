@@ -60,13 +60,12 @@ function draw_navigation($auth, $studying = "", $admin)
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="search.php" method="get">
-                <input name="auth" hidden value="<?= $auth ?>">
-                <input name="admin" hidden value="<?= $admin ?>">
-                <input id="search-bar" class="form-control mr-sm-2" type="search" placeholder="Explore"
-                    value="<?= $studying ?>" aria-label="Explore">
+            {{-- <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="{{ route('search')}}" method="get">
+                @csrf
+                <input id="search-bar" class="form-control mr-sm-2" type="search" name="search" placeholder="Explore"
+                    aria-label="Explore">
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
-            </form>
+            </form> --}}
 
             <?php if ($auth === "true") { ?>
 

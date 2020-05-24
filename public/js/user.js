@@ -339,7 +339,7 @@ if (profile_aside != null) {
                 profile_aside[i].classList.add("nav-border");
                 profile_aside[i].addEventListener("click", profile_tabs);
             }
-            //add selected
+            // add selected
             else { 
                 profile_aside[i].classList.remove("nav-border");
                 profile_aside[i].classList.add("nav-border-active");

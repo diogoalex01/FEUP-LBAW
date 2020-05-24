@@ -41,10 +41,10 @@
                     'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
                     @endif
 
-                    <div class="col-md-10 mx-auto" id="post-content-container">
+                <div class="col-md-10 mx-auto" id="post-content-container-{{$post->id}}">
                         <div style="padding-top: 15px;">
                             <h2 class="card-title">{{ $post->title}}</h2>
-                            <p class="card-text post-body pb-5" id="post-{{$post->id}}">
+                            <p class="card-text pb-5" id="post-body-{{$post->id}}" style="white-space: pre-line">
                                 {{$post->content}}
                             </p>
                         </div>
@@ -77,8 +77,8 @@
                                 data-object="{{$post->id}}" data-route="/post/{{$post->id}}" data-type="post">
                                 <i class="fas fa-trash-alt"></i>Delete
                             </a>
-                            <a href="" class="edit-btn" data-object-id="{{$post->id}}"><i
-                                    class="fas fa-eraser"></i>Edit</a>
+                            <a href="" id="edit-post-btn" data-post-id="{{$post->id}}"><i class="fas fa-eraser"></i>Edit
+                            </a>
                             @endif
                         </div>
                     </div>

@@ -19,7 +19,7 @@
     <div class="card-body">
         <a href="{{ route('post', $post->id )}}">
             <div class="sidebar-box">
-                <p class="card-text">{{$post->content}}</p>
+                <p class="card-text" style="white-space: pre-line">{{$post->content}}</p>
                 <p class="read-more"></p>
             </div>
         </a>

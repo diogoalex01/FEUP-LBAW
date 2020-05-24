@@ -5,8 +5,8 @@
             <a href="/post/{{ $post->id }}">
                 {{--<a href="post.php?auth=&admin=--}}
                 @if($post->image != null)
-                <img class="card-img-top card-img post-image" style="padding: 15px 15px 0px;" src={{ asset($post->image)}}
-                    alt="Post Image">
+                <img class="card-img-top card-img post-image" style="padding: 15px 15px 0px;"
+                    src={{ asset($post->image)}} alt="Post Image">
                 @endif
             </a>
             <div style="padding: 0 12%">
@@ -25,8 +25,10 @@
                         <a href="/post/{{ $post->id }}">
                             <div style="padding: 15px 0;">
                                 <h2 class="card-title">{{ $post->title }}</h2>
-                                <p class="card-text">{{ $post->content }}
-                                </p>
+                                <div class="post-box">
+                                    <p class="card-text" style="white-space: pre-line">{{ $post->content }} </p>
+                                    <p class="read-more"></p>
+                                </div>
                             </div>
                         </a>
                     </div>
@@ -39,18 +41,19 @@
                             @if(Auth::guest())
                             <a href="{{route('post',$post->id)}}"><i class="fas fa-reply"></i>Reply</a>
                             @else
-                            <a href="{{route('post',$post->id)}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
+                            <a href="{{route('post',$post->id)}}#new-comment-input"><i
+                                    class="fas fa-reply"></i>Reply</a>
                             @endif
 
                             <div class="a-report">
-                                @if(Auth::guest())
+                                @if(Auth::guest() || $user->id !== $post->user->id)
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
                                     <i class="fas fa-flag"></i>Report
                                 </a>
-                                @else
+                                {{-- @else
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
                                     <i class="fas fa-flag"></i>Report
-                                </a>
+                                </a> --}}
                                 @endif
                             </div>
                         </div>
@@ -70,7 +73,7 @@
                             <a class="align-self-center"> @unknown </a>
                             @else
                             <a class="align-self-center" href={{ route('profile', $post->user->id)}}>
-                                <span>@</span>{{$post->user->username}} 
+                                <span>@</span>{{$post->user->username}}
                             </a>
                             @endif
                         </div>

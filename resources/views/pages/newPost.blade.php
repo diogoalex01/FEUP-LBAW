@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="validate-me">
-                        <textarea name="post_content" class="form-control"
+                        <textarea name="post_content" wrap="hard" class="form-control"
                             placeholder="Example post body..." rows="16" required></textarea>
                         <div class="invalid-feedback">
                             This field is required!

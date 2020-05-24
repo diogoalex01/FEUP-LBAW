@@ -38,6 +38,7 @@
     <script src={{ asset('js/common.js') }} defer></script>
     <script src={{ asset('js/post.js') }} defer></script>
     <script src={{ asset('js/user.js') }} defer></script>
+    <script src={{ asset('js/home.js') }} defer></script>
 
     <title> {{$title}} </title>
 </head>
@@ -61,12 +62,11 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="search.php" method="get">
-                {{-- <input name="auth" hidden value=" $auth "
-            <input name="admin" hidden value=" $admin " --}}
-                <input id="search-bar" class="form-control mr-sm-2" type="search" placeholder="Explore"
-                    aria-label="Explore">
-                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
+            <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="{{ route('search')}}" method="get">
+            @csrf
+            <input id="search-bar" class="form-control mr-sm-2" type="search" name="query" placeholder="Explore"
+                aria-label="Explore">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
             </form>
 
             @if (Auth::check())

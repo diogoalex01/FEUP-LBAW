@@ -153,6 +153,75 @@ class PostController extends Controller
         return view('pages.home', ['posts' => $posts, 'user' => $user]);
     }
 
+    public function homeTab(Request $request)
+    {
+        // if (!Auth::check()) return redirect('/login');
+        //$this->authorize('list', Card::class);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
+    }
+    
+    public function popularTab(Request $request)
+    {
+        // if (!Auth::check()) return redirect('/login');
+        //$this->authorize('list', Card::class);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::orderBy('upvotes', 'desc')->get()->take(20);
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
+    }
+
+    public function recentTab(Request $request)
+    {
+        // if (!Auth::check()) return redirect('/login');
+        //$this->authorize('list', Card::class);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -205,14 +274,17 @@ class PostController extends Controller
      */
     public function update(Request $request)
     {
+        error_log("\n1\n");
         //TODO: add policy
         if (Auth::check()) {
             $user = Auth::user();
         } else {
             $user = null;
         }
+        
 
         if ($user == null){
+            error_log("\n2\n");
         return response([
             'success' => false
         ]);}
@@ -223,16 +295,19 @@ class PostController extends Controller
 
         $post = Post::find($data['post_id']);
 
+        // $this->authorize('update', 2,$post);
+
         if ($post!=null) {
+            error_log("\n3\n");
             $post->content = $data['new_content'];
             $post->save();
             return response([
             'success' => true,
-            'type' => "post",
             "post_id" => $post->id,
             "new_content" => $post->content
         ]);
         } else {
+            error_log("\n4\n");
             return response([
             'success' => false
         ]);

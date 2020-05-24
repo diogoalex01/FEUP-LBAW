@@ -1,28 +1,11 @@
-<?php
-
-include('common.php');
-draw_head('Search Results');
-
-$auth = $_GET['auth'];
-if (!isset($_GET['auth'])) {
-    $auth = "false";
-}
-
-$admin = $_GET['admin'];
-if (!isset($_GET['admin'])) {
-    $admin = "false";
-}
-
-draw_navigation($auth, "studying", $admin);
-?>
-
+@extends('layouts.app', ['title' =>"Search Results | PearToPear"])
+@section('content')
 <!-- Page Content -->
 <div class="container">
 
     <div class="row" style="padding: 20 0;">
 
         <!-- Aside -->
-        <?php if ($admin === "false") { ?>
         <div class="col-md-3 aside ">
             <!-- My Categories -->
             <div class="card aside-container sticky-top">
@@ -51,7 +34,7 @@ draw_navigation($auth, "studying", $admin);
                 </div>
             </div>
         </div>
-        <? } else { ?>
+        {{--
         <div class="col-md-3 aside">
             <!-- My Categories -->
             <div class="card aside-container sticky-top">
@@ -72,13 +55,18 @@ draw_navigation($auth, "studying", $admin);
                 </div>
             </div>
         </div>
-        <? } ?>
+        --}}
 
         <!-- Posts Column -->
         <div class="col-md-9">
 
             <!-- Post -->
-            <?php home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
+            <div id="posts-column-home">
+                @foreach($posts as $post)
+                @include('partials.homePost', ['post'=>$post, 'user'=>$user])
+                @endforeach
+            </div>
+            {{-- home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am
                                         in the first semester of my CS uni and i just realised that i dont know how
                                         to
@@ -91,12 +79,9 @@ draw_navigation($auth, "studying", $admin);
                                         any
                                         umm
                                         i dont know tip or how to it would be nice. <br>
-                                        Thank you.", $admin); ?>
+                                        Thank you.", $admin);  --}}
         </div>
     </div>
 </div>
 
-<?php
-draw_footer($auth, $admin);
-
-?>
+@endsection

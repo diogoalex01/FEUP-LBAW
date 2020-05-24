@@ -84,10 +84,18 @@ function addEditButtonsListener() {
             item.addEventListener('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                let id = item.getAttribute('data-object-id');
-                addEditForm(id);
+                addEditCommentForm(item);
             });
         });
+    }
+
+    let editPostButton = document.querySelector("#edit-post-btn");
+    if (editPostButton != null) {
+        editPostButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            addEditPostForm(editPostButton);
+        })
     }
 }
 
@@ -231,7 +239,7 @@ function sendNewComment(event) {
     let post_id = document.querySelector('input[name=post_id]').value;
     let comment_content = addCommentInput.value;
 
-    sendAjaxRequest('put', '/comment', {
+    sendAjaxRequest('post', '/comment', {
         user_id: user_id,
         post_id: post_id,
         content: comment_content
@@ -255,9 +263,13 @@ function newCommentHandler() {
     addCommentInput.rows = 1;
     let authorUsername = response['extras']['author_username'];
     let authorImage = response['extras']['author_photo'];
-    // console.log(authorImage);
 
-    newComment.innerHTML = `<div id="comment${commentId}" class="card mb-2 post-container post-comment">
+    if (authorImage.search(/google/) == -1)
+        authorImage = "/" + authorImage;
+
+    newComment.setAttribute('id', `comment${commentId}`);
+    newComment.setAttribute('class', 'card mb-2 post-container post-comment');
+    newComment.innerHTML = `
         <div class="row pt-4">
 
             <div class="d-flex align-items-end justify-content-end">
@@ -289,11 +301,12 @@ function newCommentHandler() {
                 </div>
             </div>
 
-            <div class="col-md-10 mx-auto">
-                <p class="card-text">
+            <div class="col-md-10 mx-auto" id="comment-content-container-${commentId}" >
+                <p class="card-text" id="comment-body-${commentId}" style="white-space: pre-line">
                     ${commentContent}
                 </p>
             </div>
+
         </div>
         <div class="card-footer row text-muted p-3"
             style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
@@ -304,28 +317,32 @@ function newCommentHandler() {
                 data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
                 <i class="fas fa-trash-alt"></i>Delete
                 </a>
+                <a href="" class="edit-btn" data-comment-id="${commentId}">
+                <i class="fas fa-eraser"></i>Edit
+                </a>
                 </div>
             </div>
             
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by </span>
                 <a href="/user/${commentUser}" class="my-auto">
                 <span>@</span>${authorUsername}</a>
                 </div>
             </div>
-        </div>
-    </div>
-    <div id="replies${commentId}"></div>`
-
+        </div>`;
+    let replies = document.createElement('div');
+    replies.setAttribute('id', "replies" + commentId);
     // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
+    newComment.insertAdjacentElement("afterend",replies)
     addReplyButtonsListener();
     addDeleteButtonsListener();
     addDeleteConfirmButtonsListener();
+    addEditButtonsListener();
 }
 
 function addReplyForm(id) {
@@ -369,25 +386,24 @@ function addReplyForm(id) {
 }
 
 
-function addEditForm(id) {
+function addEditCommentForm(item) {
+    let id = item.getAttribute('data-comment-id');
     let editFormContainer = document.getElementById("edit-container");
     if (editFormContainer == null) {
-        let content = document.getElementById("post-content-container");
-        let postBody = document.getElementById("post-" + id);
+        let content = document.getElementById("comment-content-container-" + id);
+        let objectBody = document.getElementById("comment-body-" + id);
         editFormContainer = document.createElement('div');
         editFormContainer.innerHTML = `
-        <div class="edit-container mb-2 " id="edit-container">
+        <div class="edit-container mb-2" id="edit-container">
                 <form id="edit-form">
-                    <input hidden name="post_id" value="${id}">
-                    <div class="row" style="font-size: 0.45rem;">
-                        <div class="col-md-10 pr-md-0">
-                            <textarea id="edit-input" rows="8" type="text" class="form-control mr-0 text-justify" 
-                                >${postBody.innerText}
-                                </textarea>
+                    <input hidden name="comment_id" value="${id}">
+                    <div class="col pl-0 " style="font-size: 0.45rem;">
+                        <div class=" pr-md-0 pl-0 w-100">
+                            <textarea id="edit-input" rows="3" type="text" class="form-control mr-0 text-justify" 
+                                >${objectBody.innerText}</textarea>
                         </div>
-                        <!--<div class="col-md-1 my-auto mx-auto text-right">-->
-                        <div class="col-md-1 my-auto mx-auto text-right px-0 text-center comment-button">
-                            <button type="submit" class="btn btn-md btn-dark" id ="send-edit-btn"> edit </button>
+                        <div class=" px-md-0 py-2 comment-button">
+                            <button type="submit" class="btn btn-md btn-dark" id ="send-edit-btn"> Save Changes </button>
                         </div>
                     </div>
                 </form>
@@ -400,16 +416,70 @@ function addEditForm(id) {
             editForm.addEventListener('submit', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                sendEdit();
+                sendCommentEdit();
             });
         }
-        postBody.remove();
+        objectBody.remove();
         //  content.remove(postBody);
 
         // let editInput = document.getElementById("edit-input-" + id);
         // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
     }
 }
+
+function addEditPostForm(item) {
+    let id = item.getAttribute('data-post-id');
+    let editPostFormContainer = document.getElementById("edit-post-container");
+    if (editPostFormContainer == null) {
+        let content = document.getElementById("post-content-container-" + id);
+        let objectBody = document.getElementById("post-body-" + id);
+        editPostFormContainer = document.createElement('div');
+        editPostFormContainer.innerHTML = `
+        <div class="edit-container mb-2" id="edit-post-container">
+                <form id="edit-post-form">
+                    <input hidden name="post_id" value="${id}">
+                    <div class="col pl-0 " style="font-size: 0.45rem;">
+                        <div class=" pr-md-0 pl-0 w-100">
+                            <textarea id="edit-post-input" rows="8" type="text" class="form-control mr-0 text-justify" 
+                                >${objectBody.innerText}</textarea>
+                        </div>
+                        <div class=" px-md-0 py-2 comment-button">
+                            <button type="submit" class="btn btn-md btn-dark" id ="send-edit-btn"> Save Changes </button>
+                        </div>
+                    </div>
+                </form>
+        </div>`;
+
+        console.log(content);
+        content.appendChild(editPostFormContainer);
+        let editPostForm = document.querySelector("#edit-post-form");
+        if (editPostForm != null) {
+            editPostForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                sendPostEdit();
+            });
+        }
+        objectBody.remove();
+        //  content.remove(postBody);
+
+        // let editInput = document.getElementById("edit-input-" + id);
+        // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
+    }
+}
+// //TODO
+// function removeEditPostForm(item) {
+//     let editPostFormContainer = document.getElementById("edit-post-container");
+//     if (editPostFormContainer == null) {
+//         let input = document.querySelector("input[name=post_id]")
+//         let objectBody = document.getElementById("post-body-" + id);
+        
+//         //  content.remove(postBody);
+
+//         // let editInput = document.getElementById("edit-input-" + id);
+//         // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
+//     }
+// }
 
 function openDeleteConfirmModal(item) {
     console.log(item);
@@ -475,7 +545,7 @@ function sendCommentReply() {
     // console.log(comment_id);
     // console.log(replyBody);
 
-    sendAjaxRequest('put', '/reply', {
+    sendAjaxRequest('post', '/reply', {
         user_id: user_id,
         post_id: post_id,
         comment_id: comment_id,
@@ -500,10 +570,13 @@ function newReplyHandler() {
     let commentSection = document.getElementById("replies" + commentParent);
     let authorUsername = response['extras']['author_username'];
     let authorImage = response['extras']['author_photo'];
-    // console.log(authorImage);
 
+    if (authorImage.search(/google/) == -1)
+        authorImage = "/" + authorImage;
+
+    newComment.setAttribute('id', `comment${commentId}`);
+    newComment.setAttribute('class', 'card mb-2 post-container post-reply');
     newComment.innerHTML = `
-    <div id="comment${commentId}" class="card mb-2 post-container post-reply">
         <div class="row pt-4">
 
             <div class="d-flex align-items-end justify-content-end">
@@ -535,8 +608,8 @@ function newReplyHandler() {
                 </div>
             </div>
 
-            <div class="col-md-10 mx-auto">
-                <p class="card-text">
+            <div class="col-md-10 mx-auto" id="comment-content-container-${commentId}" >
+                <p class="card-text" id="comment-body-${commentId}" style="white-space: pre-line">
                     ${commentContent}
                 </p>
             </div>
@@ -550,12 +623,15 @@ function newReplyHandler() {
                 data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
                 <i class="fas fa-trash-alt"></i>Delete
                 </a>
+                <a href="" class="edit-btn" data-comment-id="${commentId}">
+                <i class="fas fa-eraser"></i>Edit
+                </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                 <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="/${authorImage}" alt="">
+                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
                 </a>
                 <span class="px-1 align-self-center">Just now by</span>
                 <a href="/user/${commentUser}" class="my-auto">
@@ -563,46 +639,83 @@ function newReplyHandler() {
             </div>
         </div>
     </div>
-    </div>
     <div id="replies${commentId}"></div>`
 
     // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
     addReplyButtonsListener();
+    addEditButtonsListener();
+
 }
 
-function sendEdit(){
-    let post_id = document.querySelector('input[name=post_id]').value;
-    let newPostBody = document.getElementById("edit-input").value;
+function sendCommentEdit() {
+    let comment_id = document.querySelector('input[name=comment_id]').value;
+    let newCommentBody = document.getElementById("edit-input").value;
     // console.log(user_id);
     // console.log(post_id);
     // console.log(comment_id);
     // console.log(replyBody);
 
-    sendAjaxRequest('put', '/post/'+ post_id, {
-        post_id: post_id,
-        new_content:newPostBody
-    }, newContentHandler);
+    sendAjaxRequest('put', '/comment/' + comment_id, {
+        comment_id: comment_id,
+        new_content: newCommentBody
+    }, newCommentContentHandler);
     let editFormContainer = document.getElementById("edit-container");
     editFormContainer.remove();
 }
 
-function newContentHandler(){
+function sendPostEdit() {
+    let post_id = document.querySelector('input[name=post_id]').value;
+    let newPostBody = document.getElementById("edit-post-input").value;
+    // console.log(user_id);
+    // console.log(post_id);
+    // console.log(post_id);
+    // console.log(replyBody);
+
+    sendAjaxRequest('put', '/post/' + post_id, {
+        post_id: post_id,
+        new_content: newPostBody
+    }, newPostContentHandler);
+    let editPostFormContainer = document.getElementById("edit-post-container");
+    editPostFormContainer.remove();
+}
+
+function newCommentContentHandler() {
     let response = JSON.parse(this.responseText);
     console.log(response);
-    let type = response['type'];
-    if(type =="post"){
-        let postId = response['post_id'];
-        let postContentContainerDiv = document.querySelector("#post-content-container div");
-        let postBody = document.createElement("p");
-        postBody.classList.add("card-text");
-        postBody.classList.add("post-body");
-        postBody.classList.add("pb-5");
-        postContentContainerDiv.appendChild(postBody);
-        postBody.innerText = response['new_content'];
-    }else if(type == "comment"){
+    let commentId = response['comment_id'];
+    let commentContentContainerDiv = document.querySelector("#comment-content-container-" + commentId);
+    let commentBody = document.createElement("p");
+    commentBody.classList.add("card-text");
+    commentBody.id = "comment-body-" + commentId;
+    commentContentContainerDiv.appendChild(commentBody);
+    commentBody.innerText = response['new_content'];
+    /*
+    <div class="col-md-10 mx-auto" id="comment-content-container-{{$comment->id}}">
+        <p class="card-text" id="comment-body-{{$comment->id}}">
+            {{$comment->content}}
+        </p>
+    </div>
+    */
+}
 
-    }
+function newPostContentHandler() {
+    let response = JSON.parse(this.responseText);
+    console.log(response);
+    let postId = response['post_id'];
+    let postContentContainerDiv = document.querySelector("#post-content-container-" + postId);
+    let postBody = document.createElement("p");
+    postBody.classList.add("card-text");
+    postBody.id = "post-body-" + postId;
+    postContentContainerDiv.appendChild(postBody);
+    postBody.innerText = response['new_content'];
+    /*
+    <div class="col-md-10 mx-auto" id="comment-content-container-{{$comment->id}}">
+        <p class="card-text" id="comment-body-{{$comment->id}}">
+            {{$comment->content}}
+        </p>
+    </div>
+    */
 }
 
 function deleteCommentHandler(id) {
@@ -626,7 +739,7 @@ function deleteCommentHandler(id) {
         window.clearTimeout(timeoutHandlerCommentDelete);
         timeoutHandlerCommentDelete = setTimeout(function () {
             comment.outerHTML = ``;
-        }, 5000);
+        }, 2500);
     }
 
     // let content = document.querySelector("#"+item.id+" p[class='card-text']");
@@ -655,7 +768,7 @@ function deletePostHandler() {
         window.clearTimeout(timeoutHandlerPostDelete);
         timeoutHandlerPostDelete = setTimeout(function () {
             feedbackMessage.innerHTML = ``
-        }, 5000);
+        }, 2500);
     }
     else {
         // console.log(this.status);
@@ -855,5 +968,13 @@ $(document).mouseup(function (e) {
     if ($(e.target).closest("#reply-container").length
         == 0) {
         $("#reply-container").remove();
+    }
+    if ($(e.target).closest("#edit-container").length
+        == 0) {
+        $("#edit-container").remove();
+    }
+    if ($(e.target).closest("#edit-post-container").length
+        == 0) {
+        $("#edit-post-container").remove();
     }
 });

@@ -63,12 +63,15 @@
             </div>
 
             <!-- My Categories -->
-            <div class="card aside-container">
+            <div class="card aside-container">              
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
-                            <div id="activity_menu" class="profile-aside nav-border-active">Activity</div>
+                            <div id="activity_menu" class="profile-aside nav-border-active">
+                                <i class="fas fa-chart-line mr-2"></i>
+                                Activity</div>
                             <div id="community_menu" class="profile-aside nav-border" style="border-bottom: 0px;">
+                                <i class="fas fa-users mr-2"></i>
                                 Communities</div>
                         </div>
                     </div>
@@ -99,7 +102,6 @@
             </a>
 
             <!-- Activity -->
-
             <div class="active-tab profile-content">
                 @foreach($posts as $post)
                 @include('partials.myProfilePost', ['post' => $post, 'user' => $other_user ])

@@ -14,8 +14,8 @@
         @endif
 
         {{-- Content --}}
-        <div class="col-md-10 mx-auto">
-            <p class="card-text">
+        <div class="col-md-10 mx-auto" id="comment-content-container-{{$comment->id}}">
+            <p class="card-text" id="comment-body-{{$comment->id}}" style="white-space: pre-line">
                 {{$comment->content}}
             </p>
         </div>
@@ -45,7 +45,9 @@
                 <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
                     data-object="{{$comment->id}}" data-route="/comment/{{$comment->id}}" data-type="comment">
                     <i class="fas fa-trash-alt"></i>Delete
-                </a> @endif
+                </a>
+                <a href="" class="edit-btn" data-comment-id="{{$comment->id}}"><i class="fas fa-eraser"></i>Edit</a>
+                @endif
             </div>
         </div>
         <div class="col-md-6">

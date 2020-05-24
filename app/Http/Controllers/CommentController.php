@@ -92,9 +92,44 @@ class CommentController extends Controller
      * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request)
     {
         //
+        error_log("\n1\n");
+        //TODO: add policy
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        if ($user == null){
+            error_log("\n2\n");
+        return response([
+            'success' => false
+        ]);}
+        $data = $request->validate([
+            'comment_id' => 'required',
+            'new_content' => 'required',
+        ]);
+
+        $comment = Comment::find($data['comment_id']);
+
+        if ($comment!=null) {
+            error_log("\n3\n");
+            $comment->content = $data['new_content'];
+            $comment->save();
+            return response([
+            'success' => true,
+            "comment_id" => $comment->id,
+            "new_content" => $comment->content
+        ]);
+        } else {
+            error_log("\n4\n");
+            return response([
+            'success' => false
+        ]);
+        }  
     }
 
     /**
@@ -111,7 +146,7 @@ class CommentController extends Controller
         } else {
             $user = null;
         }
-        error_log("2\n\n");
+        error_log("\n2\n\n");
 
         if ($user == null)
             return redirect('/');

@@ -33,18 +33,15 @@ draw_navigation($auth, "", $admin);
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
-                            <div id="home" class="nav-border-active">
-                                Home
-                            </div>
-                            {{-- <a href="popularHome.php"> --}}
-                            <div id="popular" class="nav-border">Popular</div>
-                            {{-- </a> --}}
-                            {{-- <a href="trendingHome.php"> --}}
-                            <div id="trending" class="nav-border">Trending</div>
-                            {{-- </a> --}}
-                            {{-- <a href="universitiesHome.php"> --}}
-                            <div id="universities" class="nav-border" style="border-bottom: 0px;">Universities</div>
-                            {{-- </a> --}}
+                            <div id="home_menu" class="home-aside nav-border-active">
+                                <i class="fas fa-home mr-2"></i>
+                                Home</div>
+                            <div id="popular_menu" class="home-aside nav-border">
+                                <i class="fas fa-fire mr-2"></i>
+                                Popular</div>
+                            <div id="recent_menu" class="home-aside nav-border" style="border-bottom: 0px;">
+                                <i class="far fa-clock mr-2"></i>
+                                Recent</div>
                         </div>
                     </div>
                 </div>
@@ -79,7 +76,6 @@ draw_navigation($auth, "", $admin);
             @endif
 
             <div id="posts-column-home">
-                {{-- @each('partials.homePost', $posts, 'post', $user => 'user') --}}
                 @foreach($posts as $post)
                 @include('partials.homePost', ['post'=>$post, 'user'=>$user])
                 @endforeach

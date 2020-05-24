@@ -44,7 +44,9 @@
                 <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
                     data-object="{{$reply->id}}" data-route="/comment/{{$reply->id}}" data-type="comment">
                     <i class="fas fa-trash-alt"></i>Delete
-                </a> @endif
+                </a>
+                <a href="" class="edit-btn" data-comment-id="{{$reply->id}}"><i class="fas fa-eraser"></i>Edit</a>
+                @endif
             </div>
         </div>
         <div class="col-md-6">
