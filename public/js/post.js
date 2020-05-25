@@ -13,6 +13,7 @@ let editButtons = document.querySelectorAll(".edit-btn");
 let deleteConfirmButtons = document.getElementsByClassName("delete-confirm");
 let deleteButtons = document.querySelectorAll(".delete-btn");
 let comment;
+let currentContent;
 
 function addPostEventListeners() {
     let checkCommunity = document.querySelector('div.new-post input[name="community"]');
@@ -39,6 +40,7 @@ function addPostEventListeners() {
     addEditButtonsListener();
     addDeleteButtonsListener();
     addDeleteConfirmButtonsListener();
+    postFading();
 }
 
 function addReplyButtonsListener() {
@@ -64,7 +66,7 @@ function addVotesEventListener() {
             //console.log("here");
             if (!item.classList.contains('disabled-voting')) {
                 changeVoteColor(item);
-                item.addEventListener('click', function (event) {
+                item.addEventListener('click', function(event) {
                     event.preventDefault();
                     event.stopPropagation();
                     voteButtonClicked(item);
@@ -113,11 +115,14 @@ function addDeleteButtonsListener() {
 }
 
 function addDeleteConfirmButtonsListener() {
+    console.log("lsls")
     deleteConfirmButtons = document.querySelectorAll(".delete-confirm");
     if (deleteConfirmButtons != null) {
         console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
         deleteConfirmButtons.forEach(function (item) {
+            console.log
             item.addEventListener('click', function (event) {
+
                 event.preventDefault();
                 event.stopPropagation();
                 sendDeleteConfirmObject(item);
@@ -209,7 +214,7 @@ function voteButtonClicked(item) {
 
     // console.log("route ->" + route);
     if (route.match(pattern)) {
-        argumentsObject = { post_id: targetId, vote_type: voteType }
+        argumentsObject = { vote_type: voteType }
     } else {
         argumentsObject = { comment_id: targetId, vote_type: voteType };
     }
@@ -338,7 +343,7 @@ function newCommentHandler() {
     replies.setAttribute('id', "replies" + commentId);
     // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
-    newComment.insertAdjacentElement("afterend",replies)
+    newComment.insertAdjacentElement("afterend", replies)
     addReplyButtonsListener();
     addDeleteButtonsListener();
     addDeleteConfirmButtonsListener();
@@ -410,6 +415,7 @@ function addEditCommentForm(item) {
         </div>`;
 
         console.log(content);
+        currentContent = objectBody.innerText;
         content.appendChild(editFormContainer);
         let editForm = document.querySelector("#edit-form");
         if (editForm != null) {
@@ -451,6 +457,7 @@ function addEditPostForm(item) {
         </div>`;
 
         console.log(content);
+        currentContent = objectBody.innerText;
         content.appendChild(editPostFormContainer);
         let editPostForm = document.querySelector("#edit-post-form");
         if (editPostForm != null) {
@@ -467,19 +474,47 @@ function addEditPostForm(item) {
         // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
     }
 }
-// //TODO
-// function removeEditPostForm(item) {
-//     let editPostFormContainer = document.getElementById("edit-post-container");
-//     if (editPostFormContainer == null) {
-//         let input = document.querySelector("input[name=post_id]")
-//         let objectBody = document.getElementById("post-body-" + id);
-        
-//         //  content.remove(postBody);
 
-//         // let editInput = document.getElementById("edit-input-" + id);
-//         // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
-//     }
-// }
+function removeEditPostForm() {
+    let editPostFormContainer = document.getElementById("edit-post-container");
+    if (editPostFormContainer != null) {
+        let id = document.querySelector("input[name=post_id]").value;
+        let objectBody = document.createElement('p');
+        objectBody.classList.add("card-text");
+        objectBody.setAttribute("style", "white-space: pre-line");
+        objectBody.classList.add("pb-5");
+        objectBody.setAttribute('id', "post-body-" + id);
+        objectBody.innerText = currentContent;
+        let postContainer = document.getElementById("post-content-container-" + id);
+        console.log(objectBody);
+        postContainer.appendChild(objectBody);
+        editPostFormContainer.remove();
+        //  content.remove(postBody);
+
+        // let editInput = document.getElementById("edit-input-" + id);
+        // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
+    }
+}
+
+function removeEditCommentForm() {
+    let editFormContainer = document.getElementById("edit-container");
+    if (editFormContainer != null) {
+        let id = document.querySelector("input[name=comment_id]").value;
+        let objectBody = document.createElement('p');
+        objectBody.classList.add("card-text");
+        objectBody.setAttribute("style", "white-space: pre-line");
+        objectBody.setAttribute('id', "comment-body-" + id);
+        objectBody.innerText = currentContent;
+        let commentContainer = document.getElementById("comment-content-container-" + id);
+        console.log(objectBody);
+        commentContainer.appendChild(objectBody);
+        editFormContainer.remove();
+        //  content.remove(postBody);
+
+        // let editInput = document.getElementById("edit-input-" + id);
+        // editInput.addEventListener('blur', () => { editFormContainer.remove(); });
+    }
+}
 
 function openDeleteConfirmModal(item) {
     console.log(item);
@@ -517,11 +552,11 @@ function sendDeleteConfirmObject(item) {
     console.log(route);
     if (route.match(pattern)) {
         console.log("post delete");
-        argumentsObject = { post_id: id }
+        argumentsObject = {};
         sendAjaxRequest("delete", route, argumentsObject, deletePostHandler);
     } else {
         console.log("comment delete");
-        argumentsObject = { comment_id: id };
+        argumentsObject = {comment_id: id};
         comment = document.getElementById("comment" + id);
         console.log("ID is *" + id + "*");
         console.log(comment);
@@ -673,7 +708,6 @@ function sendPostEdit() {
     // console.log(replyBody);
 
     sendAjaxRequest('put', '/post/' + post_id, {
-        post_id: post_id,
         new_content: newPostBody
     }, newPostContentHandler);
     let editPostFormContainer = document.getElementById("edit-post-container");
@@ -731,7 +765,7 @@ function deleteCommentHandler(id) {
         });
         comment.classList.add("my-auto")
         comment.innerHTML = `
-                <div class=" alert alert-success my-auto">
+                <div class=" alert alert-success mt-4">
                     <div class= "my-auto">
                         <p class="my-0">Your comment and its replies were deleted successfuly!</p>
                     </div>
@@ -875,17 +909,19 @@ if (newPostForm != null) {
     }
 }
 
+let typeTab = 'home';
+let lock = false;
+let num_posts = 20;
 $(document).ready(function () {
     let posts_column_home = document.getElementById("posts-column-home");
     let posts_column_community = document.getElementById("posts-column-community");
     let loader = document.getElementById("loader");
-    let num_posts = 20;
     let api_route;
     let page;
     let data_route;
 
     if (posts_column_home != null || posts_column_community != null) {
-        let lock = false;
+        lock = false;
         loader.style.display = 'none';
 
         $(window).scroll(function () {
@@ -893,14 +929,14 @@ $(document).ready(function () {
                 if (posts_column_home != null) {
                     api_route = '/api/home';
                     page = "#posts-column-home";
-                    data_route = { num_posts: num_posts };
+                    data_route = { num_posts: num_posts, type: typeTab };
                 }
                 else if (posts_column_community != null) {
                     api_route = '/api/community';
                     page = "#posts-column-community";
-                    data_route = { num_posts: num_posts, community_id: document.querySelector('.community-page-container').getAttribute('data-object-id') };
+                    data_route = { num_posts: num_posts, type: home, community_id: document.querySelector('.community-page-container').getAttribute('data-object-id') };
                 }
-
+                console.log(lock)
                 if (lock == true) {
                     return;
                 }
@@ -937,6 +973,97 @@ $(document).ready(function () {
 function refreshPostHandler(response, page) {
     if (response.success === true) {
         $(page).append(response.html).fadeIn("slow");
+        addPostEventListeners();
+    }
+}
+
+let home_aside = document.querySelectorAll(".home-aside");
+if (home_aside.length != 0) {
+    let homes_menu = document.getElementById("home_menu");
+    let populars_menu = document.getElementById("popular_menu");
+    let recents_menu = document.getElementById("recent_menu");
+    let home_content = document.getElementById("posts-column-home");
+
+    function home_tabs() {
+        tab_content("home");
+        typeTab = 'home';
+        lock = false;
+        num_posts = 20;
+        populars_menu.classList.remove("nav-border-active");
+        populars_menu.classList.add("nav-border");
+        populars_menu.addEventListener("click", popular_tabs);
+
+        recents_menu.classList.remove("nav-border-active");
+        recents_menu.classList.add("nav-border");
+        recents_menu.addEventListener("click", recent_tabs);
+
+        homes_menu.classList.remove("nav-border");
+        homes_menu.classList.add("nav-border-active");
+        homes_menu.removeEventListener("click", home_tabs);
+    }
+
+    function popular_tabs() {
+        tab_content("popular");
+        typeTab = 'popular';
+        lock = false;
+        num_posts = 20;
+        homes_menu.classList.remove("nav-border-active");
+        homes_menu.classList.add("nav-border");
+        homes_menu.addEventListener("click", home_tabs);
+
+        recents_menu.classList.remove("nav-border-active");
+        recents_menu.classList.add("nav-border");
+        recents_menu.addEventListener("click", recent_tabs);
+
+        populars_menu.classList.remove("nav-border");
+        populars_menu.classList.add("nav-border-active");
+        populars_menu.removeEventListener("click", popular_tabs);
+    }
+
+    function recent_tabs() {
+        tab_content("recent");
+        typeTab = 'recent';
+        lock = false;
+        num_posts = 20;
+        homes_menu.classList.remove("nav-border-active");
+        homes_menu.classList.add("nav-border");
+        homes_menu.addEventListener("click", home_tabs);
+
+        populars_menu.classList.remove("nav-border-active");
+        populars_menu.classList.add("nav-border");
+        populars_menu.addEventListener("click", popular_tabs);
+
+        recents_menu.classList.remove("nav-border");
+        recents_menu.classList.add("nav-border-active");
+        recents_menu.removeEventListener("click", recent_tabs);
+    }
+
+    homes_menu.addEventListener("click", home_tabs);
+    populars_menu.addEventListener("click", popular_tabs);
+    recents_menu.addEventListener("click", recent_tabs);
+}
+
+function tab_content(type) {
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '/api/' + type + 'Tab',
+        type: 'POST',
+        dataType: 'json',
+        // data: data_route,
+        success: function (data) {
+            if (data.html.length == 0)
+                return;
+
+            tabPostHandler(data);
+        }
+    });
+}
+
+function tabPostHandler(response) {
+    if (response.success === true) {
+        $('#posts-column-home').html(response.html).fadeIn("slow");
         addVotesEventListener();
     }
 }
@@ -971,10 +1098,27 @@ $(document).mouseup(function (e) {
     }
     if ($(e.target).closest("#edit-container").length
         == 0) {
-        $("#edit-container").remove();
+        removeEditCommentForm();
+        // $("#edit-container").remove();
     }
     if ($(e.target).closest("#edit-post-container").length
         == 0) {
-        $("#edit-post-container").remove();
+        removeEditPostForm()
+        // $("#edit-post-container").remove();
     }
 });
+
+function postFading() {
+    let posts = document.querySelectorAll('.post-box');
+    if (posts.length != 0) {
+        let height;
+        let readMore;
+        posts.forEach((post) => {
+            height = post.clientHeight;
+            readMore = post.querySelector('.read-more');
+            if (height < 260) {
+                readMore.style.padding = 0;
+            }
+        });
+    }
+}

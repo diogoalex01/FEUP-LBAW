@@ -13,8 +13,8 @@
         @endif
 
         {{-- Content --}}
-        <div class="col-md-10 mx-auto">
-            <p class="card-text">
+        <div class="col-md-10 mx-auto" id="comment-content-container-{{$reply->id}}">
+            <p class="card-text" id="comment-body-{{$reply->id}}">
                 {{$reply->content}}
             </p>
         </div>

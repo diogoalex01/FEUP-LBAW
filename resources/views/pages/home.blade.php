@@ -26,7 +26,8 @@ draw_navigation($auth, "", $admin);
         <div class="col-md-3 aside ">
 
             <!-- My Categories -->
-            <div class="card aside-container sticky-top">
+            @include('partials.categories')
+            {{-- <div class="card aside-container sticky-top">
                 <h5 class="card-header aside-container-top"
                     style="border: 1px solid rgba(76, 25, 27); border-radius: 2px; background-color: rgb(76, 25, 27);">
                 </h5>
@@ -45,7 +46,7 @@ draw_navigation($auth, "", $admin);
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 

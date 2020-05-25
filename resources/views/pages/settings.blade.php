@@ -93,7 +93,7 @@
                                     <label class=" control-label">Gender:</label>
                                     <select class="form-control" id="gender" name="gender">
                                         @if ($user->gender == "male")
-                                        <option value="Male" selected="selected">Male</option>
+                                        <option value="male" selected="selected">Male</option>
                                         @else
                                         <option value="male">Male</option>
                                         @endif

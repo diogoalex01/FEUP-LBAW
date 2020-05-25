@@ -46,7 +46,7 @@
                             @endif
 
                             <div class="a-report">
-                                @if(Auth::guest() || $user->id !== $post->user->id)
+                                @if(Auth::guest() || $post->user === null || $user->id !== $post->user->id)
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
                                     <i class="fas fa-flag"></i>Report
                                 </a>

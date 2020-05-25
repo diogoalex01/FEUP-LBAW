@@ -63,10 +63,10 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <form class="form-inline my-2 mr-3 my-lg-0 mx-auto" action="{{ route('search')}}" method="get">
-            @csrf
-            <input id="search-bar" class="form-control mr-sm-2" type="search" name="query" placeholder="Explore"
-                aria-label="Explore">
-            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
+                @csrf
+                <input id="search-bar" class="form-control mr-sm-2" type="search" name="query" placeholder="Explore"
+                    aria-label="Explore">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Explore</button>
             </form>
 
             @if (Auth::check())
@@ -264,7 +264,8 @@
                                                         <div class="google-btn" style="max-width: 192px;">
                                                             <div class="google-icon-wrapper">
                                                                 <img class="google-icon-svg"
-                                                                    src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" />
+                                                                    src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                                                                    alt="google" />
                                                             </div>
                                                             <p class="btn-text"><b>Continue with Google</b></p>
                                                         </div>
@@ -320,27 +321,25 @@
                                                     <div id="feedback-message-login">
                                                     </div>
 
-                                                    <label for="email">Email</label>
-                                                    <input id="email" name="email" type="email" class="form-control"
-                                                        placeholder="Email" required>
+                                                    <label for="emailLogin">Email</label>
+                                                    <input id="emailLogin" name="email" type="email"
+                                                        class="form-control" placeholder="Email" required>
 
                                                 </div>
                                                 <div class="col-lg-10 mty-3">
-                                                    <label for="password">Password</label>
-                                                    <input type="password" id="password" name="password"
+                                                    <label for="passwordLogin">Password</label>
+                                                    <input type="password" id="passwordLogin" name="password"
                                                         class="form-control" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}"
                                                         placeholder="Password" required>
 
                                                 </div>
                                                 <div class="form-group row login-signup-trans mt-4 mx-0 w-100">
                                                     <div class="row d-flex align-items-center mr-2">
-                                                        <p class="m-0">Don't have an account?
-                                                            <a class="mr-1 text-center" href="">
-                                                                <p class="font-weight-bold m-0" data-toggle="modal"
-                                                                    data-dismiss="modal" data-target="#modalSignup">
-                                                                    Sign up</p>
-                                                            </a>
-                                                        </p>
+                                                        <p class="m-0">Don't have an account? </p>
+                                                        <a class="mr-1 text-center" href="" data-toggle="modal"
+                                                            data-dismiss="modal" data-target="#modalSignup">
+                                                            <p class="font-weight-bold m-0"> Sign up</p>
+                                                        </a>
                                                     </div>
                                                     <a href="{{ URL::to('/') }}">
                                                         <button type="submit" class="btn btn-outline-dark ">Log
@@ -402,39 +401,40 @@
                                                     <div class="row d-flex justify-content-lg-center mb-2">
 
                                                         <div class="col sign-up-input">
-                                                            <label for="firstName" class="control-label">First
+                                                            <label for="firstNameSignUp" class="control-label">First
                                                                 name:</label>
-                                                            <input class="form-control" type="text" id="firstName"
+                                                            <input class="form-control" type="text" id="firstNameSignUp"
                                                                 name="firstName" placeholder="First Name" required>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="lastName" class=" control-label">Last
+                                                            <label for="lastNameSignUp" class=" control-label">Last
                                                                 name:</label>
                                                             <input class="form-control" type="text"
-                                                                placeholder="Last Name" id="lastName" name="lastName"
-                                                                required>
+                                                                placeholder="Last Name" id="lastNameSignUp"
+                                                                name="lastName" required>
                                                         </div>
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="username">Username *</label>
+                                                            <label for="usernameSignUp">Username *</label>
                                                             <div class="input-group mb-2">
                                                                 <div class="input-group-prepend">
                                                                     <div class="input-group-text">@</div>
                                                                 </div>
-                                                                <input type="text" class="form-control" id="username"
-                                                                    name="username" placeholder="Username" required>
+                                                                <input type="text" class="form-control"
+                                                                    id="usernameSignUp" name="username"
+                                                                    placeholder="Username" required>
                                                             </div>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="email">Email *</label>
-                                                            <input type="email" class="form-control" id="email"
+                                                            <label for="emailSignUp">Email *</label>
+                                                            <input type="email" class="form-control" id="emailSignUp"
                                                                 name="email" placeholder="Email" required>
                                                         </div>
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="password">Password *</label>
+                                                            <label for="passwordSignUp">Password *</label>
                                                             <input type="password" id="password" name="password"
                                                                 class="form-control" aria-describedby="passwordHelp"
                                                                 pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}"
@@ -444,9 +444,9 @@
                                                             </div>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="password_confirmation"> Confirm Password
+                                                            <label for="password_confirmationSignUp"> Confirm Password
                                                                 *</label>
-                                                            <input type="password" id="password_confirmation"
+                                                            <input type="password" id="password_confirmationSignUp"
                                                                 name="password_confirmation" class="form-control"
                                                                 aria-describedby="passwordHelp"
                                                                 pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}"
@@ -458,17 +458,18 @@
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="gender" class="control-label">Gender:</label>
-                                                            <select class="form-control" id="gender" name="gender">
+                                                            <label for="genderSignUp" class="control-label">Gender:</label>
+                                                            <select class="form-control" id="genderSignUp"
+                                                                name="gender">
                                                                 <option value="male">Male</option>
                                                                 <option value="female">Female</option>
                                                                 <option value="other">Other</option>
                                                             </select>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="birthdate"
+                                                            <label for="birthdateSignUp"
                                                                 class="control-label">Birthdate:</label>
-                                                            <input class="form-control" type="date" id="birthdate"
+                                                            <input class="form-control" type="date" id="birthdateSignUp"
                                                                 name="birthdate" required>
                                                         </div>
                                                     </div>
@@ -550,7 +551,8 @@
                                     </h2>
                                     <hr>
                                     <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
-                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                    <select class="form-control mx-4" id="communityReportReason" name="reason"
+                                        style="width:96.1%">
                                         <option value="spam">It's spam</option>
                                         <option value="copy">It infringes my copyright</option>
                                         <option value="innapropriate">Inappropriate Content</option>
@@ -587,7 +589,8 @@
                                     </h2>
                                     <hr>
                                     <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
-                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                    <select class="form-control mx-4" id="postReportReason" name="reason"
+                                        style="width:96.1%">
                                         <option value="spam">It's spam</option>
                                         <option value="copy">It infringes my copyright</option>
                                         <option value="innapropriate">Inappropriate Content</option>
@@ -623,7 +626,8 @@
                                     </h2>
                                     <hr>
                                     <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
-                                    <select class="form-control mx-4" id="gender" name="gender" style="width:96.1%">
+                                    <select class="form-control mx-4" id="commentReportReason" name="reason"
+                                        style="width:96.1%">
                                         <option value="spam">It's spam</option>
                                         <option value="copy">It infringes my copyright</option>
                                         <option value="innapropriate">Inappropriate Content</option>

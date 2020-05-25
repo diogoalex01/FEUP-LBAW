@@ -175,7 +175,7 @@ function profileEditedHandler(responseText) {
     let feedbackMessage = document.querySelector('#feedback-message');
 
     if (response.success == true) {
-        let username = document.querySelector('input[name=username]').value;
+        let username = document.querySelector('#edit-user #username').value;
         let deleteUserInputSolution = document.getElementById('delete-user-solution');
         let imgPath = response.imgPath;
         let photoSettings = document.getElementById('photoSettings');
@@ -187,7 +187,7 @@ function profileEditedHandler(responseText) {
         deleteUserInputSolution.value = username;
 
         feedbackMessage.innerHTML = `
-        <div class="alert alemt-md-0 card mb-4rt-success">
+        <div class="alert alert-md-0 card mb-4 alert-success">
             <div class="my-auto">
                 <p class="my-0">Changes saved successfuly!</p>
             </div>
@@ -203,8 +203,11 @@ function profileEditedHandler(responseText) {
     }
 
     let password_confirmation = document.getElementById('password_confirmation');
-    password_confirmation.value = "";
-    password_confirmation.style.boxShadow = "initial";
+
+    if (password_confirmation != null) {
+        password_confirmation.value = "";
+        password_confirmation.style.boxShadow = "initial";
+    }
 
     let fileLabel = document.getElementById('customFileLabel');
     fileLabel.innerHTML = "No file selected.";
@@ -231,10 +234,11 @@ function mySubmitFunction() {
     return false;
 }
 
+
+// Delete user
 $(window).bind('load', resetDeleteForm);
 
 $('#modalDelete').on('hidden.bs.modal', resetDeleteForm);
-
 function resetDeleteForm() {
     $('#deleteAccountForm')
         .find("input#delete-confirm-username,select")
@@ -252,6 +256,8 @@ function resetDeleteForm() {
         .end();
 }
 
+
+// Update user settings
 $(document).ready(function () {
     $('#edit-user').on('submit', function (event) {
         event.preventDefault();
@@ -262,8 +268,9 @@ $(document).ready(function () {
             private = true;
         }
 
-        let password = document.querySelector('#password');
-        let password_confirmation = document.querySelector('#password_confirmation');
+        let password = document.querySelector('#edit-user #password');
+        let password_confirmation = document.querySelector('#edit-user #password_confirmation');
+
         if (password != null) {
             password = password.value;
             password_confirmation = password_confirmation.value;
@@ -298,6 +305,8 @@ $(document).ready(function () {
     });
 });
 
+
+// Profile aside menu
 let activities = document.querySelectorAll('.sidebar-box');
 if (activities.length != 0) {
     let height;
@@ -311,8 +320,11 @@ if (activities.length != 0) {
     });
 }
 
-let profile_aside = document.querySelectorAll(".profile-aside");
+let communities_menu = document.getElementById("community_menu")
+if (communities_menu != null)
+    communities_menu.addEventListener("click", profile_tabs);
 
+let profile_aside = document.querySelectorAll(".profile-aside");
 if (profile_aside != null) {
     function profile_tabs() {
         let profile_content = document.querySelectorAll(".profile-content");
@@ -340,7 +352,7 @@ if (profile_aside != null) {
                 profile_aside[i].addEventListener("click", profile_tabs);
             }
             // add selected
-            else { 
+            else {
                 profile_aside[i].classList.remove("nav-border");
                 profile_aside[i].classList.add("nav-border-active");
                 profile_aside[i].removeEventListener("click", profile_tabs);
@@ -348,7 +360,3 @@ if (profile_aside != null) {
         }
     }
 }
-
-let communities_menu = document.getElementById("community_menu")
-if (communities_menu != null)
-    communities_menu.addEventListener("click", profile_tabs);

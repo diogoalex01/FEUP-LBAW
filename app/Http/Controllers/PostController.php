@@ -236,7 +236,13 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        if ($request['type'] == 'home') {
+            $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        } else if ($request['type'] == 'popular') {
+            $posts = Post::orderBy('upvotes', 'desc')->skip($request['num_posts'])->take(5)->get();
+        } else if ($request['type'] == 'recent') {
+            $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        }
         // return response()->json(array(
         //     'success' => true,
         //     'post' => $posts
@@ -272,7 +278,7 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($post_id, Request $request)
     {
         error_log("\n1\n");
         //TODO: add policy
@@ -289,11 +295,10 @@ class PostController extends Controller
             'success' => false
         ]);}
         $data = $request->validate([
-            'post_id' => 'required',
             'new_content' => 'required',
         ]);
 
-        $post = Post::find($data['post_id']);
+        $post = Post::find($post_id);
 
         // $this->authorize('update', 2,$post);
 
@@ -321,7 +326,7 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($post_id)
     {
         //TODO: add policy
         if (Auth::check()) {
@@ -333,11 +338,11 @@ class PostController extends Controller
         if ($user == null)
             return redirect('/');
 
-        $data = $request->validate([
-            'post_id' => 'required',
-        ]);
+        // $data = $request->validate([
+        //     'post_id' => 'required',
+        // ]);
 
-        $post = Post::find($data['post_id']);
+        $post = Post::find($post_id);
 
         if ($post->delete()) {
             return response([
@@ -350,7 +355,7 @@ class PostController extends Controller
         }  
     }
 
-    public function vote(Request $request)
+    public function vote($post_id, Request $request)
     {
         // post_id: targetId, vote_type: 'up'
 
@@ -364,11 +369,10 @@ class PostController extends Controller
             return redirect('/');
 
         $data = $request->validate([
-            'post_id' => 'required',
             'vote_type' => 'required',
         ]);
 
-        $post = Post::find($data['post_id']);
+        $post = Post::find($post_id);
 
         // if (strcmp("up", $data['vote_type']) == 0) {
         //     $post->upvotes = $post->upvotes + 1;
@@ -385,7 +389,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function vote_edit(Request $request)
+    public function vote_edit($post_id,Request $request)
     {
 
         if (Auth::check()) {
@@ -398,11 +402,10 @@ class PostController extends Controller
             return redirect('/');
 
         $data = $request->validate([
-            'post_id' => 'required',
             'vote_type' => 'required',
         ]);
 
-        $post = Post::find($data['post_id']);
+        $post = Post::find($post_id);
 
         
         $post->votedUsers()->updateExistingPivot($user->id, ['vote_type' => $data['vote_type']]);
@@ -413,7 +416,7 @@ class PostController extends Controller
     }
 
 
-    public function vote_delete(Request $request)
+    public function vote_delete($post_id,Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();
@@ -425,11 +428,10 @@ class PostController extends Controller
             return redirect('/');
 
         $data = $request->validate([
-            'post_id' => 'required',
             'vote_type' => 'required',
         ]);
 
-        $post = Post::find($data['post_id']);
+        $post = Post::find($post_id);
 
         $post->votedUsers()->detach($user->id);
 

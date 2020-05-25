@@ -92,7 +92,7 @@ class CommentController extends Controller
      * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update($comment_id,Request $request)
     {
         //
         error_log("\n1\n");
@@ -109,11 +109,10 @@ class CommentController extends Controller
             'success' => false
         ]);}
         $data = $request->validate([
-            'comment_id' => 'required',
             'new_content' => 'required',
         ]);
 
-        $comment = Comment::find($data['comment_id']);
+        $comment = Comment::find($comment_id);
 
         if ($comment!=null) {
             error_log("\n3\n");
@@ -138,7 +137,7 @@ class CommentController extends Controller
      * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($comment_id)
     {
         //TODO: add policy
         if (Auth::check()) {
@@ -151,11 +150,7 @@ class CommentController extends Controller
         if ($user == null)
             return redirect('/');
 
-        $data = $request->validate([
-            'comment_id' => 'required',
-        ]);
-
-        $comment = Comment::find($data['comment_id']);
+        $comment = Comment::find($comment_id);
 
         if ($comment->delete()) {
             return response([
