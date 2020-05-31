@@ -22,7 +22,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'id_post', 'content', 'id_author', 'upvotes','downvotes','time_stamp','id_parent',
+        'id_post', 'content', 'id_author', 'upvotes', 'downvotes', 'time_stamp', 'id_parent',
     ];
 
     /**
@@ -36,34 +36,42 @@ class Comment extends Model
     /**
      * The post this comment belongs to
      */
-     public function post()
+    public function post()
     {
         return $this->belongsTo('App\Post', 'id_post');
     }
 
-     /**
+    /**
      * The comment this reply belongs to
      */
-     public function parent()
+    public function parent()
     {
         return $this->belongsTo('App\Comment', 'id_parent');
     }
 
-     /**
+    /**
      * The replies this comment has.
      */
-     public function replies()
+    public function replies()
     {
         return $this->hasMany('App\Comment');
     }
 
-     /**
+    /**
      * Users who have voted on this comment 
      */
-     public function votedUsers()
+    public function votedUsers()
     {
         return $this->belongsToMany('App\User', 'comment_vote', 'id_comment', 'id_user')->withPivot([
             'vote_type',
         ]);
+    }
+
+    /**
+     * The reports this comment has.
+     */
+    public function reports()
+    {
+        return $this->hasMany('App\Report');
     }
 }

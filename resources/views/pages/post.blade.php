@@ -24,7 +24,7 @@
         <!-- Post -->
         <div class="card mb-4 post-container">
             @if($post->image != null)
-            <img class="card-img-top card-img pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{ asset($post->image)}}"
+            <img class="card-img-top card-img pl-5 pr-5 pt-5 pb-2 m-0 lg-post-image" src="{{asset($post->image)}}"
                 alt="Post Image">
             @endif
 
@@ -41,7 +41,7 @@
                     'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
                     @endif
 
-                <div class="col-md-10 mx-auto" id="post-content-container-{{$post->id}}">
+                    <div class="col-md-10 mx-auto" id="post-content-container-{{$post->id}}">
                         <div style="padding-top: 15px;">
                             <h2 class="card-title">{{ $post->title}}</h2>
                             <p class="card-text pb-5" id="post-body-{{$post->id}}" style="white-space: pre-line">
@@ -121,7 +121,7 @@
                             <input hidden name="user_id" value={{$user->id}}>
                             <input hidden name="post_id" value={{$post->id}}>
                             <textarea id="new-comment-input" rows="1" onclick="this.rows = '8';"
-                                onblur="if(this.value == '') this.rows = '1';" type="text" class="form-control mr-0"
+                                onblur="if(this.value == '') this.rows = '1';" class="form-control mr-0"
                                 placeholder="New Comment"></textarea>
                         </div>
                         <!--<div class="col-md-1 my-auto mx-auto text-right">-->
@@ -152,7 +152,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <section>
-                    <div id="deleteAccountForm" class="container mb-3">
+                    <div id="deletePostForm" class="container mb-3">
                         <h2 class="text-dark title-padding title-mobile">Delete Post
                             {{-- <i class="fas fa-exclamation-circle pl-2 text-danger"></i> --}}
                         </h2>
@@ -181,7 +181,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <section>
-                    <div id="deleteAccountForm" class="container mb-3">
+                    <div id="deleteCommentForm" class="container mb-3">
                         <h2 class="text-dark title-padding title-mobile">Delete Comment
                         </h2>
                         <hr>

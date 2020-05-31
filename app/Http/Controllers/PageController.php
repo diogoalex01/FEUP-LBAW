@@ -13,11 +13,17 @@ class PageController extends Controller
      */
     public function about()
     {
-        $user = null;
-        if (Auth::check()){
-            $user = Auth::user();
-        }
-        return view('pages.about', ['user' => $user]);
+        return view('pages.about');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function notFound404()
+    {
+        return view('errors.404');
     }
 
 }

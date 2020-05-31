@@ -8,6 +8,8 @@ use Socialite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Session;
 
 
 class LoginController extends Controller
@@ -51,6 +53,11 @@ class LoginController extends Controller
         return redirect('/');
     }
 
+    protected function redirectTo()
+    {
+        return url()->previous();
+    }
+
     /**
      * Redirect the user to the Google authentication page.
      *
@@ -58,7 +65,8 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-         return Socialite::driver('google')->scopes(['profile'])->redirect();
+        Session::put('redirectToAuth', url()->previous());
+        return Socialite::driver('google')->scopes(['profile'])->redirect();
         //return Socialite::driver('google')->scopes(['profile', 'https://www.googleapis.com/auth/user.birthday.read'])->redirect();
     }
 
@@ -74,6 +82,7 @@ class LoginController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('showModal', "login");
         }
+
         // check if they're an existing user
         $existingUser = User::where('email', $user->email)->first();
         if ($existingUser) {
@@ -91,12 +100,14 @@ class LoginController extends Controller
             $newUser->private = false;
             $newUser->password = $user->id;
             $newUser->photo = $user->avatar;
-            $newUser->birthday = "1990-10-10";
+            $newUser->birthday = "1999-01-01";
             $newUser->save();
             auth()->login($newUser, true);
         }
 
-        return redirect()->back();
+        $redirectAuth = Session::get('redirectToAuth');
+        Session::forget('redirectToAuth');
+        return redirect($redirectAuth);
     }
 
     /**

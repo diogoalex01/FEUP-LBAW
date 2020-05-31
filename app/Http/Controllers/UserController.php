@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Post;
 use App\Community;
-use Illuminate\Http\Request;
+use App\Notification;
+use App\Request;
+
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -59,17 +61,37 @@ class UserController extends Controller
         $this_user = Auth::user();
         $member_users = User::all();
         $member_user = $member_users->find($user_id);
-        if($member_user != NULL){
+        if ($member_user != NULL) {
             $postN = Post::where('id_author', '=', $user_id)->count();
             $age = \Carbon\Carbon::parse($member_user->birthday)->age;
 
-        $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
-        $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
-        //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user]);
-        }
-        return view('pages.notFound', ['user'=> $this_user]);
+            $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
+            $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
 
+            $request_status = null;
+
+            if ($this_user !== null) {
+                $condition = ['id_receiver' => $user_id, "id_sender" => $this_user->id];
+                $request = Request::where($condition)->get();
+                if (sizeof($request) > 0) {
+                    //dd($request);
+                    for ($i = 0; $i < sizeof($request); $i++) {
+                        // dd($request);
+                        $follow_request = DB::table('follow_request')->where('id', '=', $request[$i]->id)->first();
+                        if ($follow_request !== null) {
+                            // dd($request);
+                            $request_status = $request[$i]->status;
+                            break;
+                        }
+                    }
+                }
+            }
+            // $follow_request = DB::table('follow_user')->where('id_followed', '=', $user_id)->get() !== null;
+
+            //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+            return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status]);
+        }
+        abort(404);
     }
 
     /**
@@ -254,5 +276,36 @@ class UserController extends Controller
             Auth::login($user);
             redirect('/settings');
         }
+    }
+
+    public function follow($user_id)
+    {
+        $user = Auth::user();
+        // $user->following()->attach($user_id);
+        // $user->save();
+
+        DB::transaction(function () use ($user_id, $user) {
+            DB::insert('insert into request (id_receiver, id_sender) values (?, ?)', [$user_id, $user->id]);
+            $request = DB::table('request')->latest('time_stamp')->first();
+            DB::insert('insert into follow_request (id) values (?)', [$request->id]);
+        });
+    }
+
+
+    public function unfollow($user_id)
+    {
+        $user = Auth::user();
+        
+        DB::transaction(function () use ($user_id, $user) {
+            $condition = ['id_receiver' => $user_id, "id_sender" => $user->id];
+            $request = DB::table('request')
+                ->join('follow_request', 'follow_request.id', '=', 'request.id')
+                ->where($condition)
+                ->first();
+            DB::delete('delete from notification where id_request = ?', [$request->id]);
+            DB::delete('delete from follow_request where id = ?', [$request->id]);
+            $request = Request::find($request->id);
+            $request->delete();
+        });
     }
 }

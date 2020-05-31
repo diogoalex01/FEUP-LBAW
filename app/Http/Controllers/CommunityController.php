@@ -64,7 +64,6 @@ class CommunityController extends Controller
         return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user]);
     }
 
-
     /**
      * Display the specified resource.
      *

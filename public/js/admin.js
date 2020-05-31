@@ -1,50 +1,191 @@
-let admin_aside = document.querySelectorAll(".admin-aside")
-let all_rep = document.querySelectorAll(".report")
-let admin_title = document.getElementById("current_title")
+let admin_aside = document.querySelectorAll(".admin-aside");
+if (admin_aside.length != 0) {
+    let admins_menu = document.getElementById("admin_menu");
+    let users_menu = document.getElementById("users_menu");
+    let comments_menu = document.getElementById("comments_menu");
+    let posts_menu = document.getElementById("posts_menu");
+    let communities_menu = document.getElementById("communities_menu");
 
-let all_menu = document.getElementById("all_menu")
-all_menu.addEventListener("click", function () {
-    admin_title.innerHTML = "All Reports"
-    for (let i = 0; i < admin_aside.length; i++) {
-        admin_aside[i].classList.add("nav-border")
-    }
-    all_menu.classList.add("nav-border-active")
+    let current_title = document.getElementById("current-title");
+    let admin_content = document.querySelectorAll(".admin-content");
 
-    for (let i = 0; i < all_rep.length; i++) {
-        if (all_rep[i].style.display === "none") {
-            all_rep[i].style.display = "block"
+    let user_tab_admin = document.getElementById("user-tab-admin");
+    let comment_tab_admin = document.getElementById("comment-tab-admin");
+    let post_tab_admin = document.getElementById("post-tab-admin");
+    let community_tab_admin = document.getElementById("community-tab-admin");
+
+    if (admin_content.length != 0) {
+
+        function admin_tabs() {
+            current_title.innerHTML = 'All Reports';
+
+            admin_content.forEach(tab => {
+                tab.classList.remove("hidden-tab");
+                tab.classList.add("active-tab");
+                tab.style.display = "block";
+            });
+
+            users_menu.classList.remove("nav-border-active");
+            users_menu.classList.add("nav-border");
+            users_menu.addEventListener("click", user_tabs);
+
+            comments_menu.classList.remove("nav-border-active");
+            comments_menu.classList.add("nav-border");
+            comments_menu.addEventListener("click", comment_tabs);
+
+            posts_menu.classList.remove("nav-border-active");
+            posts_menu.classList.add("nav-border");
+            posts_menu.addEventListener("click", post_tabs);
+
+            communities_menu.classList.remove("nav-border-active");
+            communities_menu.classList.add("nav-border");
+            communities_menu.addEventListener("click", community_tabs);
+
+            admins_menu.classList.remove("nav-border");
+            admins_menu.classList.add("nav-border-active");
+            admins_menu.removeEventListener("click", admin_tabs);
         }
-    }
-})
 
-function report_tabs(type) {
-    admin_title.innerHTML = type.charAt(0).toUpperCase() + type.substring(1) + " Reports"
-    for (let i = 0; i < admin_aside.length; i++) {
-        if (admin_aside[i].classList.contains("nav-border-active"))
-            admin_aside[i].classList.remove("nav-border-active")
-        admin_aside[i].classList.add("nav-border")
-    }
+        function user_tabs() {
+            current_title.innerHTML = 'User Reports';
 
-    let active = document.getElementById(type + "_menu")
-    active.classList.add("nav-border-active")
+            admin_content.forEach(tab => {
+                tab.classList.remove("active-tab");
+                tab.classList.add("hidden-tab");
+                tab.style.display = "none";
+            });
 
-    for (let i = 0; i < all_rep.length; i++) {
-        if (all_rep[i].classList.contains(type + "-report")) {
-            all_rep[i].style.display = "block"
-        } else {
-            all_rep[i].style.display = "none"
+            user_tab_admin.classList.remove("hidden-tab");
+            user_tab_admin.classList.add("active-tab");
+            user_tab_admin.style.display = "block";
+
+            admins_menu.classList.remove("nav-border-active");
+            admins_menu.classList.add("nav-border");
+            admins_menu.addEventListener("click", admin_tabs);
+
+            users_menu.classList.remove("nav-border");
+            users_menu.classList.add("nav-border-active");
+            users_menu.removeEventListener("click", user_tabs);
+
+            comments_menu.classList.remove("nav-border-active");
+            comments_menu.classList.add("nav-border");
+            comments_menu.addEventListener("click", comment_tabs);
+
+            posts_menu.classList.remove("nav-border-active");
+            posts_menu.classList.add("nav-border");
+            posts_menu.addEventListener("click", post_tabs);
+
+            communities_menu.classList.remove("nav-border-active");
+            communities_menu.classList.add("nav-border");
+            communities_menu.addEventListener("click", community_tabs);
         }
+
+        function comment_tabs() {
+            current_title.innerHTML = 'Comment Reports';
+
+            admin_content.forEach(tab => {
+                tab.classList.remove("active-tab");
+                tab.classList.add("hidden-tab");
+                tab.style.display = "none";
+            });
+
+            comment_tab_admin.classList.remove("hidden-tab");
+            comment_tab_admin.classList.add("active-tab");
+            comment_tab_admin.style.display = "block";
+
+            admins_menu.classList.remove("nav-border-active");
+            admins_menu.classList.add("nav-border");
+            admins_menu.addEventListener("click", admin_tabs);
+
+            users_menu.classList.remove("nav-border-active");
+            users_menu.classList.add("nav-border");
+            users_menu.addEventListener("click", user_tabs);
+
+            comments_menu.classList.remove("nav-border");
+            comments_menu.classList.add("nav-border-active");
+            comments_menu.removeEventListener("click", comment_tabs);
+
+            posts_menu.classList.remove("nav-border-active");
+            posts_menu.classList.add("nav-border");
+            posts_menu.addEventListener("click", post_tabs);
+
+            communities_menu.classList.remove("nav-border-active");
+            communities_menu.classList.add("nav-border");
+            communities_menu.addEventListener("click", community_tabs);
+        }
+
+        function post_tabs() {
+            current_title.innerHTML = 'Post Reports';
+
+            admin_content.forEach(tab => {
+                tab.classList.remove("active-tab");
+                tab.classList.add("hidden-tab");
+                tab.style.display = "none";
+            });
+
+            post_tab_admin.classList.remove("hidden-tab");
+            post_tab_admin.classList.add("active-tab");
+            post_tab_admin.style.display = "block";
+
+            admins_menu.classList.remove("nav-border-active");
+            admins_menu.classList.add("nav-border");
+            admins_menu.addEventListener("click", admin_tabs);
+
+            users_menu.classList.remove("nav-border-active");
+            users_menu.classList.add("nav-border");
+            users_menu.addEventListener("click", user_tabs);
+
+            comments_menu.classList.remove("nav-border-active");
+            comments_menu.classList.add("nav-border");
+            comments_menu.addEventListener("click", comment_tabs);
+
+            posts_menu.classList.remove("nav-border");
+            posts_menu.classList.add("nav-border-active");
+            posts_menu.removeEventListener("click", post_tabs);
+
+            communities_menu.classList.remove("nav-border-active");
+            communities_menu.classList.add("nav-border");
+            communities_menu.addEventListener("click", community_tabs);
+        }
+
+        function community_tabs() {
+            current_title.innerHTML = 'Community Reports';
+
+            admin_content.forEach(tab => {
+                tab.classList.remove("active-tab");
+                tab.classList.add("hidden-tab");
+                tab.style.display = "none";
+            });
+
+            community_tab_admin.classList.remove("hidden-tab");
+            community_tab_admin.classList.add("active-tab");
+            community_tab_admin.style.display = "block";
+
+            admins_menu.classList.remove("nav-border-active");
+            admins_menu.classList.add("nav-border");
+            admins_menu.addEventListener("click", admin_tabs);
+
+            users_menu.classList.remove("nav-border-active");
+            users_menu.classList.add("nav-border");
+            users_menu.addEventListener("click", user_tabs);
+
+            comments_menu.classList.remove("nav-border-active");
+            comments_menu.classList.add("nav-border");
+            comments_menu.addEventListener("click", comment_tabs);
+
+            posts_menu.classList.remove("nav-border-active");
+            posts_menu.classList.add("nav-border");
+            posts_menu.addEventListener("click", post_tabs);
+
+            communities_menu.classList.remove("nav-border");
+            communities_menu.classList.add("nav-border-active");
+            communities_menu.removeEventListener("click", community_tabs);
+        }
+
+        admins_menu.addEventListener("click", admin_tabs);
+        users_menu.addEventListener("click", user_tabs);
+        comments_menu.addEventListener("click", comment_tabs);
+        posts_menu.addEventListener("click", post_tabs);
+        communities_menu.addEventListener("click", community_tabs);
     }
 }
-
-let users_menu = document.getElementById("users_menu")
-users_menu.addEventListener("click", report_tabs.bind(this, "user"))
-
-let comments_menu = document.getElementById("comments_menu")
-comments_menu.addEventListener("click", report_tabs.bind(this, "comment"))
-
-let posts_menu = document.getElementById("posts_menu")
-posts_menu.addEventListener("click", report_tabs.bind(this, "post"))
-
-let communities_menu = document.getElementById("communities_menu")
-communities_menu.addEventListener("click", report_tabs.bind(this, "community"))

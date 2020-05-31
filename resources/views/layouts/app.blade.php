@@ -39,6 +39,7 @@
     <script src={{ asset('js/post.js') }} defer></script>
     <script src={{ asset('js/user.js') }} defer></script>
     <script src={{ asset('js/home.js') }} defer></script>
+    <script src={{ asset('js/admin.js') }} defer></script>
 
     <title> {{$title}} </title>
 </head>
@@ -76,7 +77,7 @@
             <div class="dropdown dropdown-nav">
 
                 <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-                    <i class="fas fa-bell bell fa-lg"></i>
+                    <i class="fas fa-bell bell fa-lg" id ="notificationBell"></i>
                 </a>
 
                 <ul class="dropdown-menu notifications dropdown-menu-right pl-3 pt-3 pb-0 mt-3" role="menu"
@@ -94,7 +95,7 @@
 
                     <div class="notifications-wrapper">
 
-                        <div class="notification-content" href="#">
+                        {{-- <div class="notification-content" href="#">
 
                             <div class="notification-item">
 
@@ -195,25 +196,24 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
-
                     <li class="divider"></li>
                 </ul>
 
             </div>
 
             <div class="dropdown dropdown-nav">
-                <a class="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div role="link" class="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img class="profile-pic-small" id="profileNav" height="50" width="50"
-                        src="{{ asset($user->photo) }}" alt="Profile Image">
-                </a>
+                        src="{{ asset(Auth::user()->photo) }}" alt="Profile Image">
+                </div>
 
                 <div class="dropdown-menu dropdown-menu-right">
 
                     {{-- if ($admin === "false") {--}}
-                    <a class="dropdown-item" href={{ route('profile', $user->id )}}>My Account</a>
+                    <a class="dropdown-item" href={{ route('profile', Auth::user()->id )}}>My Account</a>
                     <a class="dropdown-item" href={{ route('settings') }}>Settings</a>
                     <div class="dropdown-divider"></div>
 
@@ -237,14 +237,13 @@
             @endif
 
             <!-- Modal -->
-            <div class="modal p-0" id="modalWelcome" tabindex="-1" role="dialog" aria-labelledby="modalWelcomeTitle"
-                aria-hidden="true">
+            <div class="modal p-0" id="modalWelcome" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal md-w-75" role="document">
                     <div class="modal-content">
                         <div class="modal-body login-modal">
                             <div class="col">
                                 <div class="d-flex justify-content-center">
-                                    <img src="{{ asset('img/pear_logo.png') }}" width="auto" height="100" alt="logo">
+                                    <img src="{{ asset('img/pear_logo.png') }}" height="100" alt="logo">
                                 </div>
 
                                 <div>
@@ -283,8 +282,7 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="modalLoginTitle"
-                aria-hidden="true">
+            <div class="modal" id="modalLogin" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-body p-0">
@@ -335,22 +333,19 @@
                                                 </div>
                                                 <div class="form-group row login-signup-trans mt-4 mx-0 w-100">
                                                     <div class="row d-flex align-items-center mr-2">
-                                                        <p class="m-0">Don't have an account? </p>
+                                                        <p class="m-0">Don't have an account?&nbsp;</p>
                                                         <a class="mr-1 text-center" href="" data-toggle="modal"
                                                             data-dismiss="modal" data-target="#modalSignup">
                                                             <p class="font-weight-bold m-0"> Sign up</p>
                                                         </a>
                                                     </div>
-                                                    <a href="{{ URL::to('/') }}">
-                                                        <button type="submit" class="btn btn-outline-dark ">Log
-                                                            in</button>
-                                                    </a>
+                                                    <button type="submit" class="btn btn-outline-dark ">Log
+                                                        in</button>
                                                 </div>
                                                 <div>
                                                     <button id="loginBtn" type="button" data-dismiss="modal"
                                                         data-toggle="modal" data-target="#modalRecover"
                                                         class="my-auto btn">Forgot password?
-                                                        <a class="mr-1 text-center" href=""></a>
                                                     </button>
                                                 </div>
                                             </div>
@@ -367,8 +362,7 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal" id="modalSignup" tabindex="-1" role="dialog" aria-labelledby="modalSignupTitle"
-                aria-hidden="true">
+            <div class="modal" id="modalSignup" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-body p-0">
@@ -416,7 +410,7 @@
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="usernameSignUp">Username *</label>
+                                                            <label for="usernameSignUp">Username</label>
                                                             <div class="input-group mb-2">
                                                                 <div class="input-group-prepend">
                                                                     <div class="input-group-text">@</div>
@@ -427,16 +421,17 @@
                                                             </div>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="emailSignUp">Email *</label>
+                                                            <label for="emailSignUp">Email</label>
                                                             <input type="email" class="form-control" id="emailSignUp"
                                                                 name="email" placeholder="Email" required>
                                                         </div>
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="passwordSignUp">Password *</label>
-                                                            <input type="password" id="password" name="password"
-                                                                class="form-control" aria-describedby="passwordHelp"
+                                                            <label for="passwordSignUp">Password</label>
+                                                            <input type="password" id="passwordSignUp" name="password"
+                                                                class="form-control"
+                                                                {{-- aria-describedby="passwordHelp" --}}
                                                                 pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}"
                                                                 placeholder="Password" required>
                                                             <div class="invalid-feedback">
@@ -444,11 +439,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="password_confirmationSignUp"> Confirm Password
-                                                                *</label>
+                                                            <label for="password_confirmationSignUp">Confirm
+                                                                Password</label>
                                                             <input type="password" id="password_confirmationSignUp"
                                                                 name="password_confirmation" class="form-control"
-                                                                aria-describedby="passwordHelp"
+                                                                {{-- aria-describedby="passwordHelp" --}}
                                                                 pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}"
                                                                 placeholder="Password" required>
                                                             <div class="invalid-feedback">
@@ -458,7 +453,8 @@
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="genderSignUp" class="control-label">Gender:</label>
+                                                            <label for="genderSignUp"
+                                                                class="control-label">Gender</label>
                                                             <select class="form-control" id="genderSignUp"
                                                                 name="gender">
                                                                 <option value="male">Male</option>
@@ -475,18 +471,15 @@
                                                     </div>
                                                     <div class="form-group row login-signup-trans mt-4">
                                                         <div class="row d-flex align-items-center mr-2">
-                                                            <p class="m-0">Already have an account? <a
-                                                                    class="mr-1 text-center" href="">
-                                                                    <p class="font-weight-bold m-0" data-toggle="modal"
-                                                                        data-dismiss="modal" data-target="#modalLogin">
-                                                                        Log in</p>
-                                                                </a>
-                                                            </p>
+                                                            <p class="m-0">Already have an account?&nbsp;</p>
+                                                            <a class="mr-1 text-center" href="">
+                                                                <p class="font-weight-bold m-0" data-toggle="modal"
+                                                                    data-dismiss="modal" data-target="#modalLogin">
+                                                                    Log in</p>
+                                                            </a>
                                                         </div>
-                                                        <a href="{{ URL::to('/') }}">
-                                                            <button type="submit" onclick=""
-                                                                class="btn btn-outline-dark">Sign up</button>
-                                                        </a>
+                                                        <button type="submit" onclick=""
+                                                            class="btn btn-outline-dark">Sign up</button>
 
                                                     </div>
                                                 </div>
@@ -502,8 +495,7 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal" id="modalRecover" tabindex="-1" role="dialog" aria-labelledby="modalCommunityTitle"
-                aria-hidden="false">
+            <div class="modal" id="modalRecover" tabindex="-1" role="dialog" aria-hidden="false">
                 <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                     <div class="modal-content">
                         <div class="modal-body login-modal">
@@ -537,8 +529,7 @@
             </div>
 
             <!-- Report Community Modal -->
-            <div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog"
-                aria-labelledby="modalCommunityTitle" aria-hidden="false">
+            <div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog" aria-hidden="false">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-body login-modal">
@@ -575,8 +566,7 @@
             </div>
 
             <!-- Report Post Modal -->
-            <div class="modal" id="modalPostReport" tabindex="-1" role="dialog" aria-labelledby="modalPostTitle"
-                aria-hidden="false">
+            <div class="modal" id="modalPostReport" tabindex="-1" role="dialog" aria-hidden="false">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-body login-modal">
@@ -612,8 +602,7 @@
             </div>
 
             <!-- Report Comment Modal -->
-            <div class="modal" id="modalCommentReport" tabindex="-1" role="dialog" aria-labelledby="modalCommentTitle"
-                aria-hidden="false">
+            <div class="modal" id="modalCommentReport" tabindex="-1" role="dialog" aria-hidden="false">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-body login-modal">

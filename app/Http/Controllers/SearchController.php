@@ -23,7 +23,7 @@ class SearchController extends Controller
         $data = $request->validate([
             'query' => 'required|string'
         ]);
-        $query = $data['query']; 
+        $query = $data['query'];
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -31,8 +31,8 @@ class SearchController extends Controller
             return redirect()->back()->with('showModal', "welcome");
         }
 
-        $postsId = DB::select(DB::raw("
-
+        $postsId = DB::select(
+            DB::raw("
             SELECT post_id, document
                 FROM (
                     SELECT post.id AS post_id,
@@ -43,39 +43,34 @@ class SearchController extends Controller
                         FROM post
                         JOIN member_user ON member_user.id = post.id_author
                         GROUP BY post.id, member_user.id) p_search
-                        WHERE to_tsquery(:query) @@ p_search.document
+                        WHERE to_tsquery(:query) @@ p_search.document;"),
+            array('query' => $query)
+        );
 
-                "), array(
-                'query' => $query
-            ));
+        $posts = [];
+        foreach ($postsId as $post) {
+            array_push($posts, Post::find($post->post_id));
+        }
 
-            $posts = [];
-            foreach ($postsId as $post) {                
-                array_push($posts, Post::find($post->post_id));
-            }
+        $communitiesId = DB::select(
+            DB::raw("
+            SELECT community_id, document
+            FROM (
+                SELECT community.id AS community_id,
+                    (to_tsvector('portuguese', community.name)) AS document
+                    FROM community
+                    GROUP BY community.id) c_search
+            WHERE to_tsquery(:query) @@ c_search.document;"),
+            array('query' => $query)
+        );
 
-        $communitiesId = DB::select(DB::raw("
+        $communities = [];
+        foreach ($communitiesId as $community) {
+            array_push($communities, Community::find($community->community_id));
+        }
 
-        SELECT community_id, document
-        FROM (
-            SELECT community.id AS community_id,
-                (to_tsvector('portuguese', community.name)) AS document
-                FROM community
-                GROUP BY community.id) c_search
-        WHERE to_tsquery(:query) @@ c_search.document;
-
-
-                "), array(
-                'query' => $query
-            ));
-
-            $communities = [];
-            foreach ($communitiesId as $community) {                
-                array_push($communities, Community::find($community->community_id));
-            }
-
-            $commentsId = DB::select(DB::raw("
-
+        $commentsId = DB::select(
+            DB::raw("
                 SELECT comment_id, document
                 FROM (
                     SELECT comment.id AS comment_id,
@@ -84,25 +79,20 @@ class SearchController extends Controller
                         FROM comment
                         JOIN member_user ON member_user.id = comment.id_author
                         GROUP BY comment.id, member_user.id) c_search
-                WHERE to_tsquery(:query) @@ c_search.document
+                WHERE to_tsquery(:query) @@ c_search.document;"),
+            array('query' => $query)
+        );
 
-                "), array(
-                'query' => $query
-            ));
-
-            $postComments = [];
-            foreach ($commentsId as $comment) {                
-                $comment1 = Comment::find($comment->comment_id);
-                $foundPost =  Post::find($comment1->id_post);
-                if(!in_array($foundPost, $postComments))
-                {
-                    array_push($postComments, $foundPost);
-                }
+        $postComments = [];
+        foreach ($commentsId as $comment) {
+            $comment1 = Comment::find($comment->comment_id);
+            $foundPost =  Post::find($comment1->id_post);
+            if (!in_array($foundPost, $postComments)) {
+                array_push($postComments, $foundPost);
             }
+        }
 
-
-//'comments' => $comments, 'communities'=> $communities
-        return view('pages/search', ['user'=> $user, 'posts'=> $posts, 'communities'=> $communities, 'postComments'=> $postComments ]);
+        //'comments' => $comments, 'communities'=> $communities
+        return view('pages/search', ['user' => $user, 'posts' => $posts, 'communities' => $communities, 'postComments' => $postComments]);
     }
-
 }

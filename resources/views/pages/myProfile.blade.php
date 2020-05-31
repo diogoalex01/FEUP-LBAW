@@ -21,6 +21,31 @@
 
             </div> --}}
 
+            @if($other_user->id !== $user->id) {{-- check if they are friends --}}
+            <div class="row mt-3">
+                <form class="col-6 text-center d-flex align-items-center justify-content-end"
+                    onsubmit="blockUser(event,{{$other_user->id}});">
+                    <div class="">
+                        <input type="button" class="btn btn-outline-danger" value="Block" id="block-button">
+                    </div>
+                </form>
+                @if($follow_status !== "pending")
+                <form class="col-1 text-center d-flex align-items-center"
+                    onsubmit="followUser(event,{{$other_user->id}})">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Follow" id="follow-button">
+                    </div>
+                </form>
+                @else
+                <form class="col-1 text-center d-flex align-items-center"
+                    onsubmit="followUser(event,{{$other_user->id}})">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Pending" id="follow-button">
+                    </div>
+                </form>
+                @endif
+            </div>
+            @endif
             <div class="card my-4 aside-container">
                 <h5 class="card-header aside-container-top" style="background-color: white;">
                     Profile
@@ -62,8 +87,9 @@
                 </div>
             </div>
 
+            @if(!$other_user->private || $other_user->id === $user->id)
             <!-- My Categories -->
-            <div class="card aside-container">              
+            <div class="card aside-container">
                 <div class="card-body">
                     <div class="row">
                         <div class="col justify-content-start">
@@ -86,6 +112,7 @@
             <h1 class="my-4 username-header"> <span>@</span>{{$other_user->username}}</h1>
 
             <!-- New Post -->
+            @if(($other_user->id === $user->id))
             <a href="/new_post">
                 <div class="card mb-4 post-container">
                     <div class="card-body">
@@ -100,6 +127,7 @@
                     </div>
                 </div>
             </a>
+            @endif
 
             <!-- Activity -->
             <div class="active-tab profile-content">
@@ -114,7 +142,7 @@
                 @include('partials.myProfileCommunity', ['community' => $community, 'user' => $other_user ])
                 @endforeach
             </div>
-
+            @endif
         </div>
     </div>
 </div>

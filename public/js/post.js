@@ -66,7 +66,7 @@ function addVotesEventListener() {
             //console.log("here");
             if (!item.classList.contains('disabled-voting')) {
                 changeVoteColor(item);
-                item.addEventListener('click', function(event) {
+                item.addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     voteButtonClicked(item);
@@ -115,14 +115,11 @@ function addDeleteButtonsListener() {
 }
 
 function addDeleteConfirmButtonsListener() {
-    console.log("lsls")
     deleteConfirmButtons = document.querySelectorAll(".delete-confirm");
     if (deleteConfirmButtons != null) {
         console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
         deleteConfirmButtons.forEach(function (item) {
-            console.log
             item.addEventListener('click', function (event) {
-
                 event.preventDefault();
                 event.stopPropagation();
                 sendDeleteConfirmObject(item);
@@ -364,7 +361,7 @@ function addReplyForm(id) {
                     <input hidden name="comment_id" value="${comment_id}">
                     <div class="row" style="font-size: 0.45rem;">
                         <div class="col-md-10 pr-md-0">
-                            <textarea id="reply-input" rows="1" onclick="this.rows = '8';" type="text" class="form-control mr-0"
+                            <textarea id="reply-input" rows="1" onclick="this.rows = '8';" class="form-control mr-0"
                                 placeholder="New Comment"></textarea>
                         </div>
                         <!--<div class="col-md-1 my-auto mx-auto text-right">-->
@@ -404,7 +401,7 @@ function addEditCommentForm(item) {
                     <input hidden name="comment_id" value="${id}">
                     <div class="col pl-0 " style="font-size: 0.45rem;">
                         <div class=" pr-md-0 pl-0 w-100">
-                            <textarea id="edit-input" rows="3" type="text" class="form-control mr-0 text-justify" 
+                            <textarea id="edit-input" rows="3" class="form-control mr-0 text-justify" 
                                 >${objectBody.innerText}</textarea>
                         </div>
                         <div class=" px-md-0 py-2 comment-button">
@@ -446,7 +443,7 @@ function addEditPostForm(item) {
                     <input hidden name="post_id" value="${id}">
                     <div class="col pl-0 " style="font-size: 0.45rem;">
                         <div class=" pr-md-0 pl-0 w-100">
-                            <textarea id="edit-post-input" rows="8" type="text" class="form-control mr-0 text-justify" 
+                            <textarea id="edit-post-input" rows="8" class="form-control mr-0 text-justify" 
                                 >${objectBody.innerText}</textarea>
                         </div>
                         <div class=" px-md-0 py-2 comment-button">
@@ -556,7 +553,7 @@ function sendDeleteConfirmObject(item) {
         sendAjaxRequest("delete", route, argumentsObject, deletePostHandler);
     } else {
         console.log("comment delete");
-        argumentsObject = {comment_id: id};
+        argumentsObject = { comment_id: id };
         comment = document.getElementById("comment" + id);
         console.log("ID is *" + id + "*");
         console.log(comment);
@@ -912,10 +909,10 @@ if (newPostForm != null) {
 let typeTab = 'home';
 let lock = false;
 let num_posts = 20;
+let loader = document.getElementById("loader");
 $(document).ready(function () {
     let posts_column_home = document.getElementById("posts-column-home");
     let posts_column_community = document.getElementById("posts-column-community");
-    let loader = document.getElementById("loader");
     let api_route;
     let page;
     let data_route;
@@ -985,6 +982,8 @@ if (home_aside.length != 0) {
     let home_content = document.getElementById("posts-column-home");
 
     function home_tabs() {
+        $('#posts-column-home').html("");
+        loader.style.display = 'block';
         tab_content("home");
         typeTab = 'home';
         lock = false;
@@ -1003,6 +1002,8 @@ if (home_aside.length != 0) {
     }
 
     function popular_tabs() {
+        $('#posts-column-home').html("");
+        loader.style.display = 'block';
         tab_content("popular");
         typeTab = 'popular';
         lock = false;
@@ -1021,6 +1022,8 @@ if (home_aside.length != 0) {
     }
 
     function recent_tabs() {
+        $('#posts-column-home').html("");
+        loader.style.display = 'block';
         tab_content("recent");
         typeTab = 'recent';
         lock = false;
@@ -1064,7 +1067,7 @@ function tab_content(type) {
 function tabPostHandler(response) {
     if (response.success === true) {
         $('#posts-column-home').html(response.html).fadeIn("slow");
-        addVotesEventListener();
+        addPostEventListeners();
     }
 }
 

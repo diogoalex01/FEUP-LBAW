@@ -17,11 +17,17 @@ Route::get('/settings', 'UserController@edit')->name('settings');
 Route::put('/settings', 'UserController@update');
 Route::delete('/settings', 'UserController@destroy');
 
+Route::post('/follow/{user_id}', 'UserController@follow');
+Route::delete('/follow/{user_id}', 'UserController@unfollow');
+
+Route::get('/notification', 'NotificationController@index')->name('notifications');
+
 // Authentication
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('/register', 'Auth\RegisterController@register')->name('register');
 
+// Google Authentication
 Route::get('/redirect', 'Auth\LoginController@redirectToProvider');
 Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 
@@ -59,6 +65,20 @@ Route::post('/comment/{comment_id}/vote', 'CommentController@vote')->name('comme
 Route::put('/comment/{comment_id}/vote', 'CommentController@vote_edit')->name('comment_edit_vote');
 Route::delete('/comment/{comment_id}/vote', 'CommentController@vote_delete')->name('comment_delete_vote');
 
+// Admin
+Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function () {
+    Route::get('/', 'AdminController@show')->name('home');
+
+    Route::namespace('Auth')->group(function () {
+
+        // Login Routes
+        Route::get('/login', 'LoginController@showLoginForm')->name('login');
+        Route::post('/login', 'LoginController@login');
+        Route::post('/logout', 'LoginController@logout')->name('logout');
+        
+    });
+});
+
 // Search
 Route::get('/search', 'SearchController@search_results')->name('search');
 // Route::post('/search', 'SearchController@');
@@ -75,3 +95,4 @@ Route::post('/api/recentTab', 'PostController@recentTab')->name('recent_tab');
 
 // Static Pages
 Route::get('/about', 'PageController@about')->name('about');
+Route::fallback('PageController@notFound404');

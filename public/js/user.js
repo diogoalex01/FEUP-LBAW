@@ -5,8 +5,9 @@ let deleteToggleLabel = document.querySelector('label[for="deleteToggle"]');
 let deleteToggle = document.querySelector('#deleteToggle');
 let settingsForm = document.querySelector('#edit-user');
 let deleteUserForm = document.querySelector('#delete-user');
-let privacyToggle = document.querySelector(' #edit-user #privacyToggle');
+let privacyToggle = document.querySelector('#edit-user #privacyToggle');
 let deleteWarningBox = document.getElementById('delete-warning-box');
+let notificationBell = document.getElementById('notificationBell');
 
 function encodeForAjax(data) {
     if (data == null) return null;
@@ -87,6 +88,10 @@ function addUserEventListeners() {
     if (resetPassButton != null) {
         resetPassButton.addEventListener('submit', sendResetPassword);
     }
+
+    if(notificationBell != null){
+        notificationBell.addEventListener('click', getNotifications);
+    }
 }
 
 function sendResetPassword(e) {
@@ -103,7 +108,6 @@ function resetPassHandler() {
     if (this.status != 200) {
         console.log(this.responseText)
         let response = JSON.parse(this.responseText);
-        // window.location = '/';
         let string = "";
         for (let s in response.errors) {
             string += "<li>" + response.errors[s] + "</li>"
@@ -234,6 +238,45 @@ function mySubmitFunction() {
     return false;
 }
 
+function blockUser(event, blocked) {
+    event.preventDefault();
+    event.stopPropagation();
+}
+
+function followUser(event, followed) {
+    event.preventDefault();
+    event.stopPropagation();
+    followButton = document.getElementById("follow-button");
+    if (followButton.value == "Follow") {
+        sendAjaxRequest('post', '/follow/' + followed, {
+        }, followHandler);
+        followButton.value = "Pending";
+    } else if (followButton.value == "Unfollow" || followButton.value == "Pending") {
+        sendAjaxRequest('delete', '/follow/' + followed, {
+        }, followHandler);
+        followButton.value = "Follow";
+    }
+
+}
+
+function followHandler() {
+    console.log(this.responseText);
+}
+
+
+function getNotifications(e){
+    e.preventDefault();
+    // e.stopPropagation();
+    sendAjaxRequest('get', '/notification',{}, displayNotifications);
+}
+
+function displayNotifications(){
+    console.log(this.responseText);
+    let info = JSON.parse(this.responseText)
+    let notificationContainer = document.getElementsByClassName('notifications-wrapper')[0];
+    let notification = followNotificationPartial(info);
+    notificationContainer.appendChild(notification);
+}
 
 // Delete user
 $(window).bind('load', resetDeleteForm);
@@ -305,7 +348,6 @@ $(document).ready(function () {
     });
 });
 
-
 // Profile aside menu
 let activities = document.querySelectorAll('.sidebar-box');
 if (activities.length != 0) {
@@ -324,19 +366,19 @@ let communities_menu = document.getElementById("community_menu")
 if (communities_menu != null)
     communities_menu.addEventListener("click", profile_tabs);
 
-let profile_aside = document.querySelectorAll(".profile-aside");
-if (profile_aside != null) {
-    function profile_tabs() {
+function profile_tabs() {
+    let profile_aside = document.querySelectorAll(".profile-aside");
+
+    if (profile_aside.length != 0) {
         let profile_content = document.querySelectorAll(".profile-content");
 
-        if (profile_content != null) {
+        if (profile_content.length != 0) {
             profile_content.forEach(tab => {
                 if (tab.classList.contains("active-tab")) {
                     tab.classList.remove("active-tab");
                     tab.classList.add("hidden-tab");
                     tab.style.display = "none";
-                }
-                else {
+                } else {
                     tab.classList.remove("hidden-tab");
                     tab.classList.add("active-tab");
                     tab.style.display = "block";
@@ -359,4 +401,42 @@ if (profile_aside != null) {
             }
         }
     }
+}
+
+
+function followNotificationPartial(notification){
+    let read = notification['is_read']? "read-notification" : "unread-notification" ;
+    let not = `
+    <div class="notification-content ${read}" href="#">
+        <div class="notification-item">
+            <div class="row">
+                <div class="col-3">
+                    <a href={{ route('profile', ${notification['id_sender']})}}>
+                        <img class="notification-pic" height="50" width="50"
+                            src="{{ asset(${notification['photo']}) }}" alt="Profile Image"></a>
+                </div>
+                <div class="col-7 p-0">
+                    <h4 class="item-title"><a>@${notification['username']}</a> sent you a follow request</h4>
+                    <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
+                </div>
+                <div class="d-flex align-items-start pt-1">
+                    <div class="col-2">
+                        <div class="row mb-3">
+                            <a href="">
+                                <i class="fas fa-check"></i>
+                            </a>
+                        </div>
+                        <div class="row">
+                            <a href="">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    `
 }
