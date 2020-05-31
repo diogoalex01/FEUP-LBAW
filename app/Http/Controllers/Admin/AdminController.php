@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Admin;
+use App\Report;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -46,15 +47,16 @@ class AdminController extends Controller
      * @param  \App\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function show(Admin $admin)
+    public function show()
     {
         $admin = Auth::guard('admin')->user();
-        $admin_user = Admin::where('id', '=', $admin->id)->get()->first();
-        //dd($admin_user->reports());
-        $reports = $admin_user->reports();
-        // foreach ($reports as $report){
-        //     error_log($report->id);
-        // }
+        $admin_user = Admin::find($admin->id);
+       // dd($admin_user->reports());
+        $reports = $admin_user->reports;
+        dd($reports[1]->reportable);
+        foreach ($reports as $report){
+            dd($report->reportable);
+        }
         return view('pages.admin', ['reports' => $reports]);
     }
 

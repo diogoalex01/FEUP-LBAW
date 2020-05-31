@@ -21,31 +21,49 @@
 
             </div> --}}
 
-            @if($other_user->id !== $user->id) {{-- check if they are friends --}}
+            @if($other_user->id !== $user->id && !$isBlocked)
+                {{-- check if they are friends --}}
             <div class="row mt-3">
+                @if($isBlocking)
                 <form class="col-6 text-center d-flex align-items-center justify-content-end"
                     onsubmit="blockUser(event,{{$other_user->id}});">
                     <div class="">
-                        <input type="button" class="btn btn-outline-danger" value="Block" id="block-button">
-                    </div>
-                </form>
-                @if($follow_status !== "pending")
-                <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}})">
-                    <div class="">
-                        <input type="submit" class="btn btn-dark" value="Follow" id="follow-button">
+                        <input type="submit" class="btn btn-outline-danger" value="Unblock" id="block-button">
                     </div>
                 </form>
                 @else
+                <form class="col-6 text-center d-flex align-items-center justify-content-end"
+                    onsubmit="blockUser(event,{{$other_user->id}});">
+                    <div class="">
+                        <input type="submit" class="btn btn-outline-danger" value="Block" id="block-button">
+                    </div>
+                </form>
+                @if($follows)
+                <form class="col-1 text-center d-flex align-items-center"
+                    onsubmit="followUser(event,{{$other_user->id}})">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Unfollow" id="follow-button">
+                    </div>
+                </form>
+                @elseif($follow_status == "pending")
                 <form class="col-1 text-center d-flex align-items-center"
                     onsubmit="followUser(event,{{$other_user->id}})">
                     <div class="">
                         <input type="submit" class="btn btn-dark" value="Pending" id="follow-button">
                     </div>
                 </form>
+                @else
+                <form class="col-1 text-center d-flex align-items-center"
+                    onsubmit="followUser(event,{{$other_user->id}})">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Follow" id="follow-button">
+                    </div>
+                </form>
+                @endif
                 @endif
             </div>
             @endif
+
             <div class="card my-4 aside-container">
                 <h5 class="card-header aside-container-top" style="background-color: white;">
                     Profile
@@ -64,7 +82,7 @@
                             <i class="fa fa-newspaper-o"></i>
                         </div>
                         <div class="col">
-                            {{$nPosts}} posts {{-- nr de posts --}}
+                            {{$nPosts}} posts
                         </div>
                     </div>
 
@@ -87,7 +105,7 @@
                 </div>
             </div>
 
-            @if(!$other_user->private || $other_user->id === $user->id)
+            @if((!$other_user->private || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
             <!-- My Categories -->
             <div class="card aside-container">
                 <div class="card-body">
@@ -103,6 +121,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
         </div>
 
@@ -129,6 +148,7 @@
             </a>
             @endif
 
+            @if((!$other_user->private || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
             <!-- Activity -->
             <div class="active-tab profile-content">
                 @foreach($posts as $post)
@@ -142,7 +162,29 @@
                 @include('partials.myProfileCommunity', ['community' => $community, 'user' => $other_user ])
                 @endforeach
             </div>
+            @else
+
+            <!-- Private notice -->
+            <div class="card mb-4 post-container">
+
+                <h5 class="card-header aside-container-top d-flex align-items-center">
+
+                    <div class="col-1 pr-lg-0">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <div class="col pl-lg-0">
+                        You can't check this account
+                    </div>
+
+                </h5>
+
+                <div class="card-body justify-content-start">
+                    <p class="card-text">You may have blocked this person, have been blocked or this is a private account.</p>
+                </div>
+
+            </div>
             @endif
+
         </div>
     </div>
 </div>

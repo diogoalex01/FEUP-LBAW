@@ -7,7 +7,7 @@
     {{-- {{print_r($reports)}} --}}
     <div class="row">
         <!-- Aside -->
-        <div class="col-md-3 aside" style="padding-top: 33px;">
+        <div class="col-md-3 mb-4 aside" style="padding-top: 33px;">
             @include('partials.adminMenu')
         </div>
 

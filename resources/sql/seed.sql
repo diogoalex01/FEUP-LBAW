@@ -140,7 +140,8 @@ CREATE TABLE report (
 
 CREATE TABLE comment_report (
     id_report int PRIMARY KEY REFERENCES report ON DELETE CASCADE,
-    id_comment int NOT NULL REFERENCES comment ON DELETE CASCADE
+    id_comment int NOT NULL REFERENCES comment ON DELETE CASCADE,
+	reportable_type test NOT NULL
 );
 
 CREATE TABLE post_report (
@@ -721,10 +722,10 @@ INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Vocabulário
 INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('SPAM', '2020-03-15',3,12);
 INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteúdo impróprio', '2020-03-26',4,17);
 
-INSERT INTO comment_report (id_report, id_comment) VALUES (2,5);
-INSERT INTO post_report (id_report, id_post) VALUES (3,3);
-INSERT INTO community_report (id_report, id_community) VALUES (4,2);
-INSERT INTO user_report (id_report, id_user) VALUES (1,8);
+INSERT INTO comment_report (id_report, id_comment, reportable_type) VALUES (2,5, 'App\CommentReport');
+INSERT INTO post_report (id_report, id_post, reportable_type) VALUES (3,3, 'App\PostReport');
+INSERT INTO community_report (id_report, id_community, reportable_type) VALUES (4,2, 'App\CommunityReport');
+INSERT INTO user_report (id_report, id_user, reportable_type) VALUES (1,8, 'App\UserReport');
 
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 1, 9);
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 3, 2);

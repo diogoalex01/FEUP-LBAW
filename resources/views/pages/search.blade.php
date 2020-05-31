@@ -6,7 +6,7 @@
     <div class="row mt-5" style="padding: 20px 0px;">
 
         <!-- Aside -->
-        <div class="col-md-3 aside ">
+        <div class="col-md-3 aside mb-4">
             <!-- My Categories -->
             @include('partials.categories')
         </div>

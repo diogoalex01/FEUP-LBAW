@@ -20,7 +20,13 @@ Route::delete('/settings', 'UserController@destroy');
 Route::post('/follow/{user_id}', 'UserController@follow');
 Route::delete('/follow/{user_id}', 'UserController@unfollow');
 
+Route::post('/block/{user_id}', 'UserController@block');
+Route::delete('/block/{user_id}', 'UserController@unblock');
+
+
 Route::get('/notification', 'NotificationController@index')->name('notifications');
+Route::put('/notification/{notification_id}', 'NotificationController@update')->name('update_notifications');
+
 
 // Authentication
 Route::post('/login', 'Auth\LoginController@login')->name('login');

@@ -7,7 +7,7 @@
 
         <!-- Aside -->
 
-        <div class="col-md-3 mt-3 aside">
+        <div class="col-md-3 mt-3 mb-4 aside">
             <!-- My Categories -->
             <div class="card aside-container sticky-top">
                 <h5 class="card-header aside-container-top"

@@ -3,8 +3,9 @@
 namespace App;
 
 use App\Report;
+use Illuminate\Database\Eloquent\Model;
 
-class CommentReport extends Report
+class CommentReport extends Model
 {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
@@ -26,6 +27,6 @@ class CommentReport extends Report
     ];
 
     public function report(){
-        return $this->morphOne('App\Report', 'reportable');
+        return $this->morphOne('App\Report', 'reportable', null, 'id_report');
     }
 }

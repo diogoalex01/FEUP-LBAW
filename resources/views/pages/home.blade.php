@@ -23,7 +23,7 @@ draw_navigation($auth, "", $admin);
     <div class="row" style="padding: 20px 0px;">
 
         <!-- Aside -->
-        <div class="col-md-3 aside ">
+        <div class="col-md-3 aside mb-4">
             @include('partials.categories')
         </div>
 

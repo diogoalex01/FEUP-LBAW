@@ -22,7 +22,7 @@ draw_navigation($auth, "", $admin);
     <div class="row">
 
         <!-- Aside -->
-        <div class="col-md-3 aside profile-aside">
+        <div class="col-md-3 aside profile-aside mb-4">
 
             <div class="profile-pic-container text-center">
                 <img class="rounded-circle profile-pic" src="./images/avatar_male.png" alt="Profile Image">

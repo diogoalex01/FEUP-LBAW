@@ -8,7 +8,6 @@ let deleteUserForm = document.querySelector('#delete-user');
 let privacyToggle = document.querySelector('#edit-user #privacyToggle');
 let deleteWarningBox = document.getElementById('delete-warning-box');
 let notificationBell = document.getElementById('notificationBell');
-
 function encodeForAjax(data) {
     if (data == null) return null;
     return Object.keys(data).map(function (k) {
@@ -43,6 +42,7 @@ function addUserEventListeners() {
     let deleteUserInputSolution = document.getElementById('delete-user-solution');
     let resetPassButton = document.getElementById('recoverPassword');
     let modal = document.getElementById('modalDelete');
+    let notificationButtons = document.getElementsByClassName('change-notification');
 
     if (deleteButton != null)
         deleteButton.addEventListener('click', sendDeleteProfile);
@@ -89,7 +89,7 @@ function addUserEventListeners() {
         resetPassButton.addEventListener('submit', sendResetPassword);
     }
 
-    if(notificationBell != null){
+    if (notificationBell != null) {
         notificationBell.addEventListener('click', getNotifications);
     }
 }
@@ -241,6 +241,22 @@ function mySubmitFunction() {
 function blockUser(event, blocked) {
     event.preventDefault();
     event.stopPropagation();
+    blockButton = document.getElementById("block-button");
+    console.log(blockButton);
+
+    if (blockButton.value == "Block") {
+        sendAjaxRequest('post', '/block/' + blocked, {
+        }, blockHandler);
+        blockButton.value = "Unblock";
+        let followButton = document.getElementById("follow-button");
+        followButton.remove();
+        // window.location = blocked;
+    } else if (blockButton.value == "Unblock") {
+        sendAjaxRequest('delete', '/block/' + blocked, {
+        }, blockHandler);
+        blockButton.value = "Block";
+        // window.location = blocked;
+    }
 }
 
 function followUser(event, followed) {
@@ -256,26 +272,55 @@ function followUser(event, followed) {
         }, followHandler);
         followButton.value = "Follow";
     }
-
 }
 
 function followHandler() {
     console.log(this.responseText);
 }
 
-
-function getNotifications(e){
-    e.preventDefault();
-    // e.stopPropagation();
-    sendAjaxRequest('get', '/notification',{}, displayNotifications);
+function blockHandler() {
+    console.log(this.responseText);
 }
 
-function displayNotifications(){
+function getNotifications(e) {
+    e.preventDefault();
+    // e.stopPropagation();
+    sendAjaxRequest('get', '/notification', {}, displayNotifications);
+}
+
+function changeNotificationStatus(item) {
+    let notificationId = item.getAttribute('data-target');
+    let buttonType = item.getAttribute('data-type');
+    sendAjaxRequest('put', '/notification/' + notificationId, {status: buttonType}, function(item){
+        let notification = document.getElementById("notification-"+ notificationId);
+        notification.remove();
+    });
+}
+
+function displayNotifications() {
     console.log(this.responseText);
     let info = JSON.parse(this.responseText)
-    let notificationContainer = document.getElementsByClassName('notifications-wrapper')[0];
-    let notification = followNotificationPartial(info);
-    notificationContainer.appendChild(notification);
+    let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
+    notificationContainer.innerHTML = "";
+    console.log(info)
+    info.notifications.forEach((item) => {
+        let notification = followNotificationPartial(item);
+        let notificationPartial = document.createElement('div');
+        notificationPartial.innerHTML = notification;
+        notificationContainer.appendChild(notificationPartial);
+    });
+
+    let notificationButtons = document.querySelectorAll('.change-notification');
+    if (notificationButtons.length != 0) {
+        console.log(notificationButtons);
+
+        notificationButtons.forEach((item) =>
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                changeNotificationStatus(item);
+            }));
+    }
 }
 
 // Delete user
@@ -298,7 +343,6 @@ function resetDeleteForm() {
         .html("Keep my content")
         .end();
 }
-
 
 // Update user settings
 $(document).ready(function () {
@@ -403,17 +447,17 @@ function profile_tabs() {
     }
 }
 
-
-function followNotificationPartial(notification){
-    let read = notification['is_read']? "read-notification" : "unread-notification" ;
+function followNotificationPartial(notification) {
+    console.log(notification['photo']);
+    let read = notification['is_read'] ? "read-notification" : "unread-notification";
     let not = `
-    <div class="notification-content ${read}" href="#">
+    <div class="notification-content ${read}" href="#" id = "notification-${notification['id']}">
         <div class="notification-item">
             <div class="row">
                 <div class="col-3">
-                    <a href={{ route('profile', ${notification['id_sender']})}}>
+                    <a href="/user/${notification['id_sender']}">
                         <img class="notification-pic" height="50" width="50"
-                            src="{{ asset(${notification['photo']}) }}" alt="Profile Image"></a>
+                            src="/${notification['photo']}" alt="Profile Image"></a>
                 </div>
                 <div class="col-7 p-0">
                     <h4 class="item-title"><a>@${notification['username']}</a> sent you a follow request</h4>
@@ -423,12 +467,12 @@ function followNotificationPartial(notification){
                     <div class="col-2">
                         <div class="row mb-3">
                             <a href="">
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-check change-notification" data-type = "accept" data-target ="${notification['id']}"></i>
                             </a>
                         </div>
                         <div class="row">
                             <a href="">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-times change-notification" data-type = "deny" data-target ="${notification['id']}"></i>
                             </a>
                         </div>
                     </div>
@@ -438,5 +482,7 @@ function followNotificationPartial(notification){
         </div>
 
     </div>
+    <hr class="my-0" style="width: 80%;">
     `
+    return not;
 }

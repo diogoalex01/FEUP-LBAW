@@ -35,6 +35,12 @@ function addPostEventListeners() {
     if (addCommentForm != null)
         addCommentForm.addEventListener('submit', sendNewComment);
 
+    fruits.forEach(fruit => fruit.removeEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        voteButtonClicked(item);
+    }));
+
     addReplyButtonsListener();
     addVotesEventListener();
     addEditButtonsListener();
@@ -58,21 +64,23 @@ function addReplyButtonsListener() {
     }
 }
 
+let fruits = [];
+
 function addVotesEventListener() {
     let voteButtons = document.querySelectorAll(".vote-button");
 
-    if (voteButtons != null) {
-        voteButtons.forEach(function (item, idx) {
+    if (voteButtons.length != 0) {
+        voteButtons.forEach((item) => {
             //console.log("here");
             if (!item.classList.contains('disabled-voting')) {
                 changeVoteColor(item);
-                item.addEventListener('click', function (event) {
+                fruits.push(item);
+                item.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     voteButtonClicked(item);
                 });
-            }
-            else {
+            } else {
                 item.classList.remove('vote-button');
             }
         });
@@ -81,8 +89,8 @@ function addVotesEventListener() {
 
 function addEditButtonsListener() {
     editButtons = document.querySelectorAll(".edit-btn");
-    if (editButtons != null) {
-        editButtons.forEach(function (item) {
+    if (editButtons.length != 0) {
+        editButtons.forEach((item) => {
             item.addEventListener('click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -103,7 +111,7 @@ function addEditButtonsListener() {
 
 function addDeleteButtonsListener() {
     deleteButtons = document.querySelectorAll(".delete-btn");
-    if (deleteButtons != null) {
+    if (deleteButtons.length != 0) {
         deleteButtons.forEach(function (item) {
             item.addEventListener('click', function (event) {
                 // event.preventDefault();
@@ -116,7 +124,7 @@ function addDeleteButtonsListener() {
 
 function addDeleteConfirmButtonsListener() {
     deleteConfirmButtons = document.querySelectorAll(".delete-confirm");
-    if (deleteConfirmButtons != null) {
+    if (deleteConfirmButtons.length != 0) {
         console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
         deleteConfirmButtons.forEach(function (item) {
             item.addEventListener('click', function (event) {
@@ -386,7 +394,6 @@ function addReplyForm(id) {
         // replyInput.addEventListener('blur', () => { replyFormContainer.remove(); });
     }
 }
-
 
 function addEditCommentForm(item) {
     let id = item.getAttribute('data-comment-id');
@@ -866,7 +873,7 @@ function searchArray() {
 
 function clickSearchResult() {
     let search_results = document.querySelectorAll('.search-result');
-    if (search_results != null) {
+    if (search_results.length != 0) {
         search_results.forEach((search_result) => {
             if (search_result != null) {
                 search_result.addEventListener('click', function () {

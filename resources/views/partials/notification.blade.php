@@ -31,3 +31,5 @@
     </div>
 
 </div>
+
+<hr class="my-0" style="width: 80%;">

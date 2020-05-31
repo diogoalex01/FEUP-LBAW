@@ -223,6 +223,7 @@ class PostController extends Controller
     }
 
     /**
+
      * Display the specified resource.
      *
      * @param  \App\Post  $post
