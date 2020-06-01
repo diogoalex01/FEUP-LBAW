@@ -72,13 +72,23 @@
                 <div class="col-md-7 my-auto">
                     <h1 class="my-0">{{$community->name}}</h1>
                 </div>
-                <div class="col-md-1 text-center d-flex align-items-center">
-                    <input type="button" class="btn btn-dark" value="Join">
-                </div>
-                <div class="col-md-2 text-center d-flex align-items-center">
-                    <input type="button" data-toggle="modal" data-dismiss="modal" data-target="#modalCommunityReport"
-                        class="btn btn-outline-danger" value="Report">
-                </div>
+
+                <form class="col-1 text-center d-flex align-items-center"
+                    onsubmit="joinCommunity(event,{{$community->id}})">
+                    <div class="col-md-1 text-center d-flex align-items-left">
+                        @if (!$isMember)
+                            <input type="submit" class="btn btn-dark" value="Join" id="join-button">
+                        @else
+                            <input type="submit" class="btn btn-dark" value="Leave" id="join-button">
+                        @endif
+                    </div>
+                </form>
+                <form class="col-1 text-center d-flex align-items-center">
+                    <div class="col-md-2 text-center d-flex align-items-center">
+                        <input type="button" data-toggle="modal" data-dismiss="modal"
+                            data-target="#modalCommunityReport" class="btn btn-outline-danger" value="Report">
+                    </div>
+                </form>
                 {{-- Admin
                 <div class="col-md-8">
                     <h1 class="my-4">/Porto</h1>

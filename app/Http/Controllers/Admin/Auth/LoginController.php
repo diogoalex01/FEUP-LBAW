@@ -17,6 +17,10 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        if (Auth::guard('admin')->check()) {
+            return redirect('admin');
+        }
+        
         return view('auth.adminLogin', [
             'title' => 'Admin Login'
         ]);
@@ -30,11 +34,15 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
+        if (Auth::check()) {
+            Auth::logout();
+        }
+
         error_log("\n\n0");
         $this->validator($request);
 
         error_log("\n\n1");
-        
+
         if (Auth::guard('admin')->attempt($request->only('email', 'password'), $request->filled('remember'))) {
             //Authentication passed...
             error_log("\n\n3");

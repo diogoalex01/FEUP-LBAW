@@ -1,4 +1,5 @@
-@extends('layouts.app', ['title' => $other_user->first_name . " ". $other_user->last_name . " | PearToPear"])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => $other_user->first_name . " ". $other_user->last_name . " | PearToPear" ])
+
 @section('content')
 
 <!-- Page Content -->
@@ -20,9 +21,18 @@
                 </div>
 
             </div> --}}
-
+            @auth('admin')
+            <div class="row mt-3 d-flex justify-content-center">
+                <form class="text-center d-flex align-items-center justify-content-center"
+                    onsubmit="blockUser(event,{{$other_user->id}});">
+                    <div class="">
+                        <input type="submit" class="btn btn-outline-danger" value="Delete" id="delete-button">
+                    </div>
+                </form>
+            </div>
+            @else
             @if($other_user->id !== $user->id && !$isBlocked)
-                {{-- check if they are friends --}}
+            {{-- check if they are friends --}}
             <div class="row mt-3">
                 @if($isBlocking)
                 <form class="col-6 text-center d-flex align-items-center justify-content-end"
@@ -63,10 +73,12 @@
                 @endif
             </div>
             @endif
+            @endauth
 
             <div class="card my-4 aside-container">
                 <h5 class="card-header aside-container-top" style="background-color: white;">
-                    Profile
+                    <span>{{$other_user->first_name}}</span>
+                    <span>{{$other_user->last_name}}</span>
                 </h5>
                 <div class="card-body">
                     <div class="row mb-2 ml-1 d-flex justify-content-start align-items-center">
@@ -179,7 +191,8 @@
                 </h5>
 
                 <div class="card-body justify-content-start">
-                    <p class="card-text">You may have blocked this person, have been blocked or this is a private account.</p>
+                    <p class="card-text">You may have blocked this person, have been blocked or this is a private
+                        account.</p>
                 </div>
 
             </div>

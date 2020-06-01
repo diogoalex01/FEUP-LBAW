@@ -35,12 +35,6 @@ function addPostEventListeners() {
     if (addCommentForm != null)
         addCommentForm.addEventListener('submit', sendNewComment);
 
-    fruits.forEach(fruit => fruit.removeEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        voteButtonClicked(item);
-    }));
-
     addReplyButtonsListener();
     addVotesEventListener();
     addEditButtonsListener();
@@ -51,20 +45,19 @@ function addPostEventListeners() {
 
 function addReplyButtonsListener() {
     replyButtons = document.querySelectorAll(".reply-btn");
-    if (replyButtons != null) {
-        replyButtons.forEach(function (item, idx) {
-            if (item.getAttribute('data-target').match(/comment[0-9]+/))
+    if (replyButtons.length != 0) {
+        replyButtons.forEach(function (item) {
+            if (item.getAttribute('data-target').match(/comment[0-9]+/) && !item.classList.contains('has-listener'))
                 item.addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     let id = item.getAttribute('data-target');
+                    item.classList.add('has-listener');
                     addReplyForm(id);
                 });
         });
     }
 }
-
-let fruits = [];
 
 function addVotesEventListener() {
     let voteButtons = document.querySelectorAll(".vote-button");
@@ -72,16 +65,17 @@ function addVotesEventListener() {
     if (voteButtons.length != 0) {
         voteButtons.forEach((item) => {
             //console.log("here");
-            if (!item.classList.contains('disabled-voting')) {
+            if (!item.classList.contains('disabled-voting') && !item.classList.contains('has-listener')) {
                 changeVoteColor(item);
-                fruits.push(item);
+                item.classList.add('has-listener');
                 item.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     voteButtonClicked(item);
                 });
             } else {
-                item.classList.remove('vote-button');
+                if (!item.classList.contains('has-listener'))
+                    item.classList.remove('vote-button');
             }
         });
     }
@@ -91,11 +85,14 @@ function addEditButtonsListener() {
     editButtons = document.querySelectorAll(".edit-btn");
     if (editButtons.length != 0) {
         editButtons.forEach((item) => {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                addEditCommentForm(item);
-            });
+            if (!item.classList.contains('has-listener')) {
+                item.classList.add('has-listener');
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    addEditCommentForm(item);
+                });
+            }
         });
     }
 
@@ -113,11 +110,14 @@ function addDeleteButtonsListener() {
     deleteButtons = document.querySelectorAll(".delete-btn");
     if (deleteButtons.length != 0) {
         deleteButtons.forEach(function (item) {
-            item.addEventListener('click', function (event) {
-                // event.preventDefault();
-                // event.stopPropagation();
-                openDeleteConfirmModal(item);
-            });
+            if (!item.classList.contains('has-listener')) {
+                item.classList.add('has-listener');
+                item.addEventListener('click', function (event) {
+                    // event.preventDefault();
+                    // event.stopPropagation();
+                    openDeleteConfirmModal(item);
+                });
+            }
         });
     }
 }
@@ -127,11 +127,14 @@ function addDeleteConfirmButtonsListener() {
     if (deleteConfirmButtons.length != 0) {
         console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
         deleteConfirmButtons.forEach(function (item) {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                sendDeleteConfirmObject(item);
-            });
+            if (!item.classList.contains('has-listener')) {
+                item.classList.add('has-listener');
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    sendDeleteConfirmObject(item);
+                });
+            }
         });
     }
 }
@@ -977,7 +980,12 @@ $(document).ready(function () {
 function refreshPostHandler(response, page) {
     if (response.success === true) {
         $(page).append(response.html).fadeIn("slow");
-        addPostEventListeners();
+        addReplyButtonsListener();
+        addVotesEventListener();
+        addEditButtonsListener();
+        addDeleteButtonsListener();
+        addDeleteConfirmButtonsListener();
+        postFading();
     }
 }
 

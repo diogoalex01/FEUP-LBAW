@@ -39,6 +39,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * The community this user owns.
+     */
+     public function community()
+    {
+        return $this->hasMany('App\Community');
+    }
+
+    /**
      * The posts this user owns.
      */
     public function posts()
@@ -59,7 +67,7 @@ class User extends Authenticatable
      */
     public function communities()
     {
-        return $this->hasMany('App\Community');
+        return $this->belongsToMany('App\Community', 'community_member', 'id_user', 'id_community')->withPivot([]);
     }
 
     /**

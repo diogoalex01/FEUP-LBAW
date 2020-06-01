@@ -1,19 +1,3 @@
-{{-- /* include('common.php');
-draw_head('Pear To Pear'); */
-
-/* $auth = $_GET['auth'];
-if (!isset($_GET['auth'])) {
-    $auth = "false";
-}
-
-/* $admin = $_GET['admin'];
-if (!isset($_GET['admin'])) {
-    $admin = "false";
-}
-
-draw_navigation($auth, "", $admin);
- */ --}}
-
 @extends('layouts.app', ['title' => "PearToPear | Home"])
 @section('content')
 

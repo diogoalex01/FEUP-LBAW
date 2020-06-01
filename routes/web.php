@@ -49,6 +49,8 @@ Route::get('/', 'PostController@list')->name('home');
 
 // Community
 Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
+Route::post('/community/{community_id}/membership', 'CommunityController@join')->name('community_join');
+Route::delete('/community/{community_id}/membership', 'CommunityController@leave')->name('community_leave');
 
 // New Post 
 Route::get('/new_post', 'PostController@create')->name('new_post');
@@ -72,15 +74,18 @@ Route::put('/comment/{comment_id}/vote', 'CommentController@vote_edit')->name('c
 Route::delete('/comment/{comment_id}/vote', 'CommentController@vote_delete')->name('comment_delete_vote');
 
 // Admin
-Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function () {
-    Route::get('/', 'AdminController@show')->name('home');
+Route::prefix('/admin')->name('admin.')->group(function () {
+    Route::get('/', 'Admin\AdminController@show')->name('home');
+    Route::get('/user/{user_id}', 'UserController@show')->name('profile');
+    Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
+    Route::get('/post/{post_id}', 'PostController@show')->name('post');
 
-    Route::namespace('Auth')->group(function () {
+    Route::namespace('Admin\Auth')->group(function () {
 
         // Login Routes
         Route::get('/login', 'LoginController@showLoginForm')->name('login');
         Route::post('/login', 'LoginController@login');
-        Route::post('/logout', 'LoginController@logout')->name('logout');
+        Route::get('/logout', 'LoginController@logout')->name('logout');
         
     });
 });

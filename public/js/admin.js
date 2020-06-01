@@ -8,13 +8,23 @@ if (admin_aside.length != 0) {
 
     let current_title = document.getElementById("current-title");
     let admin_content = document.querySelectorAll(".admin-content");
+    let no_reports = document.getElementById("no-reports");
 
-    let user_tab_admin = document.getElementById("user-tab-admin");
-    let comment_tab_admin = document.getElementById("comment-tab-admin");
-    let post_tab_admin = document.getElementById("post-tab-admin");
-    let community_tab_admin = document.getElementById("community-tab-admin");
+    let user_tab_admin = document.querySelectorAll(".user-tab-admin");
+    let comment_tab_admin = document.querySelectorAll(".comment-tab-admin");
+    let post_tab_admin = document.querySelectorAll(".post-tab-admin");
+    let community_tab_admin = document.querySelectorAll(".community-tab-admin");
 
     if (admin_content.length != 0) {
+
+        function checkEmptyReports() {
+            let current_content = document.querySelectorAll(".active-tab");
+            console.log(current_content.length);
+            if (current_content.length == 0)
+                no_reports.style.display = "block";
+            else
+                no_reports.style.display = "none";
+        }
 
         function admin_tabs() {
             current_title.innerHTML = 'All Reports';
@@ -44,6 +54,8 @@ if (admin_aside.length != 0) {
             admins_menu.classList.remove("nav-border");
             admins_menu.classList.add("nav-border-active");
             admins_menu.removeEventListener("click", admin_tabs);
+
+            checkEmptyReports();
         }
 
         function user_tabs() {
@@ -55,9 +67,11 @@ if (admin_aside.length != 0) {
                 tab.style.display = "none";
             });
 
-            user_tab_admin.classList.remove("hidden-tab");
-            user_tab_admin.classList.add("active-tab");
-            user_tab_admin.style.display = "block";
+            user_tab_admin.forEach(item => {
+                item.classList.remove("hidden-tab");
+                item.classList.add("active-tab");
+                item.style.display = "block";
+            });
 
             admins_menu.classList.remove("nav-border-active");
             admins_menu.classList.add("nav-border");
@@ -78,6 +92,8 @@ if (admin_aside.length != 0) {
             communities_menu.classList.remove("nav-border-active");
             communities_menu.classList.add("nav-border");
             communities_menu.addEventListener("click", community_tabs);
+
+            checkEmptyReports();
         }
 
         function comment_tabs() {
@@ -89,9 +105,11 @@ if (admin_aside.length != 0) {
                 tab.style.display = "none";
             });
 
-            comment_tab_admin.classList.remove("hidden-tab");
-            comment_tab_admin.classList.add("active-tab");
-            comment_tab_admin.style.display = "block";
+            comment_tab_admin.forEach(item => {
+                item.classList.remove("hidden-tab");
+                item.classList.add("active-tab");
+                item.style.display = "block";
+            });
 
             admins_menu.classList.remove("nav-border-active");
             admins_menu.classList.add("nav-border");
@@ -112,6 +130,8 @@ if (admin_aside.length != 0) {
             communities_menu.classList.remove("nav-border-active");
             communities_menu.classList.add("nav-border");
             communities_menu.addEventListener("click", community_tabs);
+
+            checkEmptyReports();
         }
 
         function post_tabs() {
@@ -123,9 +143,11 @@ if (admin_aside.length != 0) {
                 tab.style.display = "none";
             });
 
-            post_tab_admin.classList.remove("hidden-tab");
-            post_tab_admin.classList.add("active-tab");
-            post_tab_admin.style.display = "block";
+            post_tab_admin.forEach(item => {
+                item.classList.remove("hidden-tab");
+                item.classList.add("active-tab");
+                item.style.display = "block";
+            });
 
             admins_menu.classList.remove("nav-border-active");
             admins_menu.classList.add("nav-border");
@@ -146,6 +168,8 @@ if (admin_aside.length != 0) {
             communities_menu.classList.remove("nav-border-active");
             communities_menu.classList.add("nav-border");
             communities_menu.addEventListener("click", community_tabs);
+
+            checkEmptyReports();
         }
 
         function community_tabs() {
@@ -157,9 +181,11 @@ if (admin_aside.length != 0) {
                 tab.style.display = "none";
             });
 
-            community_tab_admin.classList.remove("hidden-tab");
-            community_tab_admin.classList.add("active-tab");
-            community_tab_admin.style.display = "block";
+            community_tab_admin.forEach(item => {
+                item.classList.remove("hidden-tab");
+                item.classList.add("active-tab");
+                item.style.display = "block";
+            });
 
             admins_menu.classList.remove("nav-border-active");
             admins_menu.classList.add("nav-border");
@@ -180,6 +206,8 @@ if (admin_aside.length != 0) {
             communities_menu.classList.remove("nav-border");
             communities_menu.classList.add("nav-border-active");
             communities_menu.removeEventListener("click", community_tabs);
+
+            checkEmptyReports();
         }
 
         admins_menu.addEventListener("click", admin_tabs);

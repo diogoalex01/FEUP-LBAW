@@ -245,18 +245,17 @@ function blockUser(event, blocked) {
     console.log(blockButton);
 
     if (blockButton.value == "Block") {
-        sendAjaxRequest('post', '/block/' + blocked, {
-        }, blockHandler);
         blockButton.value = "Unblock";
         let followButton = document.getElementById("follow-button");
+        sendAjaxRequest('post', '/block/' + blocked, {
+        }, blockHandler);
         followButton.remove();
-        // window.location = blocked;
     } else if (blockButton.value == "Unblock") {
         sendAjaxRequest('delete', '/block/' + blocked, {
         }, blockHandler);
         blockButton.value = "Block";
-        // window.location = blocked;
     }
+
 }
 
 function followUser(event, followed) {
@@ -271,6 +270,21 @@ function followUser(event, followed) {
         sendAjaxRequest('delete', '/follow/' + followed, {
         }, followHandler);
         followButton.value = "Follow";
+    }
+}
+
+function joinCommunity(event, communityId) {
+    event.preventDefault();
+    event.stopPropagation();
+    joinButton = document.getElementById("join-button");
+    if (joinButton.value == "Join") {
+        sendAjaxRequest('post', '/community/' + communityId + '/membership/', {
+        },  ()=>{console.log(this.responseText);});
+        joinButton.value = "Leave";
+    } else if (joinButton.value == "Leave") {
+        sendAjaxRequest('delete', '/community/' + communityId + '/membership/', {
+        }, ()=>{console.log(this.responseText);});
+        joinButton.value = "Join";
     }
 }
 
@@ -291,8 +305,8 @@ function getNotifications(e) {
 function changeNotificationStatus(item) {
     let notificationId = item.getAttribute('data-target');
     let buttonType = item.getAttribute('data-type');
-    sendAjaxRequest('put', '/notification/' + notificationId, {status: buttonType}, function(item){
-        let notification = document.getElementById("notification-"+ notificationId);
+    sendAjaxRequest('put', '/notification/' + notificationId, { status: buttonType }, function (item) {
+        let notification = document.getElementById("notification-" + notificationId);
         notification.remove();
     });
 }

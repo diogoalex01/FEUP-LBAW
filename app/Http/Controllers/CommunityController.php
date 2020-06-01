@@ -52,6 +52,7 @@ class CommunityController extends Controller
     {
         $communities = Community::all();
         $community = $communities->find($community_id);
+        $member = false;
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -60,8 +61,16 @@ class CommunityController extends Controller
         }
 
         $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
-        //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user]);
+
+        if ($user !== null) {
+            // dd($community->members());
+            if ($community->members()->where('id_user', '=', $user->id)->first() != null) {
+                $member = true;
+            }
+        }
+
+        // $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+        return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member]);
     }
 
     /**
@@ -74,7 +83,7 @@ class CommunityController extends Controller
     {
         $communities = Community::all();
         $community = $communities->find($request['community_id']);
-        
+
         if (Auth::check()) {
             $user = Auth::user();
         } else {
@@ -150,5 +159,37 @@ class CommunityController extends Controller
         // //if ($community !== null) {
         //     //}
         // return $community;
+    }
+
+    public function join($community_id)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+        $community = Community::find($community_id);
+        if ($community->private) {
+            DB::transaction(function () use ($community, $user) {
+                DB::insert('insert into request (id_receiver, id_sender) values (?, ?)', [$community->id_owner, $user->id]);
+                $request = DB::table('request')->latest('time_stamp')->first();
+                DB::insert('insert into join_community_request (id, id_community) values (?,?)', [$request->id, $community->id]);
+            });
+            return response(['status' => 'pending']);
+        } else {
+            $community->members()->attach($user->id, []);
+            return response(['status' => 'accepted']);
+        }
+    }
+
+    public function leave($community_id)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+        $community = Community::find($community_id);
+        $community->members()->detach($user->id, []);
     }
 }

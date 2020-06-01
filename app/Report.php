@@ -36,4 +36,12 @@ class Report extends Model
     {
         return $this->belongsTo('App\Admin', 'id_admin');
     }
+
+    /**
+     * The reporter this report belongs to
+     */
+    public function reporter()
+    {
+        return $this->belongsTo('App\User', 'id_user');
+    }
 }

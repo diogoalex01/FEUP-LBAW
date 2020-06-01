@@ -49,4 +49,13 @@ class Community extends Model
         return $this->hasMany('App\Post');
     }
 
+
+    /**
+     * The post this community belongs to
+     */
+     public function members()
+    {
+        return $this->belongsToMany('App\User', 'community_member', 'id_community', 'id_user')->withPivot([]);
+    }
+
 }

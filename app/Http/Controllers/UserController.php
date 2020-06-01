@@ -58,7 +58,11 @@ class UserController extends Controller
      */
     public function show($user_id)
     {
-        $this_user = Auth::user();
+        if (Auth::guard('admin')->check()) {
+            $this_user = Auth::guard('admin')->user();
+        } else {
+            $this_user = Auth::user();
+        }
         $member_users = User::all();
         $member_user = $member_users->find($user_id);
         if ($member_user != NULL) {
@@ -70,8 +74,8 @@ class UserController extends Controller
 
             $request_status = null;
             $follows = null;
-            $blocking= null;
-            $blocked= null;
+            $blocking = null;
+            $blocked = null;
 
             if ($this_user !== null) {
                 $requestCondition = ['id_receiver' => $user_id, "id_sender" => $this_user->id];
@@ -90,35 +94,34 @@ class UserController extends Controller
                 }
 
                 $followCondition = ['id_follower' => $this_user->id, 'id_followed' => $user_id];
-                $follow_row = DB::table('follow_user')->where($followCondition)->get(); 
-                if(sizeof($follow_row) > 0){
+                $follow_row = DB::table('follow_user')->where($followCondition)->get();
+                if (sizeof($follow_row) > 0) {
                     $follows = true;
                 } else {
                     $follows = false;
                 }
 
                 $blockingCondition = ['blocked_user' => $user_id, 'blocker_user' => $this_user->id];
-                $block_row = DB::table('block_user')->where($blockingCondition)->first(); 
-                if($block_row !== null){
+                $block_row = DB::table('block_user')->where($blockingCondition)->first();
+                if ($block_row !== null) {
                     $blocking = true;
                 } else {
                     $blocking = false;
                 }
 
                 $blockedCondition = ['blocked_user' => $this_user->id, 'blocker_user' => $user_id];
-                $block_row = DB::table('block_user')->where($blockedCondition)->first(); 
-                if($block_row !== null){
+                $block_row = DB::table('block_user')->where($blockedCondition)->first();
+                if ($block_row !== null) {
                     $blocked = true;
                 } else {
                     $blocked = false;
                 }
-
             }
             //dd($blocking, $blocked);
             // $follow_request = DB::table('follow_user')->where('id_followed', '=', $user_id)->get() !== null;
 
             //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-            return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status, 'follows' => $follows, 'isBlocked' => $blocked, 'isBlocking'=> $blocking]);
+            return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status, 'follows' => $follows, 'isBlocked' => $blocked, 'isBlocking' => $blocking]);
         }
         abort(404);
     }
@@ -324,20 +327,20 @@ class UserController extends Controller
     public function unfollow($user_id)
     {
         $user = Auth::user();
-        
+
         DB::transaction(function () use ($user_id, $user) {
             $condition = ['id_receiver' => $user_id, "id_sender" => $user->id];
             $request = DB::table('request')
                 ->join('follow_request', 'follow_request.id', '=', 'request.id')
                 ->where($condition)
                 ->first();
-           if($request != null){
-            DB::delete('delete from notification where id_request = ?', [$request->id]);
-            DB::delete('delete from follow_request where id = ?', [$request->id]);
-            $request = Request::find($request->id);
-            $request->delete();
-           }
-           DB::delete('delete from follow_user where id_followed = ? and id_follower = ?', [$user_id, $user->id]);
+            if ($request != null) {
+                DB::delete('delete from notification where id_request = ?', [$request->id]);
+                DB::delete('delete from follow_request where id = ?', [$request->id]);
+                $request = Request::find($request->id);
+                $request->delete();
+            }
+            DB::delete('delete from follow_user where id_followed = ? and id_follower = ?', [$user_id, $user->id]);
         });
     }
 
@@ -355,6 +358,5 @@ class UserController extends Controller
     {
         $user = Auth::user();
         DB::delete('delete from block_user where blocked_user = ? and blocker_user = ?', [$user_id, $user->id]);
-        
     }
 }

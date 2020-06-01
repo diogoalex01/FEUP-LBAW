@@ -64,11 +64,10 @@ class PostController extends Controller
 
         $lowerCommunities = array_map('strtolower', $communities);
         $lowerCommunityName = strtolower($community_name);
-
         if (in_array($lowerCommunityName, $lowerCommunities)) {
             $community_id = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first()->id;
         } else {
-            if (!in_array('private', $data)) {
+            if ($data['private'] != 'on') {
                 $data['private'] = 'false';
             } else {
                 $data['private'] = 'true';
@@ -164,6 +163,17 @@ class PostController extends Controller
         }
 
         $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        // $posts = DB::table('post')
+        //     ->join('member_user', 'member_user.id', '=', 'post.id_author')
+        //     ->whereNotExists(function ($query) use ($user) {
+        //         $query->select('*')
+        //             ->from('block_user')
+        //             ->where('blocked_user', '=', 'post.id_author')
+        //             ->where('blocker_user', '!=', $query->id);
+        //     })
+        //     ->whereNotExists('select * from block_user where block_user.blocked_user = post.id_author')
+        //     ->orderBy('time_stamp', 'desc')->get();
+
         $htmlView = [];
 
         foreach ($posts as $post) {
@@ -175,7 +185,7 @@ class PostController extends Controller
             'html'    => $htmlView
         ]);
     }
-    
+
     public function popularTab(Request $request)
     {
         // if (!Auth::check()) return redirect('/login');
@@ -288,13 +298,14 @@ class PostController extends Controller
         } else {
             $user = null;
         }
-        
 
-        if ($user == null){
+
+        if ($user == null) {
             error_log("\n2\n");
-        return response([
-            'success' => false
-        ]);}
+            return response([
+                'success' => false
+            ]);
+        }
         $data = $request->validate([
             'new_content' => 'required',
         ]);
@@ -303,21 +314,21 @@ class PostController extends Controller
 
         // $this->authorize('update', 2,$post);
 
-        if ($post!=null) {
+        if ($post != null) {
             error_log("\n3\n");
             $post->content = $data['new_content'];
             $post->save();
             return response([
-            'success' => true,
-            "post_id" => $post->id,
-            "new_content" => $post->content
-        ]);
+                'success' => true,
+                "post_id" => $post->id,
+                "new_content" => $post->content
+            ]);
         } else {
             error_log("\n4\n");
             return response([
-            'success' => false
-        ]);
-        }  
+                'success' => false
+            ]);
+        }
     }
 
 
@@ -347,13 +358,13 @@ class PostController extends Controller
 
         if ($post->delete()) {
             return response([
-            'success' => true
-        ]);
+                'success' => true
+            ]);
         } else {
             return response([
-            'success' => false
-        ]);
-        }  
+                'success' => false
+            ]);
+        }
     }
 
     public function vote($post_id, Request $request)
@@ -390,7 +401,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function vote_edit($post_id,Request $request)
+    public function vote_edit($post_id, Request $request)
     {
 
         if (Auth::check()) {
@@ -408,7 +419,7 @@ class PostController extends Controller
 
         $post = Post::find($post_id);
 
-        
+
         $post->votedUsers()->updateExistingPivot($user->id, ['vote_type' => $data['vote_type']]);
 
         return response([
@@ -417,7 +428,7 @@ class PostController extends Controller
     }
 
 
-    public function vote_delete($post_id,Request $request)
+    public function vote_delete($post_id, Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();

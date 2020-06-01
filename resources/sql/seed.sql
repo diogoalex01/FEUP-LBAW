@@ -135,13 +135,14 @@ CREATE TABLE report (
     reason text NOT NULL,
     time_stamp TIMESTAMP WITH TIME zone DEFAULT now() NOT NULL,
     id_admin int NOT NULL REFERENCES admin_user,
-    id_user int REFERENCES member_user ON DELETE SET NULL
+    id_user int REFERENCES member_user ON DELETE SET NULL,
+	reportable_id int,
+	reportable_type text
 );
 
 CREATE TABLE comment_report (
     id_report int PRIMARY KEY REFERENCES report ON DELETE CASCADE,
-    id_comment int NOT NULL REFERENCES comment ON DELETE CASCADE,
-	reportable_type test NOT NULL
+    id_comment int NOT NULL REFERENCES comment ON DELETE CASCADE
 );
 
 CREATE TABLE post_report (
@@ -717,15 +718,15 @@ INSERT INTO comment (content, time_stamp, upvotes, downvotes, id_author, id_post
 
 INSERT INTO reply (reply_comment, parent_comment) VALUES (2,5);
 
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteúdo impróprio', '2020-03-27',1,5);
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Vocabulário impróprio', '2020-03-18',2, 9);
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('SPAM', '2020-03-15',3,12);
-INSERT INTO report (reason, time_stamp, id_admin, id_user) VALUES ('Conteúdo impróprio', '2020-03-26',4,17);
+INSERT INTO report (reason, time_stamp, id_admin, id_user, reportable_id, reportable_type) VALUES ('Conteúdo impróprio', '2020-03-27',1,5,1, 'App\UserReport');
+INSERT INTO report (reason, time_stamp, id_admin, id_user, reportable_id, reportable_type) VALUES ('Vocabulário impróprio', '2020-03-18',2, 9, 2,'App\CommentReport');
+INSERT INTO report (reason, time_stamp, id_admin, id_user, reportable_id, reportable_type) VALUES ('SPAM', '2020-03-15',3,12, 3,'App\PostReport');
+INSERT INTO report (reason, time_stamp, id_admin, id_user, reportable_id, reportable_type) VALUES ('Conteúdo impróprio', '2020-03-26',4,17,4, 'App\CommunityReport');
 
-INSERT INTO comment_report (id_report, id_comment, reportable_type) VALUES (2,5, 'App\CommentReport');
-INSERT INTO post_report (id_report, id_post, reportable_type) VALUES (3,3, 'App\PostReport');
-INSERT INTO community_report (id_report, id_community, reportable_type) VALUES (4,2, 'App\CommunityReport');
-INSERT INTO user_report (id_report, id_user, reportable_type) VALUES (1,8, 'App\UserReport');
+INSERT INTO comment_report (id_report, id_comment) VALUES (2,5);
+INSERT INTO post_report (id_report, id_post) VALUES (3,3);
+INSERT INTO community_report (id_report, id_community) VALUES (4,2);
+INSERT INTO user_report (id_report, id_user) VALUES (1,8);
 
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 1, 9);
 INSERT INTO post_vote (vote_type, id_user, id_post) VALUES ('up', 3, 2);

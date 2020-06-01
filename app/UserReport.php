@@ -2,10 +2,9 @@
 
 namespace App;
 
-use App\Report;
 use Illuminate\Database\Eloquent\Model;
 
-class CommentReport extends Model
+class UserReport extends Model
 {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
@@ -17,7 +16,7 @@ class CommentReport extends Model
      *
      * @var string
      */
-    protected $table = 'comment_report';
+    protected $table = 'user_report';
 
     /**
      * The attributes that are mass assignable.
@@ -33,8 +32,8 @@ class CommentReport extends Model
         return $this->morphOne('App\Report', 'reportable');
     }
 
-    public function comment()
+    public function reported()
     {
-        return $this->belongsTo('App\Comment', 'id_comment');
+        return $this->belongsTo('App\User', 'id_user');
     }
 }
