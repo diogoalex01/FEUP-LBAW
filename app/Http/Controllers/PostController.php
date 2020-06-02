@@ -60,7 +60,7 @@ class PostController extends Controller
             'post_content' => 'required',
             'image' => 'nullable|mimes:jpeg,jpg,png,gif',
         ]);
-
+        // dd($data);
         /* Check and create community if needed */
         $communities = Community::all()->pluck('name')->toArray();
         $community_name = $data['community'];

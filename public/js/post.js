@@ -259,6 +259,7 @@ function sendNewComment(event) {
     }, newCommentHandler);
 }
 
+<<<<<<< HEAD
 function reportPost(event) {
     console.log('reportPost');
     event.preventDefault();
@@ -295,6 +296,17 @@ function reportComment(event) {
     console.log(reasonOption);
     ///community/{community_id}/report
     sendAjaxRequest('post', '/comment/' + comment_id + '/report', { reason: reasonOption });
+=======
+function reportPost(event){
+    event.preventDefault();
+    // event.stopPropagation();
+
+    let post_id = document.getElementById('modalPostReport').getAttribute('data-object');
+    let reasonSelect = document.getElementById('postReportReason');
+    console.log(reasonSelect);
+    sendAjaxRequest('post', '/post' + post_id + '/report', {reason: reasonSelect}); 
+
+>>>>>>> 2a0d162b59c42eb4795288febbccd10458af1254
 }
 
 function newCommentHandler() {

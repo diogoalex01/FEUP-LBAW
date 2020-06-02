@@ -58,6 +58,7 @@ Route::put('/post/{post_id}', 'PostController@update');
 Route::post('/post/{post_id}/vote', 'PostController@vote')->name('post_vote');
 Route::put('/post/{post_id}/vote', 'PostController@vote_edit')->name('post_edit_vote');
 Route::delete('/post/{post_id}/vote', 'PostController@vote_delete')->name('post_delete_vote');
+Route::post('/post/{post_id}/report', 'PostController@vote')->name('post_report');
 
 // Comment
 Route::post('/comment', 'CommentController@store');

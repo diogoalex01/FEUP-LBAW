@@ -237,6 +237,7 @@ class CommunityController extends Controller
         }
         $community = Community::find($community_id);
         $community->members()->detach($user->id, []);
+
     }
 
     /**

@@ -425,6 +425,18 @@ CREATE TRIGGER vote_on_post
     EXECUTE PROCEDURE vote_on_post(); 
 
 
+-- SELECT sum(post.upvotes) AS upvotes
+-- 				FROM post, member_user
+-- 				WHERE post.id_author = 2
+-- 				GROUP BY member_user.id
+-- UNION	
+-- SELECT sum(comment.upvotes) AS upvotes
+-- 				FROM comment, member_user
+-- 				WHERE comment.id_author = 2
+-- 				GROUP BY member_user.id
+-- 				;
+
+
 CREATE FUNCTION create_notification() RETURNS TRIGGER AS
 $BODY$
 BEGIN
