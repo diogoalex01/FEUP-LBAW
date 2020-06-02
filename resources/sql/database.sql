@@ -320,7 +320,7 @@ BEGIN
 			RAISE EXCEPTION 'A user cannot vote on their own posts.';
 		END IF;
         
-	ELSIF TG_OP = 'UPDATE'
+	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE'
 	THEN IF OLD.vote_type = 'up'
 		THEN
 			UPDATE post
@@ -346,12 +346,12 @@ BEGIN
 			WHERE id = NEW.id_post;
     END IF;
 	
-	UPDATE member_user 
+	UPDATE member_user
 		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
 		FROM (
 			SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes
 				FROM post
-				WHERE post.id = NEW.id_post) AS subquery 
+				WHERE post.id = NEW.id_post) AS subquery
 		WHERE member_user.id = subquery.author;
 	
     RETURN NEW;
@@ -360,9 +360,9 @@ $BODY$
 LANGUAGE plpgsql;
  
 CREATE TRIGGER vote_on_post
-    AFTER INSERT OR UPDATE ON post_vote
+    AFTER INSERT OR UPDATE OR DELETE ON post_vote
     FOR EACH ROW
-    EXECUTE PROCEDURE vote_on_post(); 
+    EXECUTE PROCEDURE vote_on_post();
 
 
 CREATE FUNCTION create_notification() RETURNS TRIGGER AS

@@ -9,7 +9,7 @@
                         src="{{ asset('img/avatar_female.png') }}" alt="Profile Image"></a>
             </div>
             <div class="col-7 p-0">
-                <h4 class="item-title"><a>{{ $user->username }}</a> sent you a friend request</h4>
+                <h4 class="item-title text-muted"><a>{{ $user->username }}</a> sent you a friend request</h4>
                 <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
             </div>
             <div class="d-flex align-items-start pt-1">

@@ -364,7 +364,7 @@ BEGIN
 			RAISE EXCEPTION 'A user cannot vote on their own posts.';
 		END IF;
         
-	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN 
+	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN
 		postID := OLD.id_post;
 		IF OLD.vote_type = 'up' THEN
 			UPDATE post
@@ -391,12 +391,12 @@ BEGIN
 		END IF;
 	END IF;
 	
-	UPDATE member_user 
-		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
+	UPDATE member_user
+		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes)
 		FROM (
 			SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes
 				FROM post
-				WHERE post.id = postID) AS subquery 
+				WHERE post.id = postID) AS subquery
 		WHERE member_user.id = subquery.author;
 	
     RETURN NULL;
@@ -408,6 +408,18 @@ CREATE TRIGGER vote_on_post
     AFTER INSERT OR UPDATE OR DELETE ON post_vote
     FOR EACH ROW
     EXECUTE PROCEDURE vote_on_post(); 
+
+
+-- SELECT sum(post.upvotes) AS upvotes
+-- 				FROM post, member_user
+-- 				WHERE post.id_author = 2
+-- 				GROUP BY member_user.id
+-- UNION	
+-- SELECT sum(comment.upvotes) AS upvotes
+-- 				FROM comment, member_user
+-- 				WHERE comment.id_author = 2
+-- 				GROUP BY member_user.id
+-- 				;
 
 
 CREATE FUNCTION create_notification() RETURNS TRIGGER AS

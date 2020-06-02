@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Community;
 use App\Post;
 use App\User;
+use App\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,25 +53,43 @@ class CommunityController extends Controller
     {
         $communities = Community::all();
         $community = $communities->find($community_id);
-        $member = false;
+        if($community !== null){
+            
+            $member = false;
+            $request_status = null;
 
-        if (Auth::check()) {
-            $user = Auth::user();
-        } else {
-            $user = null;
-        }
-
-        $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
-
-        if ($user !== null) {
-            // dd($community->members());
-            if ($community->members()->where('id_user', '=', $user->id)->first() != null) {
-                $member = true;
+            if (Auth::check()) {
+                $user = Auth::user();
+            } else {
+                $user = null;
             }
-        }
+    
+            $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
+    
+            if ($user !== null) {
+                //  dd($community->members());
+                // dd($community->members()->where('id_user', $user->id)->first());
 
-        // $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-        return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member]);
+                
+                if ($community->members()->where('id_user', $user->id)->first() !== null) {
+                    $member = true;
+                }   
+
+                $join_request = DB::table('request')
+                ->join('join_community_request', 'join_community_request.id', '=', 'request.id')
+                ->where('join_community_request.id_community', '=', $community_id)
+                ->where('request.id_sender', '=', $user->id)
+                ->get();
+                if($join_request !== null){
+                    $request_status = "pending";
+                }
+
+            }
+            // dd($community);
+            // $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+            return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member, 'request_status' => $request_status]);
+        }
+        abort(404);
     }
 
     /**
@@ -189,7 +208,13 @@ class CommunityController extends Controller
         } else {
             $user = null;
         }
+        $join_request = DB::table('join_community_request')->where('id_community', '=', $community_id)->first();
+        if($join_request !== null){
+            $request = RequestModel::find($join_request->id);
+            $request->delete();
+        }
         $community = Community::find($community_id);
         $community->members()->detach($user->id, []);
+
     }
 }

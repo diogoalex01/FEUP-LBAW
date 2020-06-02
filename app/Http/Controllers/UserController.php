@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Post;
+use App\Comment;
 use App\Community;
 use App\Notification;
 use App\Request;
@@ -55,7 +56,7 @@ class UserController extends Controller
      *
      * @param  \App\MemberUser  $memberUser
      * @return \Illuminate\Http\Response
-     */
+     */ 
     public function show($user_id)
     {
         if (Auth::guard('admin')->check()) {
@@ -65,17 +66,25 @@ class UserController extends Controller
         }
         $member_users = User::all();
         $member_user = $member_users->find($user_id);
+
+        $follows = false;
+        $blocking = false;
+        $blocked = false;
+        $request_status = null;
+
+
         if ($member_user != NULL) {
             $postN = Post::where('id_author', '=', $user_id)->count();
             $age = \Carbon\Carbon::parse($member_user->birthday)->age;
 
             $posts = Post::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
+            $comments = Comment::where('id_author', '=', $user_id)->orderBy('time_stamp', 'desc')->get();
+
+            $activities = $posts->merge($comments);
+            $activities = $activities->sortByDesc('time_stamp');
+            
             $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
 
-            $request_status = null;
-            $follows = null;
-            $blocking = null;
-            $blocked = null;
 
             if ($this_user !== null) {
                 $requestCondition = ['id_receiver' => $user_id, "id_sender" => $this_user->id];
@@ -121,7 +130,7 @@ class UserController extends Controller
             // $follow_request = DB::table('follow_user')->where('id_followed', '=', $user_id)->get() !== null;
 
             //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-            return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'posts' => $posts, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status, 'follows' => $follows, 'isBlocked' => $blocked, 'isBlocking' => $blocking]);
+            return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'activities' => $activities, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status, 'follows' => $follows, 'isBlocked' => $blocked, 'isBlocking' => $blocking]);
         }
         abort(404);
     }

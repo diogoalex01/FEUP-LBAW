@@ -62,22 +62,20 @@
                                     class="fas fa-reply"></i>Reply</a>
                             @endif
 
-                            @if($user === null || $user->id !== $post->id_author)
                             @if($user === null)
                             <a href="" data-toggle="modal" data-target="#modalWelcome">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
-                            @else
-                            <a href="" data-toggle="modal" data-target="#modalPostReport">
-                                <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                            </a>
-                            @endif
                             @elseif($user !== null && $user->id === $post->id_author)
                             <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeletePost"
                                 data-object="{{$post->id}}" data-route="/post/{{$post->id}}" data-type="post">
                                 <i class="fas fa-trash-alt"></i>Delete
                             </a>
                             <a href="" id="edit-post-btn" data-post-id="{{$post->id}}"><i class="fas fa-eraser"></i>Edit
+                            </a>
+                            @else
+                            <a href="" data-toggle="modal" data-post ="{{$post->id}}" data-target="#modalPostReport">
+                                <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
                             @endif
                         </div>

@@ -259,6 +259,17 @@ function sendNewComment(event) {
     }, newCommentHandler);
 }
 
+function reportPost(event){
+    event.preventDefault();
+    // event.stopPropagation();
+
+    let post_id = document.getElementById('modalPostReport').getAttribute('data-object');
+    let reasonSelect = document.getElementById('postReportReason');
+    console.log(reasonSelect);
+    sendAjaxRequest('post', '/post' + post_id + '/report', {reason: reasonSelect}); 
+
+}
+
 function newCommentHandler() {
     // console.log(this.responseText);
     let response = JSON.parse(this.responseText);
