@@ -53,20 +53,6 @@ class AdminController extends Controller
         if (!Auth::guard('admin')->check()) {
             return redirect('admin/login');
         }
-        //     $post = new Report();
-        //     $post->reason = 'blablabla';
-        //     $post->id_admin = 4;
-        //     $post->id_user = 4;
-        //     $post->save();
-
-        //     $question = new UserReport();
-        //     $question->id_report = $post->id;
-        //     $question->id_user = 4;
-        //     $question->save();
-
-        //     // link them together
-
-        //     $question->report()->save($post);
 
         $admin = Auth::guard('admin')->user();
         $admin_user = Admin::find($admin->id);

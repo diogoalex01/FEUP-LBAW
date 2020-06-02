@@ -1,13 +1,12 @@
 <div class="card mb-4 post-container">
-
     <h6 class="card-header"><i class="fa fa-newspaper-o mr-1"></i>
         @auth('admin')
-        <a href="{{ route('admin.profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span
+        <a href="{{ route('admin.profile', $post->user->id )}}"> <span>@</span>{{$post->user->username}}</a> <span
             class="text-muted">
             posted on <a href="{{ route('admin.community', $post->community->id)}}">
                 {{$post->community->name}}</a></span></h6>
     @else
-    <a href="{{ route('profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span class="text-muted">
+    <a href="{{ route('profile', $post->user->id )}}"> <span>@</span>{{$post->user->username}}</a> <span class="text-muted">
         posted on <a href="{{ route('community', $post->community->id)}}">
             {{$post->community->name}}</a></span></h6>
     @endauth

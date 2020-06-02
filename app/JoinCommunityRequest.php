@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Request extends Model
+class JoinCommunityRequest extends Model
 {
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
@@ -14,7 +14,7 @@ class Request extends Model
      *
      * @var string
      */
-    protected $table = 'request';
+    protected $table = 'join_community_request';
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +22,7 @@ class Request extends Model
      * @var array
      */
     protected $fillable = [
-        'id_receiver', 'id_sender', 'status',
+        
     ];
 
     /**
@@ -33,16 +33,11 @@ class Request extends Model
     // protected $hidden = [
     // ];
 
-    public function sender(){
-        return $this->belongsTo('App\User', 'id_sender');
+    public function request(){
+        return $this->morphOne('App\Report', 'requestable');
     }
 
-    public function receiver(){
-        return $this->belongsTo('App\User', 'id_receiver');
-    }
-
-    public function requestable()
-    {
-        return $this->morphTo();
+    public function community(){
+        return $this->belongsTo('App\Community', 'id_community');
     }
 }

@@ -18,7 +18,8 @@
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
                     <a href="{{ route('admin.profile', $report->report->reporter->id) }}"><img height="35" width="35"
-                            src="{{ asset($report->report->reporter->photo) }}" alt="Profile Image"></a>
+                            class="profile-pic-small" src="{{ asset($report->report->reporter->photo) }}"
+                            alt="Profile Image"></a>
                     <span class="px-1 align-self-center">{{date('F d, Y', strtotime( $report->report->time_stamp ))}}
                         by</span>
                     <a class="align-self-center" href="{{ route('admin.profile', $report->report->reporter->id) }}">

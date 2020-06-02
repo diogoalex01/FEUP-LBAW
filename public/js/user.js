@@ -253,6 +253,19 @@ function blockUser(event, blocked) {
     }
 
 }
+
+function reportUser(event) {
+    console.log('reportUser');
+    event.preventDefault();
+    event.stopPropagation();
+
+    let user_id = document.getElementById('modalUserReport').getAttribute('data-object');
+    let reasonSelect = document.getElementById('userReportReason');
+    let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
+    console.log(reasonOption);
+    sendAjaxRequest('post', '/user/' + user_id + '/report', { reason: reasonOption });
+}
+
 function followUser(event, followed) {
     event.preventDefault();
     event.stopPropagation();

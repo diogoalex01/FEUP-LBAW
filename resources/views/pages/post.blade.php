@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-md-7 my-auto">
                     <h1 class="my-4"> <a href="{{ route('community', $post->community->id)}}">
-                            {{$post->community->name}} </a></h1>
+                           /{{$post->community->name}} </a></h1>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                             <a href="" id="edit-post-btn" data-post-id="{{$post->id}}"><i class="fas fa-eraser"></i>Edit
                             </a>
                             @else
-                            <a href="" data-toggle="modal" data-post ="{{$post->id}}" data-target="#modalPostReport">
+                            <a class="report-button"  data-toggle="modal" data-object ="{{$post->id}}" data-target="#modalPostReport">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
                             @endif
@@ -136,7 +136,7 @@
         <div id="post-comment-section">
             {{-- @each('partials.comment', $comments, 'comment') --}}
             @foreach($comments as $comment)
-            @include('partials.comment', ['comment'=>$comment, 'user'=>$user, 'replies'=> $replies])
+            @include('partials.comment', ['comment'=>$comment, 'user'=>$user, 'replies'=> $replies, 'post_author' => $post->id_author])
             @endforeach
         </div>
     </div>

@@ -51,14 +51,14 @@ $other_user->last_name . " | PearToPear" ])
                 </form>
                 @if($follows)
                 <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}})">
+                    onsubmit="followUser(event,{{$other_user->id}});">
                     <div class="">
                         <input type="submit" class="btn btn-dark" value="Unfollow" id="follow-button">
                     </div>
                 </form>
                 @elseif($follow_status == "pending")
                 <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}})">
+                    onsubmit="followUser(event,{{$other_user->id}});">
                     <div class="">
                         <input type="submit" class="btn btn-dark" value="Pending" id="follow-button">
                     </div>
@@ -143,6 +143,17 @@ $other_user->last_name . " | PearToPear" ])
 
             <h1 class="my-4 username-header"> <span>@</span>{{$other_user->username}}</h1>
 
+            <div class="a-report col-md-12">
+                @if(Auth::guest())
+                <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
+                    <i class="fas fa-flag"></i>Report
+                </a>
+                @else
+                <a class ="report-button" data-toggle="modal" data-dismiss="modal" data-object ="{{$user->id}}" data-target="#modalUserReport">
+                    <i class="fas fa-flag"></i>Report
+                </a>
+                @endif
+            </div>
             <!-- New Post -->
             @if(Auth::check() && ($other_user->id === $user->id))
             <a href="/new_post">

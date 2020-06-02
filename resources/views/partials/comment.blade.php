@@ -20,6 +20,7 @@
             </p>
         </div>
     </div>
+
     <div class="card-footer row text-muted p-3"
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
@@ -32,24 +33,31 @@
                 @endif
 
                 @if($user === null || $user->id !== $comment->id_author)
-                @if($user === null)
-                <a href="" data-toggle="modal" data-target="#modalWelcome">
-                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                </a>
-                @else
-                <a href="" data-toggle="modal" data-target="#modalCommentReport">
-                    <div class="a-report"><i class="fas fa-flag"></i>Report</div>
-                </a>
+                    @if($user === null)
+                    <a href="" data-toggle="modal" data-target="#modalWelcome">
+                        <div class="a-report"><i class="fas fa-flag"></i>Report</div>
+                    </a>
+                    @else
+                    <a class="report-button" data-toggle="modal" data-object="{{$comment->id}}"
+                        data-target="#modalCommentReport">
+                        <div class="a-report">
+                            <i class="fas fa-flag"></i>Report
+                        </div>
+                    </a>
+                    @endif
                 @endif
-                @elseif($user !== null && $user->id === $comment->id_author)
+                @if($user !== null && ($user->id === $comment->id_author || $user->id === $post_author))
                 <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
                     data-object="{{$comment->id}}" data-route="/comment/{{$comment->id}}" data-type="comment">
                     <i class="fas fa-trash-alt"></i>Delete
                 </a>
-                <a href="" class="edit-btn" data-comment-id="{{$comment->id}}"><i class="fas fa-eraser"></i>Edit</a>
+                @if($user->id === $comment->id_author)
+                    <a href="" class="edit-btn" data-comment-id="{{$comment->id}}"><i class="fas fa-eraser"></i>Edit</a>
+                @endif
                 @endif
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
                 @if($comment->user != null)
@@ -69,9 +77,11 @@
             </div>
         </div>
     </div>
+
 </div>
-<div id="replies{{$comment->id}}">
+
+<div id="replies{{$comment->id}}" style="margin-left: 6%;">
     @foreach($replies as $reply)
-    @include('partials.reply', ['user'=>$user, 'reply'=> $reply, 'comment' => $comment])
+    @include('partials.reply', ['user'=>$user, 'reply'=> $reply, 'comment' => $comment, 'post_author' => $post_author])
     @endforeach
 </div>

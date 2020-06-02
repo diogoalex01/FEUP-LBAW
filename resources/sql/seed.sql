@@ -39,6 +39,8 @@ DROP FUNCTION IF EXISTS post_vote_not_member_community() CASCADE;
 DROP FUNCTION IF EXISTS change_community_privacy() CASCADE;
 DROP FUNCTION IF EXISTS verify_pk_follow_request() CASCADE;
 DROP FUNCTION IF EXISTS verify_pk_join_community_request() CASCADE;
+DROP FUNCTION IF EXISTS updateSearch() CASCADE;
+
 
 DROP TRIGGER IF EXISTS block_user ON block_user;
 DROP TRIGGER IF EXISTS vote_on_comment ON comment_vote;
@@ -52,6 +54,7 @@ DROP TRIGGER IF EXISTS post_vote_not_member_community ON post_vote;
 DROP TRIGGER IF EXISTS change_community_privacy ON member_user;
 DROP TRIGGER IF EXISTS verify_pk_follow_request ON follow_resquest;
 DROP TRIGGER IF EXISTS verify_pk_join_community_request ON join_community_resquest;
+DROP TRIGGER IF EXISTS search_weight ON post;
 
 
 -----------------------------------------
@@ -80,6 +83,7 @@ CREATE TABLE member_user (
     credibility int DEFAULT 0,
 	remember_token text,
 	recover_pass_token text
+
 );
 
 CREATE TABLE admin_user (
@@ -109,7 +113,8 @@ CREATE TABLE post (
     upvotes int NOT NULL DEFAULT 0,
     downvotes int NOT NULL DEFAULT 0,
     id_author int REFERENCES member_user ON DELETE SET NULL,
-    id_community int NOT NULL REFERENCES community ON DELETE CASCADE
+    id_community int NOT NULL REFERENCES community ON DELETE CASCADE,
+	search_weight tsvector
 );
 
 CREATE TABLE comment (
@@ -177,7 +182,9 @@ CREATE TABLE request (
     time_stamp TIMESTAMP WITH TIME zone DEFAULT now() NOT NULL,
     status status_types NOT NULL DEFAULT 'pending',
     id_receiver int NOT NULL REFERENCES member_user ON DELETE CASCADE,
-    id_sender int NOT NULL REFERENCES member_user ON DELETE CASCADE
+    id_sender int NOT NULL REFERENCES member_user ON DELETE CASCADE,
+	requestable_id int,
+	requestable_type text
 );
 
 CREATE TABLE follow_request (
@@ -233,6 +240,8 @@ USING GIST (to_tsvector('portuguese', content));
 CREATE INDEX community_search_index ON community
 USING GIST (to_tsvector('portuguese',name));
 
+CREATE INDEX search_post ON post USING GIN(search_weight);
+
 
 -----------------------------------------
 -- TRIGGERS and UDFs
@@ -275,27 +284,11 @@ CREATE TRIGGER block_user
 CREATE FUNCTION vote_on_comment() RETURNS TRIGGER AS
 $BODY$
 declare commentID INT;
+declare authorID INT;
 BEGIN
-    -- IF EXISTS (
-	-- 	SELECT *
-	-- 		FROM comment
-	-- 		WHERE NEW.id_comment = comment.id AND NEW.id_user = comment.id_author)
-	-- 	THEN
-	-- 		RAISE EXCEPTION 'A user cannot vote on their own comments.';
-
-	-- ELSIF NEW.vote_type = 'up'
-	-- THEN
-	-- 	UPDATE comment
-	-- 		SET upvotes = upvotes + 1
-	-- 		WHERE id = NEW.id_comment;
-	-- ELSIF NEW.vote_type = 'down'
-	-- THEN
-	-- 	UPDATE comment
-	-- 		SET downvotes = downvotes + 1
-	-- 		WHERE id = NEW.id_comment;
-    -- END IF;
 	IF TG_OP = 'INSERT' THEN
 		commentID := NEW.id_comment;
+		SELECT comment.id_author into authorID FROM comment WHERE NEW.id_comment = comment.id;
 		IF EXISTS (
 		SELECT *
 			FROM comment
@@ -306,6 +299,7 @@ BEGIN
 	
 	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN 
 		commentID := OLD.id_comment;
+		SELECT comment.id_author into authorID FROM comment WHERE OLD.id_comment = comment.id;
 		IF OLD.vote_type = 'up' THEN
 			UPDATE comment
 				SET upvotes = upvotes - 1
@@ -331,13 +325,22 @@ BEGIN
 		END IF;
 	END IF;
 
-	UPDATE member_user 
-		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes) 
-		FROM 
-			(SELECT comment.id_author AS author, comment.upvotes AS upvotes, comment.downvotes AS downvotes
-				FROM comment
-				WHERE comment.id = commentID) AS subquery 
-		WHERE member_user.id = subquery.author;
+	UPDATE member_user
+		SET credibility = sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes)
+		FROM (
+			SELECT sum(sub.upvotes) AS upvotes, sum(sub.downvotes) AS downvotes FROM ( 
+				(SELECT post.id_author AS id_author, sum(post.upvotes) AS upvotes, sum(post.downvotes) AS downvotes
+					FROM post
+					WHERE post.id_author = authorID
+					GROUP BY post.id_author)
+				UNION ALL
+ 				(SELECT comment.id_author AS id_author, sum(comment.upvotes) AS upvotes, sum(comment.downvotes) AS downvotes
+					FROM comment
+					WHERE comment.id_author = authorID
+					GROUP BY comment.id_author)) AS sub
+
+ 			GROUP BY id_author) AS subquery
+		WHERE member_user.id = authorID;
 	
     RETURN NULL;
 END
@@ -353,9 +356,11 @@ CREATE TRIGGER vote_on_comment
 CREATE FUNCTION vote_on_post() RETURNS TRIGGER AS
 $BODY$
 declare postID INT;
+declare authorID INT;
 BEGIN
 	IF TG_OP = 'INSERT' THEN
 		postID := NEW.id_post;
+		SELECT post.id_author into authorID FROM post WHERE NEW.id_post = post.id;
 		IF EXISTS (
 		SELECT *
 			FROM post
@@ -366,6 +371,7 @@ BEGIN
         
 	ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN
 		postID := OLD.id_post;
+		SELECT post.id_author into authorID FROM post WHERE OLD.id_post = post.id;
 		IF OLD.vote_type = 'up' THEN
 			UPDATE post
 				SET upvotes = upvotes - 1
@@ -392,12 +398,21 @@ BEGIN
 	END IF;
 	
 	UPDATE member_user
-		SET credibility = credibility + sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes)
+		SET credibility = sqrt(abs(subquery.upvotes - subquery.downvotes)) * sign(subquery.upvotes - subquery.downvotes)
 		FROM (
-			SELECT post.id AS post_id, post.id_author AS author, post.upvotes AS upvotes, post.downvotes AS downvotes
-				FROM post
-				WHERE post.id = postID) AS subquery
-		WHERE member_user.id = subquery.author;
+			SELECT sum(sub.upvotes) AS upvotes, sum(sub.downvotes) AS downvotes FROM ( 
+				(SELECT post.id_author AS id_author, sum(post.upvotes) AS upvotes, sum(post.downvotes) AS downvotes
+					FROM post
+					WHERE post.id_author = authorID
+					GROUP BY post.id_author)
+				UNION ALL
+ 				(SELECT comment.id_author AS id_author, sum(comment.upvotes) AS upvotes, sum(comment.downvotes) AS downvotes
+					FROM comment
+					WHERE comment.id_author = authorID
+					GROUP BY comment.id_author)) AS sub
+
+ 			GROUP BY id_author) AS subquery
+		WHERE member_user.id = authorID;
 	
     RETURN NULL;
 END
@@ -408,18 +423,6 @@ CREATE TRIGGER vote_on_post
     AFTER INSERT OR UPDATE OR DELETE ON post_vote
     FOR EACH ROW
     EXECUTE PROCEDURE vote_on_post(); 
-
-
--- SELECT sum(post.upvotes) AS upvotes
--- 				FROM post, member_user
--- 				WHERE post.id_author = 2
--- 				GROUP BY member_user.id
--- UNION	
--- SELECT sum(comment.upvotes) AS upvotes
--- 				FROM comment, member_user
--- 				WHERE comment.id_author = 2
--- 				GROUP BY member_user.id
--- 				;
 
 
 CREATE FUNCTION create_notification() RETURNS TRIGGER AS
@@ -607,6 +610,25 @@ CREATE TRIGGER change_community_privacy
     BEFORE DELETE ON member_user
     FOR EACH ROW
     EXECUTE PROCEDURE change_community_privacy();
+
+
+CREATE FUNCTION updateSearch() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+	UPDATE post SET search_weight =
+	setweight(to_tsvector(coalesce(new.title,'')), 'A') ||
+	setweight(to_tsvector(coalesce(new.content,'')), 'B')
+	WHERE post.id = new.id;
+	RETURN new;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER search_weight
+    AFTER INSERT ON post
+    FOR EACH ROW
+    EXECUTE PROCEDURE updateSearch();
 
 -----------------------------------------
 -- end
@@ -822,36 +844,36 @@ INSERT INTO comment_vote (vote_type, id_user, id_comment) VALUES ('up', 13, 10);
 INSERT INTO comment_vote (vote_type, id_user, id_comment) VALUES ('down', 4, 6);
 INSERT INTO comment_vote (vote_type, id_user, id_comment) VALUES ('up', 14, 9);
 
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-18', 'pending', 1,18);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-19', 'pending', 3,4);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-21', 'accepted', 5,1);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-25', 'pending', 7,9);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-27', 'pending', 8,2);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-29', 'pending', 11,15);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-3', 'accepted', 13,17);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-5', 'pending', 14,5);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-6', 'pending', 16,6);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-8', 'denied', 17,7);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-12', 'pending', 18,11);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-16', 'pending', 19,13);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-20', 'accepted', 20,14);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-22', 'pending', 4,16);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-26', 'denied', 12,3);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-27', 'pending', 5,2);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-29', 'pending', 5,15);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-10', 'pending', 5,17);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-12', 'pending', 5,6);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-13', 'denied', 5,6);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-14', 'pending', 5,7);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-17', 'pending', 5,11);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-21', 'pending', 5,13);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-23', 'pending', 5,14);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-24', 'denied', 5,16);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-03-25', 'pending', 5,3);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-18', 'pending', 5,18);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-19', 'pending', 5,4);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-21', 'accepted', 5,1);
-INSERT INTO request (time_stamp, status, id_receiver, id_sender) VALUES ('2020-02-25', 'pending', 5,9);
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-18', 'pending', 1,18, 1, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-19', 'pending', 3,4, 2, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-21', 'accepted', 5,1, 3, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-25', 'pending', 7,9, 4, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-27', 'pending', 8,2, 5, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-29', 'pending', 11,15, 6, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-3', 'accepted', 13,17, 7, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-5', 'pending', 14,5, 8, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-6', 'pending', 16,6, 9, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-8', 'denied', 17,7, 10, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-12', 'pending', 18,11, 11, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-16', 'pending', 19,13, 12, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-20', 'accepted', 20,14, 13, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-22', 'pending', 4,16, 14, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-26', 'denied', 12,3, 15, 'App\FollowRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-27', 'pending', 5,2, 16, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-29', 'pending', 5,15, 17, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-10', 'pending', 5,17, 18, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-12', 'pending', 5,6, 19, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-13', 'denied', 5,6, 20, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-14', 'pending', 5,7, 21, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-17', 'pending', 5,11, 22, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-21', 'pending', 5,13, 23, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-23', 'pending', 5,14, 24, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-24', 'denied', 5,16, 25, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-03-25', 'pending', 5,3, 26, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-18', 'pending', 5,18, 27, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-19', 'pending', 5,4, 28, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-21', 'accepted', 5,1, 29, 'App\JoinCommunityRequest');
+INSERT INTO request (time_stamp, status, id_receiver, id_sender, requestable_id, requestable_type) VALUES ('2020-02-25', 'pending', 5,9, 30, 'App\JoinCommunityRequest');
 
 INSERT INTO follow_request (id) VALUES (1);
 INSERT INTO follow_request (id) VALUES (2);
@@ -906,7 +928,7 @@ INSERT INTO block_user (blocked_user, blocker_user) VALUES (1,8);
 INSERT INTO block_user (blocked_user, blocker_user) VALUES (16,4);
 INSERT INTO block_user (blocked_user, blocker_user) VALUES (1,18);
 INSERT INTO block_user (blocked_user, blocker_user) VALUES (11,8);
-INSERT INTO block_user (blocked_user, blocker_user) VALUES (3, 10);
+INSERT INTO block_user (blocked_user, blocker_user) VALUES (3,10);
 
 -----------------------------------------
 -- end

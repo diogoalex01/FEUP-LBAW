@@ -73,9 +73,10 @@
                     <h1 class="my-0">{{$community->name}}</h1>
                 </div>
 
-                <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="joinCommunity(event,{{$community->id}})">
-                    <div class="col-md-1 text-center d-flex align-items-left">
+                @if(!$owner && !Auth::guest())
+                   <form class="col-1 text-center d-flex align-items-center"
+                        onsubmit="joinCommunity(event,{{$community->id}})">
+                        <div class="col-md-1 text-center d-flex align-items-left">
                         @if (!$isMember)
                             @if($request_status === "pending")
                             <input type="submit" class="btn btn-dark" value="Pending" id="join-button">
@@ -85,14 +86,24 @@
                         @else
                             <input type="submit" class="btn btn-dark" value="Leave" id="join-button">
                         @endif
-                    </div>
-                </form>
-                <form class="col-1 text-center d-flex align-items-center">
+                        </div>
+                    </form>
+                @endif
+                @if(Auth::guest())
+                <div class="col-1 text-center d-flex align-items-center">
+                        <div class="col-md-2 text-center d-flex align-items-center">
+                            <button data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome"
+                            class="btn btn-outline-danger" value="Report">Report</button>
+                        </div>
+                </div>
+                @else
+                <div class="col-1 text-center d-flex align-items-center">
                     <div class="col-md-2 text-center d-flex align-items-center">
-                        <input type="submit" data-toggle="modal" data-dismiss="modal"
+                        <input  class="report-button" type="submit" data-toggle="modal" data-object="{{$community->id}}"  data-dismiss="modal"
                             data-target="#modalCommunityReport" class="btn btn-outline-danger" value="Report">
                     </div>
-                </form>
+                </div>
+                @endif
                 {{-- Admin
                 <div class="col-md-8">
                     <h1 class="my-4">/Porto</h1>
@@ -103,7 +114,7 @@
                  --}}
             </div>
 
-            @if (Auth::check())
+            @if (Auth::check() && ($isMember || $owner))
             <!-- New Post -->
             <a href="{{ route('new_post')}}">
                 <div class="mt-4 mt-md-1 card mb-4 mr-md-2 mr-lg-4 post-container">
@@ -122,6 +133,7 @@
             @endif
             {{-- @each('partials.homePost', $posts, 'post') --}}
 
+            @if($owner || !$community->private || ($community->private && $user !== null && $isMember))
             <div id="posts-column-community">
                 @foreach($posts as $post)
                 @include('partials.homePost', ['post'=>$post, 'user'=>$user])
@@ -133,6 +145,28 @@
                     <span class="sr-only">Loading...</span>
                 </div>
             </div>
+            @else
+            <!-- Private notice -->
+            <div class="card mb-4 post-container">
+
+                <h5 class="card-header aside-container-top d-flex align-items-center">
+
+                    <div class="col-1 pr-lg-0">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <div class="col pl-lg-0">
+                        You can't see posts on this community
+                    </div>
+
+                </h5>
+
+                <div class="card-body justify-content-start">
+                    <p class="card-text">The contents posted on this community are exclusive to its members.</p>
+                </div>
+
+            </div>
+            @endif
+
             <!-- Post -->
             {{--  home_post($auth, "someusername", "myProfile.php", "./images/avatar_male.png", "/Porto", "March 5, 2020", 12, 2, "https://s31450.pcdn.co/wp-content/uploads/2017/08/iStock-157735020-170828.jpg", "Problem with studying.", "Hello i am desperately trying to find a way
                                         to learn how to learn. I am in the first semester of my CS uni and i just realised that i dont know how to start learning a new course. I tried reading the provided book / searching on

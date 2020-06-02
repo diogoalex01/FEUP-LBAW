@@ -23,11 +23,6 @@ Route::delete('/follow/{user_id}', 'UserController@unfollow');
 Route::post('/block/{user_id}', 'UserController@block');
 Route::delete('/block/{user_id}', 'UserController@unblock');
 
-
-Route::get('/notification', 'NotificationController@index')->name('notifications');
-Route::put('/notification/{notification_id}', 'NotificationController@update')->name('update_notifications');
-
-
 // Authentication
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -63,7 +58,6 @@ Route::put('/post/{post_id}', 'PostController@update');
 Route::post('/post/{post_id}/vote', 'PostController@vote')->name('post_vote');
 Route::put('/post/{post_id}/vote', 'PostController@vote_edit')->name('post_edit_vote');
 Route::delete('/post/{post_id}/vote', 'PostController@vote_delete')->name('post_delete_vote');
-Route::post('/post/{post_id}/report', 'PostController@vote')->name('post_report');
 
 // Comment
 Route::post('/comment', 'CommentController@store');
@@ -73,6 +67,16 @@ Route::put('/comment/{comment_id}', 'CommentController@update');
 Route::post('/comment/{comment_id}/vote', 'CommentController@vote')->name('comment_vote');
 Route::put('/comment/{comment_id}/vote', 'CommentController@vote_edit')->name('comment_edit_vote');
 Route::delete('/comment/{comment_id}/vote', 'CommentController@vote_delete')->name('comment_delete_vote');
+
+// Requests
+Route::get('/request', 'RequestController@index')->name('requests');
+Route::put('/request/{request_id}', 'RequestController@update')->name('update_requests');
+
+// Reports
+Route::post('/post/{post_id}/report', 'PostController@report');
+Route::post('/user/{user_id}/report', 'UserController@report');
+Route::post('/comment/{comment_id}/report', 'CommentController@report');
+Route::post('/community/{community_id}/report', 'CommunityController@report');
 
 // Admin
 Route::prefix('/admin')->name('admin.')->group(function () {

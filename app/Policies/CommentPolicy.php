@@ -3,17 +3,17 @@
 namespace App\Policies;
 
 use App\User;
-use App\Post;
+use App\Comment;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
 
-class PostPolicy
+class CommentPolicy
 {
     use HandlesAuthorization;
     
     /**
-     * Determine whether the user can view any posts.
+     * Determine whether the user can view any comments.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -24,19 +24,19 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can view the post.
+     * Determine whether the user can view the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function view(User $user, Post $post)
+    public function view(User $user, Comment $comment)
     {
         //
     }
 
     /**
-     * Determine whether the user can create posts.
+     * Determine whether the user can create comments.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -47,46 +47,46 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can update the post.
+     * Determine whether the user can update the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function update(User $user, Post $post)
+    public function update(User $user, Comment $comment)
     {
-        return $user->id === $post->id_author;
+        return $user->id === $comment->id_author;
     }
 
     /**
-     * Determine whether the user can delete the post.
+     * Determine whether the user can delete the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user, Comment $comment)
     {
         //
     }
 
     /**
-     * Determine whether the user can restore the post.
+     * Determine whether the user can restore the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function restore(User $user, Post $post)
+    public function restore(User $user, Comment $comment)
     {
         //
     }
 
-     /**
-     * Determine whether the user can report the post.
+    /**
+     * Determine whether the user can report the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
     public function report()
@@ -95,13 +95,13 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the post.
+     * Determine whether the user can permanently delete the comment.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function forceDelete(User $user, Post $post)
+    public function forceDelete(User $user, Comment $comment)
     {
         //
     }

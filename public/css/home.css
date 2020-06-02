@@ -92,7 +92,8 @@ div#error404{
   max-width: 162px;
   padding: 4px;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transform: translate(-50%) rotate(90deg) translate(50%) translate(-32.5px, -32px);
 }
 
@@ -345,8 +346,8 @@ input[type=number] {
 }
 
 .post-reply {
-  padding: 0 12%; 
-  margin-left: 8%;
+  padding: 0 10%; 
+  margin-left: 6%;
 }
 
 .modal-image {

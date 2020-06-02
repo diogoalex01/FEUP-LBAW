@@ -13,12 +13,12 @@
                 <div class="row">
 
                     {{-- Votes --}}
-                    @if($user == null || $post->votedUsers->where('id', "=", $user->id)->first() == null)
+                    @if($user == null || $post->votedUsers->where('id_user', "=", $user->id)->first() == null)
                     @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
                     'vote_type' => "null"])
                     @else
                     @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
-                    'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
+                    'vote_type'=> $post->votedUsers->where('id_user', "=", $user->id)->first()->pivot->vote_type])
                     @endif
 
                     <div class="col-md-10 mx-auto">

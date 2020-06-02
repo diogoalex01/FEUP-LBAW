@@ -259,15 +259,42 @@ function sendNewComment(event) {
     }, newCommentHandler);
 }
 
-function reportPost(event){
+function reportPost(event) {
+    console.log('reportPost');
     event.preventDefault();
-    // event.stopPropagation();
+    event.stopPropagation();
 
     let post_id = document.getElementById('modalPostReport').getAttribute('data-object');
     let reasonSelect = document.getElementById('postReportReason');
-    console.log(reasonSelect);
-    sendAjaxRequest('post', '/post' + post_id + '/report', {reason: reasonSelect}); 
+    let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
+    console.log(reasonOption);
+    sendAjaxRequest('post', '/post/' + post_id + '/report', { reason: reasonOption });
+}
 
+function reportCommunity(event) {
+    console.log('reportCommunity');
+    event.preventDefault();
+    event.stopPropagation();
+
+    let community_id = document.getElementById('modalCommunityReport').getAttribute('data-object');
+    let reasonSelect = document.getElementById('communityReportReason');
+    let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
+    console.log(reasonOption);
+    ///community/{community_id}/report
+    sendAjaxRequest('post', '/community/' + community_id + '/report', { reason: reasonOption });
+}
+
+function reportComment(event) {
+    console.log('reportComment');
+    event.preventDefault();
+    event.stopPropagation();
+
+    let comment_id = document.getElementById('modalCommentReport').getAttribute('data-object');
+    let reasonSelect = document.getElementById('commentReportReason');
+    let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
+    console.log(reasonOption);
+    ///community/{community_id}/report
+    sendAjaxRequest('post', '/comment/' + comment_id + '/report', { reason: reasonOption });
 }
 
 function newCommentHandler() {
@@ -293,6 +320,8 @@ function newCommentHandler() {
 
     newComment.setAttribute('id', `comment${commentId}`);
     newComment.setAttribute('class', 'card mb-2 post-container post-comment');
+    // newComment.setAttribute('style', 'margin-left: 6%;');
+
     newComment.innerHTML = `
         <div class="row pt-4">
 
@@ -358,8 +387,11 @@ function newCommentHandler() {
                 </div>
             </div>
         </div>`;
+
     let replies = document.createElement('div');
     replies.setAttribute('id', "replies" + commentId);
+    // replies.style.marginLeft = "6%";
+
     // console.log(commentSection);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
     newComment.insertAdjacentElement("afterend", replies)
@@ -374,10 +406,15 @@ function addReplyForm(id) {
     if (replyFormContainer == null) {
         let comment_id = id.substring(7, id.length);
         let targetComment = document.getElementById(id);
+
         targetComment.parentElement;
         replyFormContainer = document.createElement('div');
+        replyFormContainer.setAttribute('id', `reply-container`);
+        replyFormContainer.setAttribute('class', 'card post-container reply-container mb-2');
+        if (targetComment.parentNode.id != "post-comment-section")
+            replyFormContainer.setAttribute('style', 'margin-left: 6%;');
+
         replyFormContainer.innerHTML = `
-        <div class="card post-container reply-container mb-2 " id="reply-container">
             <div class="card-body">
                 <form id="reply-form">
                     <input hidden name="comment_id" value="${comment_id}">
@@ -392,8 +429,7 @@ function addReplyForm(id) {
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>`;
+            </div>`;
 
         targetComment.insertAdjacentElement('afterend', replyFormContainer);
         let replyForm = document.querySelector("#reply-form");
@@ -536,6 +572,7 @@ function removeEditCommentForm() {
 
 function openDeleteConfirmModal(item) {
     console.log(item);
+    console.log("IOsjcasoijcasiocjasicio");
 
     let type = item.getAttribute("data-type");
     console.log(type);
@@ -552,6 +589,7 @@ function openDeleteConfirmModal(item) {
         console.log("post");
         modal = document.getElementById("confirm-delete-post");
     }
+
     modal.setAttribute("data-target", target);
     modal.setAttribute("data-route", route);
     console.log("ROTA :" + modal.getAttribute("data-route"));
@@ -562,12 +600,14 @@ function openDeleteConfirmModal(item) {
 function sendDeleteConfirmObject(item) {
     console.log("send delete");
     let id = item.getAttribute('data-target');
+    console.log(id);
     let pattern = /\/post\/[0-9]+/i;
     console.log(pattern);
     let route = item.getAttribute('data-route');
+    console.log(item);
     let argumentsObject = null;
     let handlerFunction = null;
-    console.log(route);
+
     if (route.match(pattern)) {
         console.log("post delete");
         argumentsObject = {};
@@ -593,17 +633,13 @@ function sendCommentReply() {
     let replyBody = document.getElementById("reply-input").value;
     let targetComment = document.getElementById(comment_id);
 
-    // console.log(user_id);
-    // console.log(post_id);
-    // console.log(comment_id);
-    // console.log(replyBody);
-
     sendAjaxRequest('post', '/reply', {
         user_id: user_id,
         post_id: post_id,
         comment_id: comment_id,
         reply: replyBody,
     }, newReplyHandler);
+
     let replyFormContainer = document.getElementById("reply-container");
     replyFormContainer.remove();
 }
@@ -631,7 +667,6 @@ function newReplyHandler() {
     newComment.setAttribute('class', 'card mb-2 post-container post-reply');
     newComment.innerHTML = `
         <div class="row pt-4">
-
             <div class="d-flex align-items-end justify-content-end">
                 <div class="col">
                     <div class="row">
@@ -661,44 +696,48 @@ function newReplyHandler() {
                 </div>
             </div>
 
-            <div class="col-md-10 mx-auto" id="comment-content-container-${commentId}" >
+            <div class="col-md-10 mx-auto" id="comment-content-container-${commentId}">
                 <p class="card-text" id="comment-body-${commentId}" style="white-space: pre-line">
                     ${commentContent}
                 </p>
             </div>
         </div>
+
         <div class="card-footer row text-muted p-3"
             style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
-                <a href="" data-target="comment${commentId}" class ="reply-btn"><i class="fas fa-reply"></i>Reply</a>
-                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
-                data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
-                <i class="fas fa-trash-alt"></i>Delete
-                </a>
-                <a href="" class="edit-btn" data-comment-id="${commentId}">
-                <i class="fas fa-eraser"></i>Edit
-                </a>
+                    <a href="" data-target="comment${commentId}" class="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                    <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                        data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
+                        <i class="fas fa-trash-alt"></i>Delete
+                    </a>
+                    <a href="" class="edit-btn" data-comment-id="${commentId}">
+                        <i class="fas fa-eraser"></i>Edit
+                    </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="row align-self-center justify-content-end">
-                <a href="/user/${commentUser}">
-                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
-                </a>
-                <span class="px-1 align-self-center">Just now by</span>
-                <a href="/user/${commentUser}" class="my-auto">
-                <span>@</span>${authorUsername}</a>
+                    <a href="/user/${commentUser}">
+                        <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
+                    </a>
+                    <span class="px-1 align-self-center">Just now by</span>
+                    <a href="/user/${commentUser}" class="my-auto">
+                        <span>@</span>${authorUsername}</a>
+                </div>
             </div>
-        </div>
-    </div>
-    <div id="replies${commentId}"></div>`
+        </div>`
 
-    // console.log(commentSection);
+    let newCommentReply = document.createElement('div');
+    newCommentReply.setAttribute('id', `replies${commentId}`);
+    newCommentReply.style.marginLeft = "6%";
+
+    commentSection.insertBefore(newCommentReply, commentSection.childNodes[0]);
     commentSection.insertBefore(newComment, commentSection.childNodes[0]);
     addReplyButtonsListener();
     addEditButtonsListener();
-
+    addDeleteButtonsListener();
 }
 
 function sendCommentEdit() {
@@ -771,7 +810,18 @@ function newPostContentHandler() {
 }
 
 function deleteCommentHandler(id) {
+    console.log("ID:" + id);
     let replies = document.querySelector('#replies' + id);
+
+    let parentComment = replies.parentNode;
+    let siblingComment = document.querySelector('#comment' + id);
+
+    if (parentComment.id == "post-comment-section" || parentComment.parentNode.id == "post-comment-section") {
+        parentComment.style.marginLeft = "0px";
+    }
+
+    siblingComment.classList.remove("mb-2");
+    siblingComment.classList.add("mx-0", "px-0");
 
     if (replies != null) {
         replies.remove();
@@ -781,17 +831,17 @@ function deleteCommentHandler(id) {
         comment.classList.forEach((commentClass) => {
             comment.classList.remove(commentClass);
         });
-        comment.classList.add("my-auto")
+
         comment.innerHTML = `
                 <div class=" alert alert-success mt-4">
-                    <div class= "my-auto">
+                    <div class="my-0">
                         <p class="my-0">Your comment and its replies were deleted successfuly!</p>
                     </div>
                 </div>`
         window.clearTimeout(timeoutHandlerCommentDelete);
         timeoutHandlerCommentDelete = setTimeout(function () {
             comment.outerHTML = ``;
-        }, 2500);
+        }, 1500);
     }
 
     // let content = document.querySelector("#"+item.id+" p[class='card-text']");

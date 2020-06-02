@@ -105,4 +105,15 @@ class UserPolicy
         // }
         return true;
     }
+
+    /**
+     * Determine whether the user can report the user.
+     *
+     * @return mixed
+     */
+    public function report()
+    {
+        return Auth::check();
+    }
+
 }

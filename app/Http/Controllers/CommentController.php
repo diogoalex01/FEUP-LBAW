@@ -4,33 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\User;
+use App\Admin;
+use App\Report;
+use App\CommentReport;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -61,28 +45,6 @@ class CommentController extends Controller
             'comment' => $comment,
             'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
         ), 200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Comment $comment)
-    {
-        //
     }
 
     /**
@@ -275,5 +237,44 @@ class CommentController extends Controller
         return response([
             'success' => true,
         ]);
+    }
+
+    /**
+     * Report comment
+     *
+     * @param  int  $comment_id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function report ($comment_id, Request $request){
+        $this->authorize('report', Comment::class);
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'reason' => 'required|string'
+        ]);
+
+        $admins = Admin::all()->pluck('id')->toArray();
+        $admin = $admins[array_rand($admins)];
+        $admin = 4;
+
+        DB::transaction(function ()  use ($user, $admin, $comment_id, $data) {
+        // Create a record in the comment report and report table
+        $report = new Report();
+        $report->reason = $data['reason'];
+        $report->id_admin = $admin;
+        $report->id_user = $user->id;
+        $report->save();
+
+        $comment_report = new CommentReport();
+        $comment_report->id_report = $report->id;
+        $comment_report->id_comment = $comment_id;
+        $comment_report->save();
+
+        // Link them together
+        $comment_report->report()->save($report);
+        });
+        
+        //TODO: mostrar mensagem de sucesso?
     }
 }

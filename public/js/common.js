@@ -48,31 +48,33 @@ function getNotifications(e) {
     e.preventDefault();
     // e.stopPropagation();
     let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
+    notificationContainer.innerHTML = "";
 
     if (notificationContainer.children.length == 0)
         notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 10px;">No new notifications.</h4>`;
-    sendAjaxRequest('get', '/notification', {}, displayNotifications);
+    sendAjaxRequest('get', '/request', {}, displayNotifications);
 }
 
 $(document).ready(function () {
-    sendAjaxRequest('get', '/notification', {}, notificationBellHandler);
+    if (notificationBell != null)
+        sendAjaxRequest('get', '/request', {}, notificationBellHandler);
 });
 
 function notificationBellHandler() {
     let info = JSON.parse(this.responseText);
-    let allNotifications = info.follow_notifications.concat(info.join_notifications);
     let notNotice = document.querySelector(".fas.fa-exclamation-circle");
 
-    if (allNotifications.length != 0) {
+    if (info['response'].length != 0) {
         notNotice.style.display = "block";
     }
 }
 
 function changeNotificationStatus(item) {
-    let notificationId = item.getAttribute('data-target');
+    console.log(item)
+    let requestId = item.getAttribute('data-target');
     let buttonType = item.getAttribute('data-type');
-    sendAjaxRequest('put', '/notification/' + notificationId, { status: buttonType }, function (item) {
-        let notification = document.getElementById("notification-" + notificationId);
+    sendAjaxRequest('put', '/request/' + requestId, { status: buttonType }, function (item) {
+        let notification = document.getElementById("request-" + requestId);
         notification.remove();
 
         let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
@@ -87,23 +89,17 @@ function changeNotificationStatus(item) {
 }
 
 function displayNotifications() {
-    console.log(this.responseText);
     let info = JSON.parse(this.responseText)
     let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
-    console.log(info)
-    let allNotifications = info.follow_notifications.concat(info.join_notifications);
+    console.log(info['response'])
 
-    if (allNotifications.length != 0)
-        notificationContainer.innerHTML = "";
-    allNotifications.sort((a, b) => { (new Date(a.time_stamp).valueOf() > Date(b.time_stamp).valueOf()) ? 1 : -1 });
-    console.log(allNotifications);
-    allNotifications.forEach((item) => {
+    info['response'].forEach((item) => {
         console.log(item);
         let notification;
-        if (item['image'] == null) {
-            notification = followNotificationPartial(item);
-        } else {
+        if (item['request']['requestable_type'] == "App\\JoinCommunityRequest") {
             notification = joinCommunityNotificationPartial(item);
+        } else {
+            notification = followNotificationPartial(item);
         }
         let notificationPartial = document.createElement('div');
         notificationPartial.innerHTML = notification;
@@ -182,39 +178,39 @@ function timeSince(date) {
 
 function followNotificationPartial(notification) {
     // Split timestamp into [ Y, M, D, h, m, s ]
-    let date_time = notification['time_stamp'].split(/[.]/);
+    let date_time = notification['request']['time_stamp'].split(/[.]/);
     let t = date_time[0].split(/[- :]/);
     // Apply each element to the Date function
     let d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
-    console.log(notification['photo']);
-    let userPhoto = notification['photo'];
+    console.log(notification['sender']['photo']);
+    let userPhoto = notification['sender']['photo'];
     if (userPhoto.search(/google/) == -1)
         userPhoto = "/" + userPhoto;
 
     let read = notification['is_read'] ? "read-notification" : "unread-notification";
     let not = `
-    <div class="notification-content ${read}" id="notification-${notification['id']}">
+    <div class="notification-content" id="request-${notification['request']['id']}">
         <div class="notification-item">
             <div class="row">
                 <div class="col-3">
-                    <a href="/user/${notification['id_sender']}">
+                    <a href="/user/${notification['sender']['id']}">
                         <img class="profile-pic-small" height="50" width="50"
                             src="${userPhoto}" alt="Profile Image"></a>
                 </div>
                 <div class="col-8 p-0">
-                    <h4 class="item-title"><a href="/user/${notification['id_sender']}">@${notification['username']}</a> sent you a follow request</h4>
+                    <h4 class="item-title"><a href="/user/${notification['sender']['id']}">@${notification['sender']['username']}</a> sent you a follow request</h4>
                     <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> ${timeSince(d)} </h6 >
                 </div>
                 <div class="d-flex align-items-start pt-1">
                     <div class="col-2">
                         <div class="row mb-3">
                             <a href="">
-                                <i class="fas fa-check change-notification" data-type="accept" data-target="${notification['id']}"></i>
+                                <i class="fas fa-check change-notification" data-type="accept" data-target="${notification['request']['id']}"></i>
                             </a>
                         </div>
                         <div class="row">
                             <a href="">
-                                <i class="fas fa-times change-notification" data-type="deny" data-target="${notification['id']}"></i>
+                                <i class="fas fa-times change-notification" data-type="deny" data-target="${notification['request']['id']}"></i>
                             </a>
                         </div>
                     </div>
@@ -228,43 +224,42 @@ function followNotificationPartial(notification) {
 
 function joinCommunityNotificationPartial(notification) {
     // Split timestamp into [ Y, M, D, h, m, s ]
-    let date_time = notification['time_stamp'].split(/[.]/);
+    let date_time = notification['request']['time_stamp'].split(/[.]/);
     let t = date_time[0].split(/[- :]/);
     // Apply each element to the Date function
     let d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
 
-    let userPhoto = notification['photo'];
+    let userPhoto = notification['sender']['photo'];
     if (userPhoto.search(/google/) == -1)
         userPhoto = "/" + userPhoto;
 
-    let read = notification['is_read'] ? "read-notification" : "unread-notification";
     let not = `
-    <div class="notification-content ${read}" id="notification-${notification['id']}">
+    <div class="notification-content" id="request-${notification['request']['id']}">
 
             <div class="notification-item">
 
                 <div class="row">
                     <div class="col-3">
-                        <a href="/user/${notification['']}">
+                        <a href="/user/${notification['sender']['id']}">
                             <img class="profile-pic-small" height="50" width="50"
                                 src="${userPhoto}" alt="Profile Image">
                         </a>
                     </div>
                         <div class="col-8 p-0">
-                            <h4 class="item-title text-muted"><a href="/user/${notification['id_sender']}">@${notification['username']}</a> asked to
-                            join your communnity <a href="/community/${notification['community_id']}">/${notification['name']}</a></h4>
+                            <h4 class="item-title text-muted"><a href="/user/${notification['sender']['id']}">@${notification['sender']['username']}</a> asked to
+                            join your communnity <a href="/community/${notification['community']['id']}">/${notification['community']['name']}</a></h4>
                             <h6 class="item-info"> <i class="fas fa-calendar-alt mr-1"></i> ${timeSince(d)} </h6>
                         </div>
                         <div class="d-flex align-items-start pt-1">
                             <div class="col-2">
                                 <div class="row mb-3">
                                     <a href="">
-                                        <i class="fas fa-check change-notification" data-type="accept" data-target="${notification['id']}"></i>
+                                        <i class="fas fa-check change-notification" data-type="accept" data-target="${notification['request']['id']}"></i>
                                     </a>
                                 </div>
                                 <div class="row">
                                     <a href="">
-                                        <i class="fas fa-times change-notification" data-type="deny" data-target="${notification['id']}"></i>
+                                        <i class="fas fa-times change-notification" data-type="deny" data-target="${notification['request']['id']}"></i>
                                     </a>
                                 </div>
                             </div>
@@ -274,3 +269,13 @@ function joinCommunityNotificationPartial(notification) {
             </div>`
     return not;
 }
+
+
+if (window.location.href.search("search?_token=") != -1) {
+    console.log("no search");
+    let searchedQuery = document.getElementById("search-title-query").innerHTML;
+    let searchBar = document.getElementById("search-bar");
+    searchBar.value = searchedQuery;
+
+}
+

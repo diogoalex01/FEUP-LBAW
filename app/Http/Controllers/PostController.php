@@ -6,6 +6,9 @@ use App\Post;
 use App\User;
 use App\Community;
 use App\Comment;
+use App\Admin;
+use App\Report;
+use App\PostReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -57,10 +60,17 @@ class PostController extends Controller
             'post_content' => 'required',
             'image' => 'nullable|mimes:jpeg,jpg,png,gif',
         ]);
-        // dd($data);
+
         /* Check and create community if needed */
-        $communities = DB::table('community')->pluck('name')->toArray();
+        $communities = Community::all()->pluck('name')->toArray();
         $community_name = $data['community'];
+
+        // Make alphanumeric (removes all other characters)
+        $community_name = preg_replace("/[\W0-9_\s-]/", "", $community_name);
+        // Clean up multiple dashes or whitespaces
+        $community_name = preg_replace("/[\s-]+/", " ", $community_name);
+        // Convert whitespaces and underscore to dash
+        $community_name = preg_replace("/[\s_]/", "-", $community_name);
 
         $lowerCommunities = array_map('strtolower', $communities);
         $lowerCommunityName = strtolower($community_name);
@@ -82,6 +92,7 @@ class PostController extends Controller
             $community->id_owner = Auth::user()->id;
             $community->save();
             $community_id = $community->id;
+            $community->members()->attach(Auth::user()->id, []);
         }
 
         /* Create Post */
@@ -123,12 +134,15 @@ class PostController extends Controller
             $user = null;
         }
 
-        $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
-        $just_replies = ['id_post' => $id, ['id_parent', '<>', null]];
-        $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
-        $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->get();
-
-        return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
+        if($post !== null){
+            
+            $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
+            $just_replies = ['id_post' => $id, ['id_parent', '<>', null]];
+            $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
+            $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->get();
+            return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
+        }
+        abort(404);
     }
 
     /**
@@ -254,10 +268,6 @@ class PostController extends Controller
         } else if ($request['type'] == 'recent') {
             $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
         }
-        // return response()->json(array(
-        //     'success' => true,
-        //     'post' => $posts
-        // ), 200);
 
         $htmlView = [];
 
@@ -451,4 +461,45 @@ class PostController extends Controller
             'success' => true,
         ]);
     }
+
+    /**
+     * Report post
+     *
+     * @param  int  $post_id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function report ($post_id, Request $request){
+        $this->authorize('report', Post::class);
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'reason' => 'required|string'
+        ]);
+
+        $admins = Admin::all()->pluck('id')->toArray();
+        $admin = $admins[array_rand($admins)];
+        $admin = 4;
+
+        DB::transaction(function ()  use ($user, $admin, $post_id, $data) {
+            // Create a record in the post report and report table
+            $report = new Report();
+            $report->reason = $data['reason'];
+            $report->id_admin = $admin;
+            $report->id_user = $user->id;
+            $report->save();
+
+            $post_report = new PostReport();
+            $post_report->id_report = $report->id;
+            $post_report->id_post = $post_id;
+            $post_report->save();
+
+            // Link them together
+            $post_report->report()->save($report);
+        });
+
+        
+        //TODO: mostrar mensagem de sucesso?
+    }
+
 }

@@ -19,6 +19,7 @@
             </p>
         </div>
     </div>
+
     <div class="card-footer row text-muted p-3"
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
@@ -69,9 +70,128 @@
         </div>
     </div>
 </div>
-<div id="replies{{$reply->id}}">
+
+<div id="replies{{$reply->id}}" style="margin-left: 6%;">
     @foreach($replies as $new_reply)
-    @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply])
+    @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply, 'post_author' => $post_author])
     @endforeach
 </div>
+
 @endif
+
+{{-- /////////////////////////////// --}}
+
+{{-- <div>
+    <div class="row pt-4">
+        <div class="d-flex align-items-end justify-content-end">
+            <div class="col">
+                <div class="row">
+                    <div class="d-flex justify-content-between pr-1">
+                        <a>
+                            <i class="fas fa-chevron-up fa-lg pb-2 disabled-voting"></i>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-center pb-2">
+                        <a>
+                            <p class="mb-0"> 0 </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="d-flex justify-content-between pr-1">
+                        <a>
+                            <i class="fas fa-chevron-down fa-lg pb-2 disabled-voting"></i>
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a>
+                            <p> 0 </p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-10 mx-auto" id="comment-content-container-${commentId}">
+            <p class="card-text" id="comment-body-${commentId}" style="white-space: pre-line">
+                ${commentContent}
+            </p>
+        </div>
+    </div>
+
+    <div class="card-footer row text-muted p-3"
+        style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
+        <div class="col-md-6 align-self-center">
+            <div class="card-footer-buttons row align-content-center justify-content-start">
+                <a href="" data-target="comment${commentId}" class="reply-btn"><i class="fas fa-reply"></i>Reply</a>
+                <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeleteComment"
+                    data-object="${commentId}" data-route="/comment/${commentId}" data-type="comment">
+                    <i class="fas fa-trash-alt"></i>Delete
+                </a>
+                <a href="" class="edit-btn" data-comment-id="${commentId}">
+                    <i class="fas fa-eraser"></i>Edit
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row align-self-center justify-content-end">
+                <a href="/user/${commentUser}">
+                    <img class="profile-pic-small" height="35" width="35" src="${authorImage}" alt="">
+                </a>
+                <span class="px-1 align-self-center">Just now by</span>
+                <a href="/user/${commentUser}" class="my-auto">
+                    <span>@</span>${authorUsername}</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="replies${commentId}" class="test3" style="margin-left: 6%;"></div> --}}
+
+{{-- <div class="row pt-4">
+    <div class="d-flex align-items-end justify-content-end">
+        <div class="col">
+            <div class="row">
+                <div class="d-flex justify-content-between pr-1"> <a> <i class="fas fa-chevron-up fa-lg pb-2
+                            disabled-voting" aria-hidden="true"></i> </a>
+                </div>
+                <div class="d-flex justify-content-center pb-2"> <a>
+                        <p class="mb-0"> 0 </p>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex justify-content-between pr-1"> <a> <i class="fas fa-chevron-down fa-lg pb-2
+                            disabled-voting" aria-hidden="true"></i> </a>
+                </div>
+                <div class="d-flex justify-content-center"> <a>
+                        <p> 0 </p>
+                    </a> </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 mx-auto" id="comment-content-container-23">
+        <p class="card-text" id="comment-body-23" style="white-space: pre-line"> 6 </p>
+    </div>
+</div>
+
+<div class="card-footer row text-muted p-3" style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color:
+    white;">
+    <div class="col-md-6 align-self-center">
+        <div class="card-footer-buttons row align-content-center justify-content-start"> <a href=""
+                data-target="comment23" class="reply-btn"><i class="fas fa-reply"
+                    aria-hidden="true"></i>Reply</a> <a href="" class="delete-btn" data-toggle="modal"
+                data-target="#modalDeleteComment" data-object="23" data-route="/comment/23" data-type="comment">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>Delete </a> <a href="" class="edit-btn
+                has-listener" data-comment-id="23"> <i class="fas fa-eraser" aria-hidden="true"></i>Edit </a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row align-self-center justify-content-end"> <a href="/user/23"> <img class="profile-pic-small"
+                src="https://lh3.googleusercontent.com/a-/AOh14GgpaQMG6yTMv1AscMhjma0NL21tacqVpgrbQ84G" alt=""
+                width="35" height="35"> </a> <span class="px-1 align-self-center">Just now by</span> <a
+                href="/user/23" class="my-auto"> <span>@</span>diogo_silva56981</a> </div>
+    </div>
+</div>
+
+<div id="replies23" class="test3" style="margin-left: 6%;"></div> --}}

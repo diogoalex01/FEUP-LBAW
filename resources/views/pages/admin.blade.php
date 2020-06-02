@@ -4,6 +4,7 @@
 <!-- Page Content -->
 <div class="container">
     <div class="row">
+        {{-- {{dd($reports[1])}} --}}
         <!-- Aside -->
         <div class="col-md-3 mb-4 aside" style="padding-top: 33px;">
             @include('partials.adminMenu')

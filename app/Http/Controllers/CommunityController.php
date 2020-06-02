@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Community;
 use App\Post;
 use App\User;
+use App\Notification;
+use App\JoinCommunityRequest;
+use App\Admin;
+use App\Report;
+use App\CommunityReport;
 use App\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -57,6 +62,7 @@ class CommunityController extends Controller
             
             $member = false;
             $request_status = null;
+            $owner = false;
 
             if (Auth::check()) {
                 $user = Auth::user();
@@ -67,27 +73,29 @@ class CommunityController extends Controller
             $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
     
             if ($user !== null) {
-                //  dd($community->members());
-                // dd($community->members()->where('id_user', $user->id)->first());
 
                 
-                if ($community->members()->where('id_user', $user->id)->first() !== null) {
+                if (sizeof($community->members()->where('id_user', $user->id)->get()) > 0) {
                     $member = true;
                 }   
 
-                $join_request = DB::table('request')
-                ->join('join_community_request', 'join_community_request.id', '=', 'request.id')
-                ->where('join_community_request.id_community', '=', $community_id)
-                ->where('request.id_sender', '=', $user->id)
-                ->get();
-                if($join_request !== null){
-                    $request_status = "pending";
+                if(!$member){
+                    $join_request = DB::table('request')
+                    ->join('join_community_request', 'join_community_request.id', '=', 'request.id')
+                    ->where('join_community_request.id_community', '=', $community_id)
+                    ->where('request.id_sender', '=', $user->id)->first();
+                    if($join_request !== null){
+                        $request_status = "pending";
+                    }
+                }
+
+                if($community->id_owner == $user->id){
+                    $owner = true;
                 }
 
             }
-            // dd($community);
             // $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
-            return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member, 'request_status' => $request_status]);
+            return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member, 'request_status' => $request_status, 'owner' => $owner]);
         }
         abort(404);
     }
@@ -188,11 +196,23 @@ class CommunityController extends Controller
             $user = null;
         }
         $community = Community::find($community_id);
-        if ($community->private) {
+        if ($community->private && $community->id_owner != $user->id) {
             DB::transaction(function () use ($community, $user) {
-                DB::insert('insert into request (id_receiver, id_sender) values (?, ?)', [$community->id_owner, $user->id]);
-                $request = DB::table('request')->latest('time_stamp')->first();
-                DB::insert('insert into join_community_request (id, id_community) values (?,?)', [$request->id, $community->id]);
+
+                // create a record in the join community request and request table
+                $request = new RequestModel();
+                $request->id_receiver = $community->id_owner;
+                $request->id_sender = $user->id;
+                $request->save();
+
+                $join_community_req = new JoinCommunityRequest();
+                $join_community_req->id = $request->id;
+                $join_community_req->id_community = $community->id;
+                $join_community_req->save();
+
+                // link them together
+                 $join_community_req->request()->save($request);
+
             });
             return response(['status' => 'pending']);
         } else {
@@ -212,9 +232,50 @@ class CommunityController extends Controller
         if($join_request !== null){
             $request = RequestModel::find($join_request->id);
             $request->delete();
+            $notification = Notification::where('id_request', $request->id);
+            $notification->delete();
         }
         $community = Community::find($community_id);
         $community->members()->detach($user->id, []);
+    }
 
+    /**
+     * Report community
+     *
+     * @param  int  $comunity_id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function report ($community_id, Request $request){
+        $this->authorize('report', Community::class);
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'reason' => 'required|string'
+        ]);
+
+        $admins = Admin::all()->pluck('id')->toArray();
+        $admin = $admins[array_rand($admins)];
+        $admin = 4;
+
+        DB::transaction(function ()  use ($user, $admin, $community_id, $data) {
+            // Create a record in the community report and report table
+            $report = new Report();
+            $report->reason = $data['reason'];
+            $report->id_admin = $admin;
+            $report->id_user = $user->id;
+            $report->save();
+
+            $community_report = new CommunityReport();
+            $community_report->id_report = $report->id;
+            $community_report->id_community = $community_id;
+            $community_report->save();
+
+            // Link them together
+            $community_report->report()->save($report);
+        });
+        
+        
+        //TODO: mostrar mensagem de sucesso?
     }
 }

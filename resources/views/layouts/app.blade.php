@@ -437,6 +437,44 @@
                 </div>
             </div>
 
+            <!-- Report User Modal -->
+            <div class="modal" id="modalUserReport" tabindex="-1" role="dialog" aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-dark title-padding title-mobile">Report User
+                                    </h2>
+                                    <hr>
+                                    <form onsubmit="reportUser(event);">
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <select class="form-control mx-4" id="userReportReason" name="reason"
+                                            style="width:96.1%">
+                                            <option value="spam">It's spam</option>
+                                            <option value="copy">It infringes my copyright</option>
+                                            <option value="innapropriate">Inappropriate content</option>
+                                            <option value="irrelevant">Irrelevant content</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <div class="row justify-content-end my-2 mx-1">
+
+                                            <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                                data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-user-report-button" data-toggle="#modalUserReport"
+                                                data-dismiss="#modalUserReport">
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Report Community Modal -->
             <div class="modal" id="modalCommunityReport" tabindex="-1" role="dialog" aria-hidden="false">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -447,26 +485,27 @@
                             </button>
                             <section>
                                 <div class="container mb-3">
-                                    <h2 class="text-dark title-padding title-mobile">Report Post
+                                    <h2 class="text-dark title-padding title-mobile">Report Community
                                     </h2>
                                     <hr>
-                                    <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
-                                    <select class="form-control mx-4" id="communityReportReason" name="reason"
-                                        style="width:96.1%">
-                                        <option value="spam">It's spam</option>
-                                        <option value="copy">It infringes my copyright</option>
-                                        <option value="innapropriate">Inappropriate content</option>
-                                        <option value="irrelevant">Irrelevant content</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    <div class="row justify-content-end my-2 mx-1">
+                                    <form onsubmit="reportCommunity(event);">
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <select class="form-control mx-4" id="communityReportReason" name="reason"
+                                            style="width:96.1%">
+                                            <option value="spam">It's spam</option>
+                                            <option value="copy">It infringes my copyright</option>
+                                            <option value="innapropriate">Inappropriate content</option>
+                                            <option value="irrelevant">Irrelevant content</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <div class="row justify-content-end my-2 mx-1">
 
-                                        <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
-                                            data-dismiss="modal">Close</button>
-                                        <button class="btn btn-danger my-2 ml-1" data-toggle="modal"
-                                            data-dismiss="modal">Send
-                                            Report</button>
-                                    </div>
+                                            <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                                data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-community-report-button" data-toggle="#modalCommunityReport"
+                                                data-dismiss="#modalCommunityReport">
+                                        </div>
+                                    </form>
                                 </div>
                             </section>
                         </div>
@@ -501,9 +540,12 @@
                                         <div class="row justify-content-end my-2 mx-1">
                                             <button class="btn btn-outline-dark my-2 mr-1" data-toggle="modal"
                                                 data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger my-2 ml-1" data-toggle="modal"
+                                            {{-- <button type="submit" class="btn btn-danger my-2 ml-1" data-toggle="modal"
                                                 data-dismiss="modal">Send
-                                                Report</button>
+                                                Report</button> --}}
+                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-post-report-button" data-toggle="#modalPostReport"
+                                                data-dismiss="#modalPostReport">
+
                                         </div>
                                     </form>
                                 </div>
@@ -526,23 +568,24 @@
                                     <h2 class="text-dark title-padding title-mobile">Report Comment
                                     </h2>
                                     <hr>
-                                    <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
-                                    <select class="form-control mx-4" id="commentReportReason" name="reason"
-                                        style="width:96.1%">
-                                        <option value="spam">It's spam</option>
-                                        <option value="copy">It infringes my copyright</option>
-                                        <option value="innapropriate">Inappropriate content</option>
-                                        <option value="irrelevant">Irrelevant content</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                    <div class="row justify-content-end my-2 mx-1">
+                                    <form onsubmit="reportComment(event);">
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <select class="form-control mx-4" id="commentReportReason" name="reason"
+                                            style="width:96.1%">
+                                            <option value="spam">It's spam</option>
+                                            <option value="copy">It infringes my copyright</option>
+                                            <option value="innapropriate">Inappropriate content</option>
+                                            <option value="irrelevant">Irrelevant content</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <div class="row justify-content-end my-2 mx-1">
 
-                                        <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
-                                            data-dismiss="modal">Close</button>
-                                        <button class="btn btn-danger my-2 ml-1" data-toggle="modal"
-                                            data-dismiss="modal">Send
-                                            Report</button>
-                                    </div>
+                                            <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                                data-dismiss="modal">Close</button>
+                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-comment-report-button" data-toggle="#modalCommentReport"
+                                                data-dismiss="#modalCommentReport">
+                                        </div>
+                                    </form>
                                 </div>
                             </section>
                         </div>

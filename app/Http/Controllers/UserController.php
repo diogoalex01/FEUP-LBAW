@@ -7,13 +7,18 @@ use App\Post;
 use App\Comment;
 use App\Community;
 use App\Notification;
-use App\Request;
+use App\Request as RequestModel;
+use App\FollowRequest;
+use App\Admin;
+use App\Report;
+use App\UserReport;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -88,7 +93,7 @@ class UserController extends Controller
 
             if ($this_user !== null) {
                 $requestCondition = ['id_receiver' => $user_id, "id_sender" => $this_user->id];
-                $request = Request::where($requestCondition)->get();
+                $request = RequestModel::where($requestCondition)->get();
                 if (sizeof($request) > 0) {
                     //dd($request);
                     for ($i = 0; $i < sizeof($request); $i++) {
@@ -294,13 +299,12 @@ class UserController extends Controller
         $delete_content = $request['delete_content'];
 
         //$this->authorize('delete', [$user_id]);
-        $user_id = Auth::user()->id;
-        $user = User::find($user_id);
+        $user = Auth::user();
 
         if ($delete_content === 'true') {
-            DB::transaction(function () use ($user_id) {
-                DB::table('post')->where('id_author', '=', $user_id)->delete();
-                DB::table('comment')->where('id_author', '=', $user_id)->delete();
+            DB::transaction(function () use ($user) {
+                DB::table('post')->where('id_author', '=', $user->id)->delete();
+                DB::table('comment')->where('id_author', '=', $user->id)->delete();
             });
         }
 
@@ -326,9 +330,18 @@ class UserController extends Controller
         // $user->save();
 
         DB::transaction(function () use ($user_id, $user) {
-            DB::insert('insert into request (id_receiver, id_sender) values (?, ?)', [$user_id, $user->id]);
-            $request = DB::table('request')->latest('time_stamp')->first();
-            DB::insert('insert into follow_request (id) values (?)', [$request->id]);
+            // create a record in the follow request and request table
+            $request = new RequestModel();
+            $request->id_receiver = $user_id;
+            $request->id_sender = $user->id;
+            $request->save();
+
+            $follow_req = new FollowRequest();
+            $follow_req->id = $request->id;
+            $follow_req->save();
+
+            // link them together
+            $follow_req->request()->save($request);
         });
     }
 
@@ -367,5 +380,45 @@ class UserController extends Controller
     {
         $user = Auth::user();
         DB::delete('delete from block_user where blocked_user = ? and blocker_user = ?', [$user_id, $user->id]);
+    }
+
+    /**
+     * Report user
+     *
+     * @param  int  $user_id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function report ($user_id, Request $request){
+        $this->authorize('report', User::class);
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'reason' => 'required|string'
+        ]);
+
+        $admins = Admin::all()->pluck('id')->toArray();
+        $admin = $admins[array_rand($admins)];
+        $admin = 4;
+
+        DB::transaction(function ()  use ($user, $admin, $user_id, $data) {
+
+            // Create a record in the user report and report table
+            $report = new Report();
+            $report->reason = $data['reason'];
+            $report->id_admin = $admin;
+            $report->id_user = $user->id;
+            $report->save();
+
+            $user_report = new UserReport();
+            $user_report->id_report = $report->id;
+            $user_report->id_user = $user_id;
+            $user_report->save();
+
+            // Link them together
+            $user_report->report()->save($report);
+        });
+        
+        //TODO: mostrar mensagem de sucesso?
     }
 }

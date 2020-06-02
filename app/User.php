@@ -90,6 +90,14 @@ class User extends Authenticatable
         ]);
     }
 
+    public function sentRequests(){
+        return $this->hasMany('App\Report');
+    }
+
+    public function receivedRequests(){
+        return $this->hasMany('App\Report');
+    }
+
     // public function get_post_vote(Post $post)
     // {
     //     return $this->belongsToMany('App\Post')
