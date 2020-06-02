@@ -46,14 +46,14 @@
                             @endif
 
                             <div class="a-report">
-                                @if(Auth::guest() || $post->user === null || $user->id !== $post->user->id)
+                                @if(Auth::guest())
                                 <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
                                     <i class="fas fa-flag"></i>Report
                                 </a>
-                                {{-- @else
-                                <a data-toggle="modal" data-dismiss="modal" data-target="#modalPostReport">
+                                @else
+                                <a class ="report-button" data-toggle="modal" data-dismiss="modal" data-object ="{{$post->id}}" data-target="#modalPostReport">
                                     <i class="fas fa-flag"></i>Report
-                                </a> --}}
+                                </a>
                                 @endif
                             </div>
                         </div>

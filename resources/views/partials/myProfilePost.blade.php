@@ -2,14 +2,15 @@
 
     <h6 class="card-header"><i class="fa fa-newspaper-o mr-1"></i>
         @auth('admin')
-        <a href="{{ route('admin.profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span class="text-muted">
+        <a href="{{ route('admin.profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span
+            class="text-muted">
             posted on <a href="{{ route('admin.community', $post->community->id)}}">
-                {{$post->community->name}}</a></span> {{-- TODO: community --}}</h6>
-        @else
-        <a href="{{ route('profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span class="text-muted">
-            posted on <a href="{{ route('community', $post->community->id)}}">
-                {{$post->community->name}}</a></span> {{-- TODO: community --}}</h6>
-        @endauth
+                {{$post->community->name}}</a></span></h6>
+    @else
+    <a href="{{ route('profile', $user->id )}}"> <span>@</span>{{$user->username}}</a> <span class="text-muted">
+        posted on <a href="{{ route('community', $post->community->id)}}">
+            {{$post->community->name}}</a></span></h6>
+    @endauth
 
     <div class="mt-2 font-weight-bold">
         @auth('admin')
@@ -24,7 +25,7 @@
         @else
         <a href="{{ route('post', $post->id) }}">
             @if($post->image !== null)
-            <img class="card-img-top card-img thumbnail mr-1 mb-1" height="35" width="35"
+            <img class="card-img-top card-img thumbnail mr-1 mb-1" height="35"
                 src="{{ asset($post->image) }}" alt="Post Image">
             {{$post->title}} </a>
         @else

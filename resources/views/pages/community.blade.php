@@ -77,7 +77,11 @@
                     onsubmit="joinCommunity(event,{{$community->id}})">
                     <div class="col-md-1 text-center d-flex align-items-left">
                         @if (!$isMember)
+                            @if($request_status === "pending")
+                            <input type="submit" class="btn btn-dark" value="Pending" id="join-button">
+                            @else
                             <input type="submit" class="btn btn-dark" value="Join" id="join-button">
+                            @endif
                         @else
                             <input type="submit" class="btn btn-dark" value="Leave" id="join-button">
                         @endif
@@ -85,7 +89,7 @@
                 </form>
                 <form class="col-1 text-center d-flex align-items-center">
                     <div class="col-md-2 text-center d-flex align-items-center">
-                        <input type="button" data-toggle="modal" data-dismiss="modal"
+                        <input type="submit" data-toggle="modal" data-dismiss="modal"
                             data-target="#modalCommunityReport" class="btn btn-outline-danger" value="Report">
                     </div>
                 </form>

@@ -1,4 +1,5 @@
-@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => $other_user->first_name . " ". $other_user->last_name . " | PearToPear" ])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => $other_user->first_name . " ".
+$other_user->last_name . " | PearToPear" ])
 
 @section('content')
 
@@ -30,7 +31,7 @@
                     </div>
                 </form>
             </div>
-            @else
+            @elseif(Auth::check())
             @if($other_user->id !== $user->id && !$isBlocked)
             {{-- check if they are friends --}}
             <div class="row mt-3">
@@ -117,7 +118,7 @@
                 </div>
             </div>
 
-            @if((!$other_user->private || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
+            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
             <!-- My Categories -->
             <div class="card aside-container">
                 <div class="card-body">
@@ -143,7 +144,7 @@
             <h1 class="my-4 username-header"> <span>@</span>{{$other_user->username}}</h1>
 
             <!-- New Post -->
-            @if(($other_user->id === $user->id))
+            @if(Auth::check() && ($other_user->id === $user->id))
             <a href="/new_post">
                 <div class="card mb-4 post-container">
                     <div class="card-body">
@@ -160,11 +161,15 @@
             </a>
             @endif
 
-            @if((!$other_user->private || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
+            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
             <!-- Activity -->
             <div class="active-tab profile-content">
-                @foreach($posts as $post)
-                @include('partials.myProfilePost', ['post' => $post, 'user' => $other_user ])
+                @foreach($activities as $activity)
+                @if($activity instanceof App\Post)
+                @include('partials.myProfilePost', ['post' => $activity, 'user' => $other_user ])
+                @else
+                @include('partials.myProfileComment', ['comment' => $activity, 'user' => $other_user ])
+                @endif
                 @endforeach
             </div>
 

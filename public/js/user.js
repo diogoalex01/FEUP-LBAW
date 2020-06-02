@@ -7,7 +7,7 @@ let settingsForm = document.querySelector('#edit-user');
 let deleteUserForm = document.querySelector('#delete-user');
 let privacyToggle = document.querySelector('#edit-user #privacyToggle');
 let deleteWarningBox = document.getElementById('delete-warning-box');
-let notificationBell = document.getElementById('notificationBell');
+
 function encodeForAjax(data) {
     if (data == null) return null;
     return Object.keys(data).map(function (k) {
@@ -87,10 +87,6 @@ function addUserEventListeners() {
 
     if (resetPassButton != null) {
         resetPassButton.addEventListener('submit', sendResetPassword);
-    }
-
-    if (notificationBell != null) {
-        notificationBell.addEventListener('click', getNotifications);
     }
 }
 
@@ -257,7 +253,6 @@ function blockUser(event, blocked) {
     }
 
 }
-
 function followUser(event, followed) {
     event.preventDefault();
     event.stopPropagation();
@@ -279,11 +274,11 @@ function joinCommunity(event, communityId) {
     joinButton = document.getElementById("join-button");
     if (joinButton.value == "Join") {
         sendAjaxRequest('post', '/community/' + communityId + '/membership/', {
-        },  ()=>{console.log(this.responseText);});
-        joinButton.value = "Leave";
-    } else if (joinButton.value == "Leave") {
+        }, () => { console.log(this.responseText); });
+        joinButton.value = "Pending";
+    } else if (joinButton.value == "Leave" || joinButton.value == "Pending") {
         sendAjaxRequest('delete', '/community/' + communityId + '/membership/', {
-        }, ()=>{console.log(this.responseText);});
+        }, () => { console.log(this.responseText); });
         joinButton.value = "Join";
     }
 }
@@ -294,47 +289,6 @@ function followHandler() {
 
 function blockHandler() {
     console.log(this.responseText);
-}
-
-function getNotifications(e) {
-    e.preventDefault();
-    // e.stopPropagation();
-    sendAjaxRequest('get', '/notification', {}, displayNotifications);
-}
-
-function changeNotificationStatus(item) {
-    let notificationId = item.getAttribute('data-target');
-    let buttonType = item.getAttribute('data-type');
-    sendAjaxRequest('put', '/notification/' + notificationId, { status: buttonType }, function (item) {
-        let notification = document.getElementById("notification-" + notificationId);
-        notification.remove();
-    });
-}
-
-function displayNotifications() {
-    console.log(this.responseText);
-    let info = JSON.parse(this.responseText)
-    let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
-    notificationContainer.innerHTML = "";
-    console.log(info)
-    info.notifications.forEach((item) => {
-        let notification = followNotificationPartial(item);
-        let notificationPartial = document.createElement('div');
-        notificationPartial.innerHTML = notification;
-        notificationContainer.appendChild(notificationPartial);
-    });
-
-    let notificationButtons = document.querySelectorAll('.change-notification');
-    if (notificationButtons.length != 0) {
-        console.log(notificationButtons);
-
-        notificationButtons.forEach((item) =>
-            item.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                changeNotificationStatus(item);
-            }));
-    }
 }
 
 // Delete user
@@ -459,44 +413,4 @@ function profile_tabs() {
             }
         }
     }
-}
-
-function followNotificationPartial(notification) {
-    console.log(notification['photo']);
-    let read = notification['is_read'] ? "read-notification" : "unread-notification";
-    let not = `
-    <div class="notification-content ${read}" href="#" id = "notification-${notification['id']}">
-        <div class="notification-item">
-            <div class="row">
-                <div class="col-3">
-                    <a href="/user/${notification['id_sender']}">
-                        <img class="notification-pic" height="50" width="50"
-                            src="/${notification['photo']}" alt="Profile Image"></a>
-                </div>
-                <div class="col-7 p-0">
-                    <h4 class="item-title"><a>@${notification['username']}</a> sent you a follow request</h4>
-                    <h6 class="item-info"> <i class="fas fa-calendar-alt"></i> 1 day ago</h6>
-                </div>
-                <div class="d-flex align-items-start pt-1">
-                    <div class="col-2">
-                        <div class="row mb-3">
-                            <a href="">
-                                <i class="fas fa-check change-notification" data-type = "accept" data-target ="${notification['id']}"></i>
-                            </a>
-                        </div>
-                        <div class="row">
-                            <a href="">
-                                <i class="fas fa-times change-notification" data-type = "deny" data-target ="${notification['id']}"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    <hr class="my-0" style="width: 80%;">
-    `
-    return not;
 }

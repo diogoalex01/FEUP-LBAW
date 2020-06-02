@@ -57,7 +57,7 @@ class PostController extends Controller
             'post_content' => 'required',
             'image' => 'nullable|mimes:jpeg,jpg,png,gif',
         ]);
-
+        // dd($data);
         /* Check and create community if needed */
         $communities = DB::table('community')->pluck('name')->toArray();
         $community_name = $data['community'];
@@ -67,7 +67,7 @@ class PostController extends Controller
         if (in_array($lowerCommunityName, $lowerCommunities)) {
             $community_id = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first()->id;
         } else {
-            if ($data['private'] != 'on') {
+            if (!isset($data['private'])) {
                 $data['private'] = 'false';
             } else {
                 $data['private'] = 'true';
