@@ -29,7 +29,7 @@ class AdminPolicy
      * @param  \App\Admin  $model
      * @return mixed
      */
-    public function view(Admin $admin)
+    public function view()
     {
         return Auth::guard('admin')->check();
     }

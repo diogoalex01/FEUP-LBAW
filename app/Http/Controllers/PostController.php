@@ -76,6 +76,7 @@ class PostController extends Controller
         $lowerCommunityName = strtolower($community_name);
         if (in_array($lowerCommunityName, $lowerCommunities)) {
             $community_id = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first()->id;
+            // Community::find($community_id)->members()->where('t')
         } else {
             if (!isset($data['private'])) {
                 $data['private'] = 'false';
@@ -134,14 +135,14 @@ class PostController extends Controller
             $user = null;
         }
 
-        if($post !== null){
-            
+        if ($post !== null) {
             $just_parent_comments = ['id_post' => $id, 'id_parent' => null];
             $just_replies = ['id_post' => $id, ['id_parent', '<>', null]];
             $comments = Comment::where($just_parent_comments)->orderBy('time_stamp', 'desc')->get();
             $replies = Comment::where($just_replies)->orderBy('time_stamp', 'desc')->get();
             return view('pages.post', ['post' => $post, 'user' => $user, 'comments' => $comments, 'replies' => $replies]);
         }
+
         abort(404);
     }
 
@@ -161,8 +162,33 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        // $posts = Post::whereExists(function ($query, $user) {
+        //     $query>select(DB::raw(1))
+        //              ->from('community')
+        //              ->whereRaw("community_member.id_user = ". $user->id." and community_member.id_community = community.id");
 
+        //     $query->whereExists(function ($query, $user) {
+        //        $query->select(DB::raw(1))
+        //              ->from('community_member')
+        //              ->whereRaw("community_member.id_user = ". $user->id." and community_member.id_community = community.id");
+        //    });
+        // })->get()->take(20);
+
+        // ->orderBy('time_stamp','desc')->get()->take(20);
+
+        $allPosts = [];
+        $posts = [];
+        if ($user !== null) {
+            $posts = Post::getUserHomePosts();
+        } else {
+            $posts = Post::getPosts('time_stamp');
+        }
+        foreach ($posts as $post) {
+            $newPost = Post::find($post->id);
+            array_push($allPosts, $newPost);
+        }
+        $posts = array_slice($allPosts, 0, 15);
+        // dd($posts);
         return view('pages.home', ['posts' => $posts, 'user' => $user]);
     }
 
@@ -176,7 +202,7 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        // $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
         // $posts = DB::table('post')
         //     ->join('member_user', 'member_user.id', '=', 'post.id_author')
         //     ->whereNotExists(function ($query) use ($user) {
@@ -187,6 +213,16 @@ class PostController extends Controller
         //     })
         //     ->whereNotExists('select * from block_user where block_user.blocked_user = post.id_author')
         //     ->orderBy('time_stamp', 'desc')->get();
+
+        $allPosts = [];
+        // $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        $posts = $user !== null ? Post::getUserHomePosts() : Post::getPosts('time_stamp');
+
+        foreach ($posts as $post) {
+            $newPost = Post::find($post->id);
+            array_push($allPosts, $newPost);
+        }
+        $posts = array_slice($allPosts, 0, 15);
 
         $htmlView = [];
 
@@ -210,7 +246,18 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('upvotes', 'desc')->get()->take(20);
+        // $posts = Post::orderBy('upvotes', 'desc')->get()->take(20);
+        $allPosts = [];
+
+        $posts = $user !== null ? Post::getOtherPosts('upvotes') : Post::getPosts('upvotes');
+
+
+        foreach ($posts as $post) {
+            $newPost = Post::find($post->id);
+            array_push($allPosts, $newPost);
+        }
+        $posts = array_slice($allPosts, 0, 15);
+
         $htmlView = [];
 
         foreach ($posts as $post) {
@@ -233,7 +280,16 @@ class PostController extends Controller
             $user = null;
         }
 
-        $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        // $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+        $allPosts = [];
+
+        $posts = $user !== null ? Post::getOtherPosts('time_stamp') : Post::getPosts('time_stamp');
+
+        foreach ($posts as $post) {
+            $newPost = Post::find($post->id);
+            array_push($allPosts, $newPost);
+        }
+        $posts = array_slice($allPosts, 0, 15);
         $htmlView = [];
 
         foreach ($posts as $post) {
@@ -261,13 +317,26 @@ class PostController extends Controller
             $user = null;
         }
 
+        $allPosts = [];
+        // $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
+
         if ($request['type'] == 'home') {
-            $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+            $posts =  $user !== null ?  Post::getUserHomePosts() : Post::getPosts('time_stamp');
+            // $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
         } else if ($request['type'] == 'popular') {
-            $posts = Post::orderBy('upvotes', 'desc')->skip($request['num_posts'])->take(5)->get();
+            $posts = $user !== null ? Post::getOtherPosts('upvotes') : Post::getPosts('upvotes');
+            // $posts = Post::orderBy('upvotes', 'desc')->skip($request['num_posts'])->take(5)->get();
         } else if ($request['type'] == 'recent') {
-            $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+            $posts = $user !== null ? Post::getOtherPosts('time_stamp') : Post::getPosts('time_stamp');
+            // $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
         }
+
+        foreach ($posts as $post) {
+            $newPost = Post::find($post->id);
+            array_push($allPosts, $newPost);
+        }
+
+        $posts = array_slice($allPosts, $request['num_posts'], 5);
 
         $htmlView = [];
 
@@ -377,6 +446,25 @@ class PostController extends Controller
         }
     }
 
+    public function adminDestroy($post_id)
+    {
+        //todo is admin
+        //$this->authorize('view', Admin::class);
+        DB::transaction(function () use ($post_id) {
+            $post = Post::find($post_id);
+
+            if ($post->delete()) {
+                return response([
+                    'success' => true
+                ]);
+            } else {
+                return response([
+                    'success' => false
+                ]);
+            }
+        });
+    }
+
     public function vote($post_id, Request $request)
     {
         // post_id: targetId, vote_type: 'up'
@@ -469,7 +557,8 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function report ($post_id, Request $request){
+    public function report($post_id, Request $request)
+    {
         $this->authorize('report', Post::class);
         $user = Auth::user();
 
@@ -479,7 +568,6 @@ class PostController extends Controller
 
         $admins = Admin::all()->pluck('id')->toArray();
         $admin = $admins[array_rand($admins)];
-        $admin = 4;
 
         DB::transaction(function ()  use ($user, $admin, $post_id, $data) {
             // Create a record in the post report and report table
@@ -498,8 +586,7 @@ class PostController extends Controller
             $post_report->report()->save($report);
         });
 
-        
+
         //TODO: mostrar mensagem de sucesso?
     }
-
 }

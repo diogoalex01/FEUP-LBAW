@@ -43,7 +43,7 @@ class CommentController extends Controller
         return response()->json(array(
             'success' => true,
             'comment' => $comment,
-            'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
+            'extras' => ['author_username' => $author->username, 'author_photo' => $author->photo]
         ), 200);
     }
 
@@ -54,7 +54,7 @@ class CommentController extends Controller
      * @param  \App\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update($comment_id,Request $request)
+    public function update($comment_id, Request $request)
     {
         //
         error_log("\n1\n");
@@ -65,32 +65,33 @@ class CommentController extends Controller
             $user = null;
         }
 
-        if ($user == null){
+        if ($user == null) {
             error_log("\n2\n");
-        return response([
-            'success' => false
-        ]);}
+            return response([
+                'success' => false
+            ]);
+        }
         $data = $request->validate([
             'new_content' => 'required',
         ]);
 
         $comment = Comment::find($comment_id);
 
-        if ($comment!=null) {
+        if ($comment != null) {
             error_log("\n3\n");
             $comment->content = $data['new_content'];
             $comment->save();
             return response([
-            'success' => true,
-            "comment_id" => $comment->id,
-            "new_content" => $comment->content
-        ]);
+                'success' => true,
+                "comment_id" => $comment->id,
+                "new_content" => $comment->content
+            ]);
         } else {
             error_log("\n4\n");
             return response([
-            'success' => false
-        ]);
-        }  
+                'success' => false
+            ]);
+        }
     }
 
     /**
@@ -116,13 +117,31 @@ class CommentController extends Controller
 
         if ($comment->delete()) {
             return response([
-            'success' => true
-        ]);
+                'success' => true
+            ]);
         } else {
             return response([
-            'success' => false
-        ]);
+                'success' => false
+            ]);
         }
+    }
+
+    public function adminDestroy($comment_id)
+    {
+        //$this->authorize('view', Admin::class);
+        DB::transaction(function () use ($comment_id){
+            $comment = Comment::find($comment_id);
+
+            if ($comment->delete()) {
+                return response([
+                    'success' => true
+                ]);
+            } else {
+                return response([
+                    'success' => false
+                ]);
+            }
+        });
     }
 
     public function storeReply(Request $request)
@@ -150,7 +169,7 @@ class CommentController extends Controller
         return response()->json(array(
             'success' => true,
             'comment' => $comment,
-            'extras' => ['author_username'=> $author->username, 'author_photo' => $author->photo]
+            'extras' => ['author_username' => $author->username, 'author_photo' => $author->photo]
         ), 200);
     }
 
@@ -206,7 +225,7 @@ class CommentController extends Controller
 
         $comment = Comment::find($data['comment_id']);
 
-        
+
         $comment->votedUsers()->updateExistingPivot($user->id, ['vote_type' => $data['vote_type']]);
 
         return response([
@@ -246,7 +265,8 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function report ($comment_id, Request $request){
+    public function report($comment_id, Request $request)
+    {
         $this->authorize('report', Comment::class);
         $user = Auth::user();
 
@@ -256,25 +276,24 @@ class CommentController extends Controller
 
         $admins = Admin::all()->pluck('id')->toArray();
         $admin = $admins[array_rand($admins)];
-        $admin = 4;
 
         DB::transaction(function ()  use ($user, $admin, $comment_id, $data) {
-        // Create a record in the comment report and report table
-        $report = new Report();
-        $report->reason = $data['reason'];
-        $report->id_admin = $admin;
-        $report->id_user = $user->id;
-        $report->save();
+            // Create a record in the comment report and report table
+            $report = new Report();
+            $report->reason = $data['reason'];
+            $report->id_admin = $admin;
+            $report->id_user = $user->id;
+            $report->save();
 
-        $comment_report = new CommentReport();
-        $comment_report->id_report = $report->id;
-        $comment_report->id_comment = $comment_id;
-        $comment_report->save();
+            $comment_report = new CommentReport();
+            $comment_report->id_report = $report->id;
+            $comment_report->id_comment = $comment_id;
+            $comment_report->save();
 
-        // Link them together
-        $comment_report->report()->save($report);
+            // Link them together
+            $comment_report->report()->save($report);
         });
-        
+
         //TODO: mostrar mensagem de sucesso?
     }
 }

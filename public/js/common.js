@@ -50,9 +50,8 @@ function getNotifications(e) {
     let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
     notificationContainer.innerHTML = "";
 
-    if (notificationContainer.children.length == 0)
-        notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 10px;">No new notifications.</h4>`;
     sendAjaxRequest('get', '/request', {}, displayNotifications);
+  
 }
 
 $(document).ready(function () {
@@ -108,8 +107,6 @@ function displayNotifications() {
 
     let notificationButtons = document.querySelectorAll('.change-notification');
     if (notificationButtons.length != 0) {
-        console.log(notificationButtons);
-
         notificationButtons.forEach((item) =>
             item.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -117,6 +114,8 @@ function displayNotifications() {
                 changeNotificationStatus(item);
             }));
     }
+    if (notificationContainer.children.length == 0)
+    notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 10px;">No new notifications...</h4>`;
 }
 
 function timeSince(date) {
@@ -182,7 +181,6 @@ function followNotificationPartial(notification) {
     let t = date_time[0].split(/[- :]/);
     // Apply each element to the Date function
     let d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
-    console.log(notification['sender']['photo']);
     let userPhoto = notification['sender']['photo'];
     if (userPhoto.search(/google/) == -1)
         userPhoto = "/" + userPhoto;

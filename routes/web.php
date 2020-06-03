@@ -85,6 +85,10 @@ Route::prefix('/admin')->name('admin.')->group(function () {
     Route::get('/user/{user_id}', 'UserController@show')->name('profile');
     Route::get('/community/{community_id}', 'CommunityController@show')->name('community');
     Route::get('/post/{post_id}', 'PostController@show')->name('post');
+    Route::delete('/post/{post_id}', 'PostController@adminDestroy');
+    Route::delete('/comment/{comment_id}', 'CommentController@adminDestroy');
+    Route::delete('/user/{user_id}', 'UserController@adminDestroy');
+    Route::delete('/community/{community_id}', 'CommunityController@adminDestroy');
 
     Route::namespace('Admin\Auth')->group(function () {
 
@@ -109,6 +113,8 @@ Route::post('/api/community', 'CommunityController@refresh')->name('refresh_comm
 Route::post('/api/homeTab', 'PostController@homeTab')->name('home_tab');
 Route::post('/api/popularTab', 'PostController@popularTab')->name('popular_tab');
 Route::post('/api/recentTab', 'PostController@recentTab')->name('recent_tab');
+Route::post('/api/homeTabCom', 'CommunityController@homeTab')->name('home_tabCom');
+Route::post('/api/popularTabCom', 'CommunityController@popularTab')->name('popular_tabCom');
 
 // Static Pages
 Route::get('/about', 'PageController@about')->name('about');

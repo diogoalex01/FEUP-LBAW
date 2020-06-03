@@ -74,11 +74,7 @@
                             <a href="" id="edit-post-btn" data-post-id="{{$post->id}}"><i class="fas fa-eraser"></i>Edit
                             </a>
                             @else
-<<<<<<< HEAD
                             <a class="report-button"  data-toggle="modal" data-object ="{{$post->id}}" data-target="#modalPostReport">
-=======
-                            <a href="" data-toggle="modal" data-post ="{{$post->id}}" data-target="#modalPostReport">
->>>>>>> 2a0d162b59c42eb4795288febbccd10458af1254
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
                             @endif

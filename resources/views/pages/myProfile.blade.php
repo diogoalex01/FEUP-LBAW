@@ -32,48 +32,65 @@ $other_user->last_name . " | PearToPear" ])
                 </form>
             </div>
             @elseif(Auth::check())
-            @if($other_user->id !== $user->id && !$isBlocked)
+
+            @if($other_user->id !== $user->id && !$isBlocked && !$isBlocking)
             {{-- check if they are friends --}}
+            <div class="row mt-3 d-flex justify-content-center">
+                @if($follows)
+                <form class="text-center" onsubmit="followUser(event,{{$other_user->id}});">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Unfollow" id="follow-button"
+                            style="width: 100px;">
+                    </div>
+                </form>
+                @elseif($follow_status == "pending")
+                <form class="text-center" onsubmit="followUser(event,{{$other_user->id}});">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Pending" id="follow-button"
+                            style="width: 100px;">
+                    </div>
+                </form>
+                @else
+                <form class="text-center" onsubmit="followUser(event,{{$other_user->id}})">
+                    <div class="">
+                        <input type="submit" class="btn btn-dark" value="Follow" id="follow-button"
+                            style="width: 100px;">
+                    </div>
+                </form>
+                @endif
+            </div>
+            @endif
+
             <div class="row mt-3">
+                @if($other_user->id !== $user->id && !$isBlocked)
                 @if($isBlocking)
                 <form class="col-6 text-center d-flex align-items-center justify-content-end"
                     onsubmit="blockUser(event,{{$other_user->id}});">
                     <div class="">
-                        <input type="submit" class="btn btn-outline-danger" value="Unblock" id="block-button">
+                        <input type="submit" class="btn btn-outline-danger" value="Unblock" id="block-button"
+                            style="width: 100px;">
                     </div>
                 </form>
                 @else
                 <form class="col-6 text-center d-flex align-items-center justify-content-end"
                     onsubmit="blockUser(event,{{$other_user->id}});">
                     <div class="">
-                        <input type="submit" class="btn btn-outline-danger" value="Block" id="block-button">
-                    </div>
-                </form>
-                @if($follows)
-                <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}});">
-                    <div class="">
-                        <input type="submit" class="btn btn-dark" value="Unfollow" id="follow-button">
-                    </div>
-                </form>
-                @elseif($follow_status == "pending")
-                <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}});">
-                    <div class="">
-                        <input type="submit" class="btn btn-dark" value="Pending" id="follow-button">
-                    </div>
-                </form>
-                @else
-                <form class="col-1 text-center d-flex align-items-center"
-                    onsubmit="followUser(event,{{$other_user->id}})">
-                    <div class="">
-                        <input type="submit" class="btn btn-dark" value="Follow" id="follow-button">
+                        <input type="submit" class="btn btn-outline-danger" value="Block" id="block-button"
+                            style="width: 100px;">
                     </div>
                 </form>
                 @endif
+
+                <div class="a-report col-1">
+                    @if(!Auth::guest() && !Auth::guard('admin')->check() && $other_user->id !== $user->id)
+                        <input type="submit" class="report-button btn btn-outline-danger" data-toggle="modal"
+                            value="Report" data-dismiss="modal" data-object="{{$other_user->id}}"
+                            data-target="#modalUserReport" style="width: 100px;">
+                    @endif
+                </div>
                 @endif
             </div>
-            @endif
+
             @endauth
 
             <div class="card my-4 aside-container">
@@ -118,7 +135,8 @@ $other_user->last_name . " | PearToPear" ])
                 </div>
             </div>
 
-            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
+            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked
+            && !$isBlocking))
             <!-- My Categories -->
             <div class="card aside-container">
                 <div class="card-body">
@@ -143,17 +161,6 @@ $other_user->last_name . " | PearToPear" ])
 
             <h1 class="my-4 username-header"> <span>@</span>{{$other_user->username}}</h1>
 
-            <div class="a-report col-md-12">
-                @if(Auth::guest())
-                <a data-toggle="modal" data-dismiss="modal" data-target="#modalWelcome">
-                    <i class="fas fa-flag"></i>Report
-                </a>
-                @else
-                <a class ="report-button" data-toggle="modal" data-dismiss="modal" data-object ="{{$user->id}}" data-target="#modalUserReport">
-                    <i class="fas fa-flag"></i>Report
-                </a>
-                @endif
-            </div>
             <!-- New Post -->
             @if(Auth::check() && ($other_user->id === $user->id))
             <a href="/new_post">
@@ -172,14 +179,15 @@ $other_user->last_name . " | PearToPear" ])
             </a>
             @endif
 
-            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked && !$isBlocking))
+            @if((!$other_user->private || !Auth::check() || $other_user->id === $user->id || $follows) && (!$isBlocked
+            && !$isBlocking))
             <!-- Activity -->
             <div class="active-tab profile-content">
                 @foreach($activities as $activity)
                 @if($activity instanceof App\Post)
-                @include('partials.myProfilePost', ['post' => $activity, 'user' => $other_user ])
+                @include('partials.myProfilePost', ['post' => $activity])
                 @else
-                @include('partials.myProfileComment', ['comment' => $activity, 'user' => $other_user ])
+                @include('partials.myProfileComment', ['comment' => $activity])
                 @endif
                 @endforeach
             </div>
@@ -187,7 +195,7 @@ $other_user->last_name . " | PearToPear" ])
             <!-- Communities -->
             <div class="hidden-tab profile-content" style="display: none;">
                 @foreach($communities as $community)
-                @include('partials.myProfileCommunity', ['community' => $community, 'user' => $other_user ])
+                @include('partials.myProfileCommunity', ['community' => $community])
                 @endforeach
             </div>
             @else
@@ -207,8 +215,8 @@ $other_user->last_name . " | PearToPear" ])
                 </h5>
 
                 <div class="card-body justify-content-start">
-                    <p class="card-text">You may have blocked this person, have been blocked or this is a private
-                        account.</p>
+                    <p class="card-text">You may have blocked this person or you may have been blocked by this person.
+                    </p>
                 </div>
 
             </div>

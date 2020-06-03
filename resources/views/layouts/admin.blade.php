@@ -34,7 +34,7 @@
     <script src={{ asset('js/common.js') }} defer></script>
     <script src={{ asset('js/post.js') }} defer></script>
     <script src={{ asset('js/user.js') }} defer></script>
-    <script src={{ asset('js/home.js') }} defer></script>
+    <script src={{ asset('js/filterContent.js') }} defer></script>
     <script src={{ asset('js/admin.js') }} defer></script>
 
     <title> {{$title}} </title>

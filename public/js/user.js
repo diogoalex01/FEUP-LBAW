@@ -239,31 +239,31 @@ function blockUser(event, blocked) {
     event.stopPropagation();
     blockButton = document.getElementById("block-button");
     console.log(blockButton);
+    let followButton = document.getElementById("follow-button");
 
     if (blockButton.value == "Block") {
         blockButton.value = "Unblock";
-        let followButton = document.getElementById("follow-button");
         sendAjaxRequest('post', '/block/' + blocked, {
         }, blockHandler);
-        followButton.remove();
+        followButton.style.display = "none";
     } else if (blockButton.value == "Unblock") {
         sendAjaxRequest('delete', '/block/' + blocked, {
         }, blockHandler);
         blockButton.value = "Block";
+        followButton.style.display = 'block';
     }
-
 }
 
 function reportUser(event) {
-    console.log('reportUser');
     event.preventDefault();
     event.stopPropagation();
-
     let user_id = document.getElementById('modalUserReport').getAttribute('data-object');
     let reasonSelect = document.getElementById('userReportReason');
     let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
-    console.log(reasonOption);
+    // console.log(reasonOption);
     sendAjaxRequest('post', '/user/' + user_id + '/report', { reason: reasonOption });
+
+    $('#modalUserReport').modal('hide');
 }
 
 function followUser(event, followed) {
@@ -281,7 +281,7 @@ function followUser(event, followed) {
     }
 }
 
-function joinCommunity(event, communityId) {
+function joinPrivateCommunity(event, communityId) {
     event.preventDefault();
     event.stopPropagation();
     joinButton = document.getElementById("join-button");
@@ -290,6 +290,21 @@ function joinCommunity(event, communityId) {
         }, () => { console.log(this.responseText); });
         joinButton.value = "Pending";
     } else if (joinButton.value == "Leave" || joinButton.value == "Pending") {
+        sendAjaxRequest('delete', '/community/' + communityId + '/membership/', {
+        }, () => { console.log(this.responseText); });
+        joinButton.value = "Join";
+    }
+}
+
+function joinCommunity(event, communityId) {
+    event.preventDefault();
+    event.stopPropagation();
+    joinButton = document.getElementById("join-button");
+    if (joinButton.value == "Join") {
+        sendAjaxRequest('post', '/community/' + communityId + '/membership/', {
+        }, () => { console.log(this.responseText); });
+        joinButton.value = "Leave";
+    } else if (joinButton.value == "Leave") {
         sendAjaxRequest('delete', '/community/' + communityId + '/membership/', {
         }, () => { console.log(this.responseText); });
         joinButton.value = "Join";

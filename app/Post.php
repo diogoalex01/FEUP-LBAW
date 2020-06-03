@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class Post extends Model
 {
@@ -68,4 +71,98 @@ class Post extends Model
             'vote_type',
         ]);
     }
+
+    public static function getUserHomePosts()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        return DB::select(
+            DB::raw(
+                "select * from post where exists 
+                    (select * from community_member 
+                        where (community_member.id_community = post.id_community 
+                        and 
+                        community_member.id_user =" . $user->id . ") 
+                    )
+                and 
+                    not exists (select * from block_user
+                                 where
+                                    ( 
+                                        (block_user.blocked_user = post.id_author and block_user.blocker_user = " . $user->id . ")
+                                    or 
+                                        (block_user.blocker_user = post.id_author and block_user.blocked_user = " . $user->id . ")
+                                    )
+                                )
+            order by (post.time_stamp) desc; ",
+                ['user' => $user->id]
+            )
+        );
+        // DB::table('post')
+        // ->join('community', 'community.id', 'post.id_community')
+        // ->whereExists()
+    }
+
+    public static function getOtherPosts($criteria)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        return DB::select(
+            DB::raw(
+                "select * from post where 
+                    not exists (select * from block_user
+                                 where
+                                    ( 
+                                        (block_user.blocked_user = post.id_author and block_user.blocker_user = " . $user->id . ")
+                                    or 
+                                        (block_user.blocker_user = post.id_author and block_user.blocked_user = " . $user->id . ")
+                                    )
+                                )
+                                and 
+                                (
+                                     ( exists 
+                                        (select * from community_member 
+                                            where (community_member.id_community = post.id_community 
+                                            and 
+                                            community_member.id_user =" . $user->id . ") 
+                                        ))
+                                    or
+                                    (
+                                        exists 
+                                    (select * from community 
+                                        where (community.id= post.id_community 
+                                        and 
+                                        community.private = false) 
+                                    )
+                                    )
+                                )
+            order by (post." . $criteria . ") desc; ",
+                ['user' => $user->id]
+            )
+        );
+    }
+
+    public static function getPosts($criteria)
+    {
+        return DB::select(
+            DB::raw(
+                "select * from post where exists 
+                    (select * from community 
+                        where (community.id = post.id_community 
+                        and 
+                        community.private = false) 
+                    )
+            order by (post.".$criteria.") desc; ",
+                []
+            )
+        );
+    }
+
 }

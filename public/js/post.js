@@ -259,7 +259,6 @@ function sendNewComment(event) {
     }, newCommentHandler);
 }
 
-<<<<<<< HEAD
 function reportPost(event) {
     console.log('reportPost');
     event.preventDefault();
@@ -270,6 +269,8 @@ function reportPost(event) {
     let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
     console.log(reasonOption);
     sendAjaxRequest('post', '/post/' + post_id + '/report', { reason: reasonOption });
+    $('#modalPostReport').modal('hide');
+
 }
 
 function reportCommunity(event) {
@@ -283,6 +284,8 @@ function reportCommunity(event) {
     console.log(reasonOption);
     ///community/{community_id}/report
     sendAjaxRequest('post', '/community/' + community_id + '/report', { reason: reasonOption });
+    $('#modalCommunityReport').modal('hide');
+
 }
 
 function reportComment(event) {
@@ -296,17 +299,8 @@ function reportComment(event) {
     console.log(reasonOption);
     ///community/{community_id}/report
     sendAjaxRequest('post', '/comment/' + comment_id + '/report', { reason: reasonOption });
-=======
-function reportPost(event){
-    event.preventDefault();
-    // event.stopPropagation();
+    $('#modalCommentReport').modal('hide');
 
-    let post_id = document.getElementById('modalPostReport').getAttribute('data-object');
-    let reasonSelect = document.getElementById('postReportReason');
-    console.log(reasonSelect);
-    sendAjaxRequest('post', '/post' + post_id + '/report', {reason: reasonSelect}); 
-
->>>>>>> 2a0d162b59c42eb4795288febbccd10458af1254
 }
 
 function newCommentHandler() {
@@ -991,13 +985,13 @@ if (newPostForm != null) {
 
 let typeTab = 'home';
 let lock = false;
-let num_posts = 20;
+let num_posts = 15;
 let loader = document.getElementById("loader");
 $(document).ready(function () {
     let posts_column_home = document.getElementById("posts-column-home");
     let posts_column_community = document.getElementById("posts-column-community");
-    let api_route;
     let page;
+    let api_route;
     let data_route;
 
     if (posts_column_home != null || posts_column_community != null) {
@@ -1010,16 +1004,14 @@ $(document).ready(function () {
                     api_route = '/api/home';
                     page = "#posts-column-home";
                     data_route = { num_posts: num_posts, type: typeTab };
-                }
-                else if (posts_column_community != null) {
+                } else if (posts_column_community != null) {
                     api_route = '/api/community';
                     page = "#posts-column-community";
-                    data_route = { num_posts: num_posts, type: home, community_id: document.querySelector('.community-page-container').getAttribute('data-object-id') };
+                    data_route = { num_posts: num_posts, type: typeTab, community_id: document.querySelector('.community-page-container').getAttribute('data-object-id') };
                 }
-                console.log(lock)
-                if (lock == true) {
+
+                if (lock == true)
                     return;
-                }
 
                 loader.style.display = 'block';
                 lock = true;
@@ -1067,22 +1059,24 @@ if (home_aside.length != 0) {
     let homes_menu = document.getElementById("home_menu");
     let populars_menu = document.getElementById("popular_menu");
     let recents_menu = document.getElementById("recent_menu");
-    let home_content = document.getElementById("posts-column-home");
 
     function home_tabs() {
-        $('#posts-column-home').html("");
+        $("#posts-column-home").length ? $('#posts-column-home').html("") : $('#posts-column-community').html("");
+
         loader.style.display = 'block';
         tab_content("home");
         typeTab = 'home';
         lock = false;
-        num_posts = 20;
+        num_posts = 15;
         populars_menu.classList.remove("nav-border-active");
         populars_menu.classList.add("nav-border");
         populars_menu.addEventListener("click", popular_tabs);
 
-        recents_menu.classList.remove("nav-border-active");
-        recents_menu.classList.add("nav-border");
-        recents_menu.addEventListener("click", recent_tabs);
+        if (recents_menu != null) {
+            recents_menu.classList.remove("nav-border-active");
+            recents_menu.classList.add("nav-border");
+            recents_menu.addEventListener("click", recent_tabs);
+        }
 
         homes_menu.classList.remove("nav-border");
         homes_menu.classList.add("nav-border-active");
@@ -1090,19 +1084,21 @@ if (home_aside.length != 0) {
     }
 
     function popular_tabs() {
-        $('#posts-column-home').html("");
+        $("#posts-column-home").length ? $('#posts-column-home').html("") : $('#posts-column-community').html("");
         loader.style.display = 'block';
         tab_content("popular");
         typeTab = 'popular';
         lock = false;
-        num_posts = 20;
+        num_posts = 15;
         homes_menu.classList.remove("nav-border-active");
         homes_menu.classList.add("nav-border");
         homes_menu.addEventListener("click", home_tabs);
 
-        recents_menu.classList.remove("nav-border-active");
-        recents_menu.classList.add("nav-border");
-        recents_menu.addEventListener("click", recent_tabs);
+        if (recents_menu != null) {
+            recents_menu.classList.remove("nav-border-active");
+            recents_menu.classList.add("nav-border");
+            recents_menu.addEventListener("click", recent_tabs);
+        }
 
         populars_menu.classList.remove("nav-border");
         populars_menu.classList.add("nav-border-active");
@@ -1115,7 +1111,7 @@ if (home_aside.length != 0) {
         tab_content("recent");
         typeTab = 'recent';
         lock = false;
-        num_posts = 20;
+        num_posts = 15;
         homes_menu.classList.remove("nav-border-active");
         homes_menu.classList.add("nav-border");
         homes_menu.addEventListener("click", home_tabs);
@@ -1131,18 +1127,24 @@ if (home_aside.length != 0) {
 
     homes_menu.addEventListener("click", home_tabs);
     populars_menu.addEventListener("click", popular_tabs);
-    recents_menu.addEventListener("click", recent_tabs);
+    if (recents_menu != null)
+        recents_menu.addEventListener("click", recent_tabs);
+
 }
 
 function tab_content(type) {
+    let url, community_id;
+    $("#posts-column-home").length ? url = '/api/' + type + 'Tab' : url = '/api/' + type + 'TabCom';
+    $("#posts-column-home").length ? community_id = {} : community_id = document.querySelector('.community-page-container').getAttribute('data-object-id');
+
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: '/api/' + type + 'Tab',
+        url: url,
         type: 'POST',
         dataType: 'json',
-        // data: data_route,
+        data: { community_id },
         success: function (data) {
             if (data.html.length == 0)
                 return;
@@ -1154,7 +1156,9 @@ function tab_content(type) {
 
 function tabPostHandler(response) {
     if (response.success === true) {
-        $('#posts-column-home').html(response.html).fadeIn("slow");
+        let page;
+        $("#posts-column-home").length ? page = '#posts-column-home' : page = '#posts-column-community';
+        $(page).html(response.html).fadeIn("slow");
         addPostEventListeners();
     }
 }

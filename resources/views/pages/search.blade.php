@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' =>"Search Results | PearToPear"])
+@extends('layouts.app', ['title' =>"Search Results for \"{$query}\" | PearToPear"])
 @section('content')
 <!-- Page Content -->
 <div class="container">
@@ -7,40 +7,35 @@
 
         <!-- Aside -->
         <div class="col-md-3 aside mb-4">
-            @include('partials.adminMenu')
+            @include('partials.filterMenu')
         </div>
 
         <!-- Posts Column -->
         <div class="col-md-9">
 
-            <h1><i class="fas fa-search mr-2"></i> Search Results for "<span class ="font-weight-bold search-title-query">{{$query}}</span>"... </h1>
+            <h1><i class="fas fa-search mr-2"></i> Search Results for "<span
+                    class="font-weight-bold search-title-query">{{$query}}</span>"... </h1>
             <hr>
 
-            @if(empty($memberUsers) && empty($communities) && empty($posts) && empty($postComments))
-            @include('partials.noResultsFound')
-            @else
             @foreach($memberUsers as $memberUser)
-            @include('partials.searchUser', ['member'=>$memberUser, 'user'=>$user])
+            @include('partials.searchUser', ['member'=>$memberUser])
             @endforeach
 
             @foreach($communities as $community)
-            @include('partials.myProfileCommunity', ['community'=>$community, 'user'=>$user])
+            @include('partials.myProfileCommunity', ['community'=>$community])
             @endforeach
 
             <!-- Post -->
-            <div id="posts-column-home">
-                @foreach($posts as $post)
-                @include('partials.myProfilePost', ['post'=>$post, 'user'=>$user])
-                @endforeach
-            </div>
+            @foreach($posts as $post)
+            @include('partials.myProfilePost', ['post'=>$post])
+            @endforeach
 
             <!-- Post Comments -->
-            <div id="posts-column-home">
-                @foreach($postComments as $postComment)
-                @include('partials.myProfilePost', ['post'=>$postComment, 'user'=>$user])
-                @endforeach
-            </div>
-            @endif
+            @foreach($comments as $comment)
+            @include('partials.myProfileComment', ['comment'=>$comment])
+            @endforeach
+
+            @include('partials.noResults')
 
         </div>
     </div>

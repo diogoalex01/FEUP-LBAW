@@ -12,6 +12,8 @@ use App\FollowRequest;
 use App\Admin;
 use App\Report;
 use App\UserReport;
+use App\CommentReport;
+use App\PostReport;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -61,7 +63,7 @@ class UserController extends Controller
      *
      * @param  \App\MemberUser  $memberUser
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function show($user_id)
     {
         if (Auth::guard('admin')->check()) {
@@ -77,7 +79,6 @@ class UserController extends Controller
         $blocked = false;
         $request_status = null;
 
-
         if ($member_user != NULL) {
             $postN = Post::where('id_author', '=', $user_id)->count();
             $age = \Carbon\Carbon::parse($member_user->birthday)->age;
@@ -87,20 +88,26 @@ class UserController extends Controller
 
             $activities = $posts->merge($comments);
             $activities = $activities->sortByDesc('time_stamp');
-            
-            $communities = Community::where('id_owner', '=', $user_id)->orderBy('name', 'asc')->get();
 
+            // $communities = Community::where('id_owner', $this_user->id)->orderBy('name', 'asc')->get();
+            $communities = Community::userCommunitites();
+            // dd($communities);
+            $allCommunities = [];
+            foreach ($communities as $community) {
+            $newCommunity = Community::find($community->id);
+            array_push($allCommunities, $newCommunity);
+            }
+
+            $communities = $allCommunities;
 
             if ($this_user !== null) {
                 $requestCondition = ['id_receiver' => $user_id, "id_sender" => $this_user->id];
                 $request = RequestModel::where($requestCondition)->get();
                 if (sizeof($request) > 0) {
-                    //dd($request);
                     for ($i = 0; $i < sizeof($request); $i++) {
-                        // dd($request);
-                        $follow_request = DB::table('follow_request')->where('id', '=', $request[$i]->id)->first();
+                        $follow_request = RequestModel::find($request[$i]->id);
+
                         if ($follow_request !== null) {
-                            // dd($request);
                             $request_status = $request[$i]->status;
                             break;
                         }
@@ -323,6 +330,29 @@ class UserController extends Controller
         }
     }
 
+    public function adminDestroy($user_id)
+    {
+        //todo is admin
+        //$this->authorize('view', Admin::class);
+        DB::transaction(function () use ($user_id) {
+            Post::where('id_author', '=', $user_id)->delete();
+            Comment::where('id_author', '=', $user_id)->delete();
+
+            $user = User::find($user_id);
+
+            if ($user->delete()) {
+                return response([
+                    'success' => true
+                ]);
+            } else {
+                return response([
+                    'success' => false
+                ]);
+            }
+        });
+    }
+
+
     public function follow($user_id)
     {
         $user = Auth::user();
@@ -352,16 +382,13 @@ class UserController extends Controller
 
         DB::transaction(function () use ($user_id, $user) {
             $condition = ['id_receiver' => $user_id, "id_sender" => $user->id];
-            $request = DB::table('request')
-                ->join('follow_request', 'follow_request.id', '=', 'request.id')
-                ->where($condition)
-                ->first();
+            $request = RequestModel::where($condition)->get()->first();
+
             if ($request != null) {
                 DB::delete('delete from notification where id_request = ?', [$request->id]);
-                DB::delete('delete from follow_request where id = ?', [$request->id]);
-                $request = Request::find($request->id);
                 $request->delete();
             }
+
             DB::delete('delete from follow_user where id_followed = ? and id_follower = ?', [$user_id, $user->id]);
         });
     }
@@ -389,7 +416,8 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function report ($user_id, Request $request){
+    public function report($user_id, Request $request)
+    {
         $this->authorize('report', User::class);
         $user = Auth::user();
 
@@ -399,7 +427,6 @@ class UserController extends Controller
 
         $admins = Admin::all()->pluck('id')->toArray();
         $admin = $admins[array_rand($admins)];
-        $admin = 4;
 
         DB::transaction(function ()  use ($user, $admin, $user_id, $data) {
 
@@ -418,7 +445,7 @@ class UserController extends Controller
             // Link them together
             $user_report->report()->save($report);
         });
-        
+
         //TODO: mostrar mensagem de sucesso?
     }
 }

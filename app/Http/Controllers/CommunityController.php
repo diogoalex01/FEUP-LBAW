@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Community;
 use App\Post;
 use App\User;
-use App\Notification;
 use App\JoinCommunityRequest;
 use App\Admin;
 use App\Report;
@@ -58,8 +57,8 @@ class CommunityController extends Controller
     {
         $communities = Community::all();
         $community = $communities->find($community_id);
-        if($community !== null){
-            
+        if ($community !== null) {
+
             $member = false;
             $request_status = null;
             $owner = false;
@@ -69,35 +68,83 @@ class CommunityController extends Controller
             } else {
                 $user = null;
             }
-    
+
             $posts = Post::where('id_community', '=', $community_id)->orderBy('time_stamp', 'desc')->take(20)->get();
-    
+
             if ($user !== null) {
 
-                
                 if (sizeof($community->members()->where('id_user', $user->id)->get()) > 0) {
                     $member = true;
-                }   
+                }
 
-                if(!$member){
+                if (!$member) {
                     $join_request = DB::table('request')
-                    ->join('join_community_request', 'join_community_request.id', '=', 'request.id')
-                    ->where('join_community_request.id_community', '=', $community_id)
-                    ->where('request.id_sender', '=', $user->id)->first();
-                    if($join_request !== null){
+                        ->join('join_community_request', 'join_community_request.id', '=', 'request.id')
+                        ->where('join_community_request.id_community', '=', $community_id)
+                        ->where('request.id_sender', '=', $user->id)->first();
+                    if ($join_request !== null) {
                         $request_status = "pending";
                     }
                 }
 
-                if($community->id_owner == $user->id){
+                if ($community->id_owner == $user->id) {
                     $owner = true;
                 }
-
             }
             // $comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
             return view('pages.community', ['community' => $community, 'posts' => $posts, 'user' => $user, 'isMember' => $member, 'request_status' => $request_status, 'owner' => $owner]);
         }
         abort(404);
+    }
+
+    public function popularTab(Request $request)
+    {
+        $communities = Community::all();
+        $community = $communities->find($request['community_id']);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('upvotes', 'desc')->skip($request['num_posts'])->take(5)->get();
+
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
+    }
+
+    public function homeTab(Request $request)
+    {
+        $communities = Community::all();
+        $community = $communities->find($request['community_id']);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+
+        $htmlView = [];
+
+        foreach ($posts as $post) {
+            array_push($htmlView, view('partials.homePost',  ['post' => $post, 'user' => $user])->render());
+        }
+
+        return response([
+            'success' => true,
+            'html'    => $htmlView
+        ]);
     }
 
     /**
@@ -117,7 +164,12 @@ class CommunityController extends Controller
             $user = null;
         }
 
-        $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        if ($request['type'] == 'popular') {
+            $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('upvotes', 'desc')->skip($request['num_posts'])->take(5)->get();
+        } else if ($request['type'] == 'home') { // recents
+            $posts = Post::where('id_community', '=', $request['community_id'])->orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
+        }
+
         // return response()->json(array(
         //     'success' => true,
         //     'post' => $posts
@@ -164,9 +216,26 @@ class CommunityController extends Controller
      * @param  \App\Community  $community
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Community $community)
+    public function adminDestroy($community_id)
     {
-        //
+        //todo is admin
+        $reports = CommunityReport::where('id_community','=', $community_id)->get();
+        //$this->authorize('view', Admin::class);
+        foreach($reports as $report){
+            $report->report->delete();
+        }
+
+        $Community = Community::find($community_id);
+
+        if ($Community->delete()) {
+            return response([
+                'success' => true
+            ]);
+        } else {
+            return response([
+                'success' => false
+            ]);
+        }
     }
 
     public function get_all()
@@ -211,8 +280,7 @@ class CommunityController extends Controller
                 $join_community_req->save();
 
                 // link them together
-                 $join_community_req->request()->save($request);
-
+                $join_community_req->request()->save($request);
             });
             return response(['status' => 'pending']);
         } else {
@@ -229,15 +297,12 @@ class CommunityController extends Controller
             $user = null;
         }
         $join_request = DB::table('join_community_request')->where('id_community', '=', $community_id)->first();
-        if($join_request !== null){
+        if ($join_request !== null) {
             $request = RequestModel::find($join_request->id);
             $request->delete();
-            $notification = Notification::where('id_request', $request->id);
-            $notification->delete();
         }
         $community = Community::find($community_id);
         $community->members()->detach($user->id, []);
-
     }
 
     /**
@@ -247,7 +312,8 @@ class CommunityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function report ($community_id, Request $request){
+    public function report($community_id, Request $request)
+    {
         $this->authorize('report', Community::class);
         $user = Auth::user();
 
@@ -257,7 +323,6 @@ class CommunityController extends Controller
 
         $admins = Admin::all()->pluck('id')->toArray();
         $admin = $admins[array_rand($admins)];
-        $admin = 4;
 
         DB::transaction(function ()  use ($user, $admin, $community_id, $data) {
             // Create a record in the community report and report table
@@ -275,8 +340,8 @@ class CommunityController extends Controller
             // Link them together
             $community_report->report()->save($report);
         });
-        
-        
+
+
         //TODO: mostrar mensagem de sucesso?
     }
 }

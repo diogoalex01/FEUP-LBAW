@@ -14,7 +14,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- JavaScript -->
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -31,6 +31,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="icon" href="{{ asset('img/pear_logo.png') }}">
 
+    <!-- JavaScript -->
     <script>
         // Fix for Firefox autofocus CSS bug
         // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
@@ -38,8 +39,8 @@
     <script src={{ asset('js/common.js') }} defer></script>
     <script src={{ asset('js/post.js') }} defer></script>
     <script src={{ asset('js/user.js') }} defer></script>
-    <script src={{ asset('js/home.js') }} defer></script>
     <script src={{ asset('js/admin.js') }} defer></script>
+    <script src={{ asset('js/filterContent.js') }} defer></script>
 
     <title> {{$title}} </title>
 </head>
@@ -451,7 +452,8 @@
                                     </h2>
                                     <hr>
                                     <form onsubmit="reportUser(event);">
-                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason
+                                            why:</label>
                                         <select class="form-control mx-4" id="userReportReason" name="reason"
                                             style="width:96.1%">
                                             <option value="spam">It's spam</option>
@@ -464,8 +466,8 @@
 
                                             <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
                                                 data-dismiss="modal">Close</button>
-                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-user-report-button" data-toggle="#modalUserReport"
-                                                data-dismiss="#modalUserReport">
+                                            <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report"
+                                                id="send-user-report-button" data-toggle="#modalUserReport">
                                         </div>
                                     </form>
                                 </div>
@@ -489,7 +491,8 @@
                                     </h2>
                                     <hr>
                                     <form onsubmit="reportCommunity(event);">
-                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason
+                                            why:</label>
                                         <select class="form-control mx-4" id="communityReportReason" name="reason"
                                             style="width:96.1%">
                                             <option value="spam">It's spam</option>
@@ -502,8 +505,8 @@
 
                                             <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
                                                 data-dismiss="modal">Close</button>
-                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-community-report-button" data-toggle="#modalCommunityReport"
-                                                data-dismiss="#modalCommunityReport">
+                                            <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report"
+                                                id="send-community-report-button" data-toggle="#modalCommunityReport">
                                         </div>
                                     </form>
                                 </div>
@@ -543,8 +546,8 @@
                                             {{-- <button type="submit" class="btn btn-danger my-2 ml-1" data-toggle="modal"
                                                 data-dismiss="modal">Send
                                                 Report</button> --}}
-                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-post-report-button" data-toggle="#modalPostReport"
-                                                data-dismiss="#modalPostReport">
+                                            <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report"
+                                                id="send-post-report-button" data-toggle="#modalPostReport">
 
                                         </div>
                                     </form>
@@ -569,7 +572,8 @@
                                     </h2>
                                     <hr>
                                     <form onsubmit="reportComment(event);">
-                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason why:</label>
+                                        <label class="col-md-8 control-label mx-2">Could you tell us the reason
+                                            why:</label>
                                         <select class="form-control mx-4" id="commentReportReason" name="reason"
                                             style="width:96.1%">
                                             <option value="spam">It's spam</option>
@@ -582,8 +586,8 @@
 
                                             <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
                                                 data-dismiss="modal">Close</button>
-                                                <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report" id="send-comment-report-button" data-toggle="#modalCommentReport"
-                                                data-dismiss="#modalCommentReport">
+                                            <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report"
+                                                id="send-comment-report-button" data-toggle="#modalCommentReport">
                                         </div>
                                     </form>
                                 </div>

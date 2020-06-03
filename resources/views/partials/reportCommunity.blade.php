@@ -1,5 +1,5 @@
 <!-- Reported Community -->
-<div class="active-tab admin-content community-tab-admin">
+<div class="active-tab menu-content community-tab-menu community-{{$report->community->id}}">
     <div class="community-report report card mb-4 post-container">
         <div class="card-body">
             {{-- {{dd($report->community)}} --}}
@@ -12,7 +12,7 @@
         <div class="card-footer row text-muted mx-0">
             <div class="col-md-6 align-self-center">
                 <div class="card-footer-buttons row align-content-center justify-content-start">
-                    <a href="#"><i class="fas fa-trash-alt"></i>Delete</a>
+                    <a href="#" class="admin-delete" data-type='community' data-object='{{$report->community->id}}'><i class="fas fa-trash-alt"></i>Delete</a>
                 </div>
             </div>
             <div class="col-md-6">

@@ -1,16 +1,12 @@
-<!-- Private notice -->
-<div id="no-reports" class="mb-4" style="display: none;">
-
-    <div class="d-flex justify-content-center mt-4">
-        <h5 class="aside-container-top d-flex align-items-center">
-
-            <div class="col-1 pr-lg-0 mr-4">
-                <i class="far fa-laugh-beam fa-2x"></i>
-            </div>
-            <div class="col pl-lg-0">
-                Pear-fect! No reports at the moment.
-            </div>
-        </h5>
+<!-- no reports notice -->
+<div id="no-content" class="my-auto" style="display: none;">
+    <div class="col justify-self-center">
+        <div class="text-center">
+            <img height="320" width="420" src="{{ asset('img/noResults.png') }}" alt="Fruit Salad">
+        </div>
+        <div class="text-center error-header">
+            <h1> <i class="far fa-laugh-beam fa-xl"></i> Pear-fect!</h1>
+            <h2>No reports at the moment.</h2>
+        </div>
     </div>
-
 </div>

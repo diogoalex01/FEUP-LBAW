@@ -39,8 +39,11 @@ DROP FUNCTION IF EXISTS post_vote_not_member_community() CASCADE;
 DROP FUNCTION IF EXISTS change_community_privacy() CASCADE;
 DROP FUNCTION IF EXISTS verify_pk_follow_request() CASCADE;
 DROP FUNCTION IF EXISTS verify_pk_join_community_request() CASCADE;
+DROP FUNCTION IF EXISTS delete_report_post() CASCADE;
+DROP FUNCTION IF EXISTS delete_report_comment() CASCADE;
+DROP FUNCTION IF EXISTS delete_report_user() CASCADE;
+DROP FUNCTION IF EXISTS delete_report_community() CASCADE;
 DROP FUNCTION IF EXISTS updateSearch() CASCADE;
-
 
 DROP TRIGGER IF EXISTS block_user ON block_user;
 DROP TRIGGER IF EXISTS vote_on_comment ON comment_vote;
@@ -54,6 +57,10 @@ DROP TRIGGER IF EXISTS post_vote_not_member_community ON post_vote;
 DROP TRIGGER IF EXISTS change_community_privacy ON member_user;
 DROP TRIGGER IF EXISTS verify_pk_follow_request ON follow_resquest;
 DROP TRIGGER IF EXISTS verify_pk_join_community_request ON join_community_resquest;
+DROP TRIGGER IF EXISTS delete_report_post ON post_report;
+DROP TRIGGER IF EXISTS delete_report_comment ON comment_report;
+DROP TRIGGER IF EXISTS delete_report_user ON user_report;
+DROP TRIGGER IF EXISTS delete_report_community ON community_report;
 DROP TRIGGER IF EXISTS search_weight ON post;
 
 
@@ -622,6 +629,67 @@ CREATE TRIGGER change_community_privacy
     BEFORE DELETE ON member_user
     FOR EACH ROW
     EXECUTE PROCEDURE change_community_privacy();
+
+
+CREATE FUNCTION delete_report_post() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    DELETE FROM report
+		WHERE id = OLD.id_report;
+	RETURN OLD;
+END
+$BODY$
+LANGUAGE plpgsql;
+ 
+CREATE TRIGGER delete_report_post
+    AFTER DELETE ON post_report
+    FOR EACH ROW
+    EXECUTE PROCEDURE delete_report_post();
+	
+CREATE FUNCTION delete_report_comment() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    DELETE FROM report
+		WHERE id = OLD.id_report;
+	RETURN OLD;
+END
+$BODY$
+LANGUAGE plpgsql;
+ 
+CREATE TRIGGER delete_report_comment
+    AFTER DELETE ON comment_report
+    FOR EACH ROW
+    EXECUTE PROCEDURE delete_report_comment();
+	
+CREATE FUNCTION delete_report_user() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    DELETE FROM report
+		WHERE id = OLD.id_report;
+	RETURN OLD;
+END
+$BODY$
+LANGUAGE plpgsql;
+ 
+CREATE TRIGGER delete_report_user
+    AFTER DELETE ON user_report
+    FOR EACH ROW
+    EXECUTE PROCEDURE delete_report_user();
+
+CREATE FUNCTION delete_report_community() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    DELETE FROM report
+		WHERE id = OLD.id_report;
+	RETURN OLD;
+END
+$BODY$
+LANGUAGE plpgsql;
+ 
+CREATE TRIGGER delete_report_community
+    AFTER DELETE ON community_report
+    FOR EACH ROW
+    EXECUTE PROCEDURE delete_report_community();
 
 
 CREATE FUNCTION updateSearch() RETURNS TRIGGER AS

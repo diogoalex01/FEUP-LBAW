@@ -9,7 +9,7 @@
         "fideloper/proxy": "~4.0",
         "laravel/framework": "5.8.*",
         "laravel/socialite": "^4.3",
-        "sendpulse/rest-api": "^1.0"        
+        "sendpulse/rest-api": "^1.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

@@ -1,5 +1,5 @@
 <!-- Reported Post -->
-<div class="active-tab admin-content post-tab-admin">
+<div class="active-tab menu-content post-tab-menu author-post-{{$report->post->id_author}} post-{{$report->post->id}}">
     <div class="post-report report card mb-4 post-container">
         <div class="card-body">
             <a href="{{ route('admin.community', $report->post->community->id)}}">
@@ -13,6 +13,6 @@
                     class="fas fa-exclamation-triangle mr-2"></i>{{ $report->report->reason }}</p>
         </div>
         @include('partials.reportFooterComPost', ['reporter' => $report->report->reporter, 'date' =>
-        $report->report->time_stamp])
+        $report->report->time_stamp, 'id' => $report->post->id,'type' => 'post', 'author_id' => $report->post->id_author])
     </div>
 </div>

@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class Community extends Model
 {
@@ -64,6 +67,15 @@ class Community extends Model
      public function requests()
     {
         return $this->hasMany('App\JoinCommunityRequest');
+    }
+
+    public static function userCommunitites(){
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+        return DB::table('community')->join('community_member','community_member.id_community','community.id')->where('community_member.id_user',$user->id)->get();
     }
 
 }
