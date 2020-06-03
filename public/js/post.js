@@ -40,6 +40,7 @@ function addPostEventListeners() {
     addEditButtonsListener();
     addDeleteButtonsListener();
     addDeleteConfirmButtonsListener();
+    addReportButtonsEventListeners();
     postFading();
 }
 
@@ -125,7 +126,7 @@ function addDeleteButtonsListener() {
 function addDeleteConfirmButtonsListener() {
     deleteConfirmButtons = document.querySelectorAll(".delete-confirm");
     if (deleteConfirmButtons.length != 0) {
-        console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
+        // console.log("deleteConfirmButtons " + deleteConfirmButtons.length);
         deleteConfirmButtons.forEach(function (item) {
             if (!item.classList.contains('has-listener')) {
                 item.classList.add('has-listener');
@@ -137,6 +138,41 @@ function addDeleteConfirmButtonsListener() {
             }
         });
     }
+}
+
+function addReportButtonsEventListeners() {
+    let reportButtons = document.querySelectorAll(".report-button");
+
+    if (reportButtons.length > 0) {
+        reportButtons.forEach((item) => {
+            if (!item.classList.contains('has-listener')) {
+                item.addEventListener('click', (event) => {
+                    item.classList.add('has-listener');
+                    // console.log("click click");
+                    event.preventDefault();
+                    let modalId = item.getAttribute('data-target');
+                    let modal = document.querySelector(modalId);
+                    let objectId = item.getAttribute('data-object');
+                    modal.setAttribute('data-object', objectId);
+                })
+            }
+        });
+    }
+
+    // let ask_deletion_btns = document.querySelectorAll(".ask-deletion-button");
+    // if (ask_deletion_btns.length > 0) {
+    //     ask_deletion_btns.forEach((item) => {
+    //         if (!item.classList.contains('has-listener')) {
+    //             item.addEventListener('click', (event) => {
+    //                 item.classList.add('has-listener');
+    //                 console.log("click click");
+    //                 event.preventDefault();
+    //                 let objectId = item.getAttribute('data-object');
+    //                 askDeletion(objectId);
+    //             })
+    //         }
+    //     });
+    // }
 }
 
 function encodeForAjax(data) {
@@ -231,7 +267,7 @@ function voteButtonClicked(item) {
 
 function displayResponse() {
     let response = JSON.parse(this.responseText);
-    console.log(response)
+    // console.log(response)
 }
 
 function sendCheckCommunityRequest(event) {
@@ -260,47 +296,54 @@ function sendNewComment(event) {
 }
 
 function reportPost(event) {
-    console.log('reportPost');
+    // console.log('reportPost');
     event.preventDefault();
     event.stopPropagation();
 
     let post_id = document.getElementById('modalPostReport').getAttribute('data-object');
     let reasonSelect = document.getElementById('postReportReason');
     let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
-    console.log(reasonOption);
+    // console.log(reasonOption);
     sendAjaxRequest('post', '/post/' + post_id + '/report', { reason: reasonOption });
     $('#modalPostReport').modal('hide');
-
 }
 
 function reportCommunity(event) {
-    console.log('reportCommunity');
+    // console.log('reportCommunity');
     event.preventDefault();
     event.stopPropagation();
 
     let community_id = document.getElementById('modalCommunityReport').getAttribute('data-object');
     let reasonSelect = document.getElementById('communityReportReason');
     let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
-    console.log(reasonOption);
+    // console.log(reasonOption);
     ///community/{community_id}/report
     sendAjaxRequest('post', '/community/' + community_id + '/report', { reason: reasonOption });
     $('#modalCommunityReport').modal('hide');
-
 }
 
 function reportComment(event) {
-    console.log('reportComment');
+    // console.log('reportComment');
     event.preventDefault();
     event.stopPropagation();
 
     let comment_id = document.getElementById('modalCommentReport').getAttribute('data-object');
     let reasonSelect = document.getElementById('commentReportReason');
     let reasonOption = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
-    console.log(reasonOption);
+    // console.log(reasonOption);
     ///community/{community_id}/report
     sendAjaxRequest('post', '/comment/' + comment_id + '/report', { reason: reasonOption });
     $('#modalCommentReport').modal('hide');
+}
 
+
+function askForDeletion(event) {
+    // console.log('askdeletionCommunity');
+    event.preventDefault();
+    event.stopPropagation();
+    let community_id = document.getElementById('modalCommunityDeletion').getAttribute('data-object');
+    $('#modalCommunityDeletion').modal('hide');
+    sendAjaxRequest('post', '/community/' + community_id + '/report', { reason: "I started this community and I would like to close it." });
 }
 
 function newCommentHandler() {
@@ -474,7 +517,7 @@ function addEditCommentForm(item) {
                 </form>
         </div>`;
 
-        console.log(content);
+        // console.log(content);
         currentContent = objectBody.innerText;
         content.appendChild(editFormContainer);
         let editForm = document.querySelector("#edit-form");
@@ -516,7 +559,7 @@ function addEditPostForm(item) {
                 </form>
         </div>`;
 
-        console.log(content);
+        // console.log(content);
         currentContent = objectBody.innerText;
         content.appendChild(editPostFormContainer);
         let editPostForm = document.querySelector("#edit-post-form");
@@ -546,7 +589,7 @@ function removeEditPostForm() {
         objectBody.setAttribute('id', "post-body-" + id);
         objectBody.innerText = currentContent;
         let postContainer = document.getElementById("post-content-container-" + id);
-        console.log(objectBody);
+        // console.log(objectBody);
         postContainer.appendChild(objectBody);
         editPostFormContainer.remove();
         //  content.remove(postBody);
@@ -566,7 +609,7 @@ function removeEditCommentForm() {
         objectBody.setAttribute('id', "comment-body-" + id);
         objectBody.innerText = currentContent;
         let commentContainer = document.getElementById("comment-content-container-" + id);
-        console.log(objectBody);
+        // console.log(objectBody);
         commentContainer.appendChild(objectBody);
         editFormContainer.remove();
         //  content.remove(postBody);
@@ -577,53 +620,48 @@ function removeEditCommentForm() {
 }
 
 function openDeleteConfirmModal(item) {
-    console.log(item);
-    console.log("IOsjcasoijcasiocjasicio");
-
     let type = item.getAttribute("data-type");
-    console.log(type);
+    // console.log(type);
     let target = item.getAttribute("data-object");
-    console.log(target);
+    // console.log(target);
     let route = item.getAttribute("data-route");
-    console.log(route);
+    // console.log(route);
     let modal = null;
     if (type == "comment") {
-        console.log("comment");
+        // console.log("comment");
         modal = document.getElementById("confirm-delete-comment");
-        console.log(modal);
+        // console.log(modal);
     } else if (type == "post") {
-        console.log("post");
+        // console.log("post");
         modal = document.getElementById("confirm-delete-post");
     }
 
     modal.setAttribute("data-target", target);
     modal.setAttribute("data-route", route);
-    console.log("ROTA :" + modal.getAttribute("data-route"));
+    // console.log("ROTA :" + modal.getAttribute("data-route"));
 
     addDeleteConfirmButtonsListener();
 }
 
 function sendDeleteConfirmObject(item) {
-    console.log("send delete");
+    // console.log("send delete");
     let id = item.getAttribute('data-target');
-    console.log(id);
+    // console.log(id);
     let pattern = /\/post\/[0-9]+/i;
-    console.log(pattern);
+    // console.log(pattern);
     let route = item.getAttribute('data-route');
-    console.log(item);
+    // console.log(item);
     let argumentsObject = null;
     let handlerFunction = null;
 
     if (route.match(pattern)) {
-        console.log("post delete");
         argumentsObject = {};
         sendAjaxRequest("delete", route, argumentsObject, deletePostHandler);
     } else {
-        console.log("comment delete");
         argumentsObject = { comment_id: id };
         comment = document.getElementById("comment" + id);
-        console.log("ID is *" + id + "*");
-        console.log(comment);
+        // console.log("ID is *" + id + "*");
+        // console.log(comment);
         sendAjaxRequest("delete", route, argumentsObject, deleteCommentHandler(id));
     }
 
@@ -653,7 +691,7 @@ function sendCommentReply() {
 function newReplyHandler() {
     // console.log(this.responseText);
     let response = JSON.parse(this.responseText);
-    console.log(response);
+    // console.log(response);
     let reply = response['comment'];
     let newComment = document.createElement('div');
 
@@ -779,7 +817,7 @@ function sendPostEdit() {
 
 function newCommentContentHandler() {
     let response = JSON.parse(this.responseText);
-    console.log(response);
+    // console.log(response);
     let commentId = response['comment_id'];
     let commentContentContainerDiv = document.querySelector("#comment-content-container-" + commentId);
     let commentBody = document.createElement("p");
@@ -798,7 +836,7 @@ function newCommentContentHandler() {
 
 function newPostContentHandler() {
     let response = JSON.parse(this.responseText);
-    console.log(response);
+    // console.log(response);
     let postId = response['post_id'];
     let postContentContainerDiv = document.querySelector("#post-content-container-" + postId);
     let postBody = document.createElement("p");
@@ -816,7 +854,7 @@ function newPostContentHandler() {
 }
 
 function deleteCommentHandler(id) {
-    console.log("ID:" + id);
+    // console.log("ID:" + id);
     let replies = document.querySelector('#replies' + id);
 
     let parentComment = replies.parentNode;
@@ -858,9 +896,9 @@ function deleteCommentHandler(id) {
 }
 
 function deletePostHandler() {
-    console.log("RESPOSTA " + this.responseText);
+    // console.log("RESPOSTA " + this.responseText);
     if (this.status == 200) {
-        console.log("200 OK!" + this.status);
+        // console.log("200 OK!" + this.status);
         window.location = '/';
 
         let feedbackMessage = document.querySelector('#feedback-message-home');
@@ -958,7 +996,6 @@ function clickSearchResult() {
 
 if (input != null) {
     input.addEventListener('click', searchArray);
-
     input.addEventListener('keyup', function () {
         searchArray();
         privacy.style.visibility = 'visible';
@@ -987,6 +1024,7 @@ let typeTab = 'home';
 let lock = false;
 let num_posts = 15;
 let loader = document.getElementById("loader");
+let no_content = document.getElementById("no-content");
 $(document).ready(function () {
     let posts_column_home = document.getElementById("posts-column-home");
     let posts_column_community = document.getElementById("posts-column-community");
@@ -994,7 +1032,14 @@ $(document).ready(function () {
     let api_route;
     let data_route;
 
+    no_content.style.display = "block";
+
     if (posts_column_home != null || posts_column_community != null) {
+        if (posts_column_community != null && posts_column_community.children.length == 0) {
+            console.log("dasd")
+            no_content.style.display = "none";
+        }
+
         lock = false;
         loader.style.display = 'none';
 
@@ -1045,12 +1090,7 @@ $(document).ready(function () {
 function refreshPostHandler(response, page) {
     if (response.success === true) {
         $(page).append(response.html).fadeIn("slow");
-        addReplyButtonsListener();
-        addVotesEventListener();
-        addEditButtonsListener();
-        addDeleteButtonsListener();
-        addDeleteConfirmButtonsListener();
-        postFading();
+        addPostEventListeners();
     }
 }
 
@@ -1062,12 +1102,13 @@ if (home_aside.length != 0) {
 
     function home_tabs() {
         $("#posts-column-home").length ? $('#posts-column-home').html("") : $('#posts-column-community').html("");
-
         loader.style.display = 'block';
+        no_content.style.display = "none";
         tab_content("home");
         typeTab = 'home';
         lock = false;
         num_posts = 15;
+
         populars_menu.classList.remove("nav-border-active");
         populars_menu.classList.add("nav-border");
         populars_menu.addEventListener("click", popular_tabs);
@@ -1086,10 +1127,12 @@ if (home_aside.length != 0) {
     function popular_tabs() {
         $("#posts-column-home").length ? $('#posts-column-home').html("") : $('#posts-column-community').html("");
         loader.style.display = 'block';
+        no_content.style.display = "none";
         tab_content("popular");
         typeTab = 'popular';
         lock = false;
         num_posts = 15;
+
         homes_menu.classList.remove("nav-border-active");
         homes_menu.classList.add("nav-border");
         homes_menu.addEventListener("click", home_tabs);
@@ -1108,10 +1151,12 @@ if (home_aside.length != 0) {
     function recent_tabs() {
         $('#posts-column-home').html("");
         loader.style.display = 'block';
+        no_content.style.display = "none";
         tab_content("recent");
         typeTab = 'recent';
         lock = false;
         num_posts = 15;
+
         homes_menu.classList.remove("nav-border-active");
         homes_menu.classList.add("nav-border");
         homes_menu.addEventListener("click", home_tabs);
@@ -1125,7 +1170,7 @@ if (home_aside.length != 0) {
         recents_menu.removeEventListener("click", recent_tabs);
     }
 
-    homes_menu.addEventListener("click", home_tabs);
+    // homes_menu.addEventListener("click", home_tabs);
     populars_menu.addEventListener("click", popular_tabs);
     if (recents_menu != null)
         recents_menu.addEventListener("click", recent_tabs);
@@ -1146,8 +1191,13 @@ function tab_content(type) {
         dataType: 'json',
         data: { community_id },
         success: function (data) {
-            if (data.html.length == 0)
+            loader.style.display = 'none';
+            if (data.html.length == 0) {
+                no_content.style.display = "block";
                 return;
+            } else {
+                no_content.style.display = "none";
+            }
 
             tabPostHandler(data);
         }
@@ -1159,6 +1209,7 @@ function tabPostHandler(response) {
         let page;
         $("#posts-column-home").length ? page = '#posts-column-home' : page = '#posts-column-community';
         $(page).html(response.html).fadeIn("slow");
+
         addPostEventListeners();
     }
 }

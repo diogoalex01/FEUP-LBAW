@@ -218,9 +218,9 @@ class CommunityController extends Controller
      */
     public function adminDestroy($community_id)
     {
-        //todo is admin
+        // $this->authorize('adminDel', Community::class);
+
         $reports = CommunityReport::where('id_community','=', $community_id)->get();
-        //$this->authorize('view', Admin::class);
         foreach($reports as $report){
             $report->report->delete();
         }

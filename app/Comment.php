@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Comment extends Model
 {
@@ -73,5 +74,20 @@ class Comment extends Model
     public function reports()
     {
         return $this->hasMany('App\Report');
+    }
+
+    public static function search($query){
+        return DB::select(
+            DB::raw("
+
+                SELECT comment_id, ts_rank_cd(to_tsvector('portuguese', c_search.content), query) AS weight
+                FROM (
+                    SELECT comment.id AS comment_id, comment.content AS content
+                        FROM comment
+                        GROUP BY comment.id) c_search, to_tsquery('portuguese', :query) AS query
+                WHERE (to_tsvector('portuguese', c_search.content)) @@ query 
+                ORDER BY weight DESC;"),
+            array('query' => $query)
+        );
     }
 }

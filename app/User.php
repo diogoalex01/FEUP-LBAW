@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+
 
 
 class User extends Authenticatable
@@ -96,6 +98,22 @@ class User extends Authenticatable
 
     public function receivedRequests(){
         return $this->hasMany('App\Report');
+    }
+
+
+    public static function search($query){
+        return DB::select(
+            DB::raw("
+            SELECT user_id, ts_rank_cd(to_tsvector('portuguese', c_search.username), query) AS weight
+            FROM (
+                SELECT member_user.id AS user_id, member_user.username AS username
+                    FROM member_user
+                    GROUP BY user_id) c_search, to_tsquery('portuguese', :query) AS query
+                WHERE (to_tsvector('portuguese', c_search.username)) @@ query 
+            ORDER BY weight DESC;"),
+
+            array('query' => $query)
+        );
     }
 
     // public function get_post_vote(Post $post)

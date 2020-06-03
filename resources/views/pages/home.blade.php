@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "PearToPear | Home"])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => "PearToPear | Home"])
 @section('content')
 
 <!-- Page Content -->
@@ -41,6 +41,27 @@
                 @foreach($posts as $post)
                 @include('partials.homePost', ['post'=>$post, 'user'=>$user])
                 @endforeach
+            </div>
+
+            <div id="no-content" class="card mb-4 mr-md-2 mr-lg-4 post-container" style="display: none;">
+
+                <h5 class="card-header aside-container-top d-flex align-items-center">
+
+                    <div class="col-1 pr-lg-0">
+                        <i class="far fa-laugh-beam fa-2x"></i>
+                    </div>
+                    <div class="col pl-lg-0">
+                        Welcome!
+                    </div>
+
+                </h5>
+
+                <div class="card-body justify-content-start">
+                    <p class="card-text">This will soon be your personalized feed! <br> Explore the platform, join
+                        communities and follow other users! Happy reading!
+                    </p>
+                </div>
+
             </div>
 
             <div class="d-flex justify-content-center col-md-11 mt-2">

@@ -79,20 +79,6 @@
                 </div>
             </div>
 
-            @else
-
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="" id="sign-up-nav-btn" data-toggle="modal"
-                        data-target="#modalWelcome">Sign
-                        up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="" id="log-in-nav-btn" data-toggle="modal" data-target="#modalWelcome">Log
-                        in</a>
-                </li>
-            </ul>
-
             @endif
 
         </div>

@@ -128,7 +128,7 @@ class CommentController extends Controller
 
     public function adminDestroy($comment_id)
     {
-        //$this->authorize('view', Admin::class);
+        // $this->authorize('adminDel', Comment::class);
         DB::transaction(function () use ($comment_id){
             $comment = Comment::find($comment_id);
 
@@ -142,11 +142,14 @@ class CommentController extends Controller
                 ]);
             }
         });
+
+        return response([
+                    'success' => true
+                ]);
     }
 
     public function storeReply(Request $request)
     {
-
         //
         $data = $request->validate([
             'user_id' => 'required',

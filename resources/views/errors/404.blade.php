@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "Not Found"])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => "Not Found" ])
 @section('content')
 <div id="error404" class="my-auto">
     <div class = "col justify-self-center">

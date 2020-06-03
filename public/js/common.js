@@ -32,18 +32,6 @@ if (notificationBell != null) {
     notificationBell.addEventListener('click', getNotifications);
 }
 
-if (reportButtons.length > 0) {
-    reportButtons.forEach((item) => {
-        item.addEventListener('click', (event) => {
-            event.preventDefault();
-            let modalId = item.getAttribute('data-target');
-            let modal = document.querySelector(modalId);
-            let objectId = item.getAttribute('data-object');
-            modal.setAttribute('data-object', objectId);
-        })
-    })
-}
-
 function getNotifications(e) {
     e.preventDefault();
     // e.stopPropagation();
@@ -51,7 +39,6 @@ function getNotifications(e) {
     notificationContainer.innerHTML = "";
 
     sendAjaxRequest('get', '/request', {}, displayNotifications);
-  
 }
 
 $(document).ready(function () {
@@ -69,7 +56,7 @@ function notificationBellHandler() {
 }
 
 function changeNotificationStatus(item) {
-    console.log(item)
+    // console.log(item)
     let requestId = item.getAttribute('data-target');
     let buttonType = item.getAttribute('data-type');
     sendAjaxRequest('put', '/request/' + requestId, { status: buttonType }, function (item) {
@@ -81,7 +68,7 @@ function changeNotificationStatus(item) {
         let notCounter = document.querySelectorAll(".notification-content");
 
         if (notCounter.length == 0) {
-            notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 10px;">No new notifications.</h4>`;
+            notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 11px;">No new notifications.</h4>`;
             notNotice.style.display = "none";
         }
     });
@@ -90,10 +77,10 @@ function changeNotificationStatus(item) {
 function displayNotifications() {
     let info = JSON.parse(this.responseText)
     let notificationContainer = document.querySelectorAll('.notifications-wrapper')[0];
-    console.log(info['response'])
+    // console.log(info['response'])
 
     info['response'].forEach((item) => {
-        console.log(item);
+        // console.log(item);
         let notification;
         if (item['request']['requestable_type'] == "App\\JoinCommunityRequest") {
             notification = joinCommunityNotificationPartial(item);
@@ -115,7 +102,7 @@ function displayNotifications() {
             }));
     }
     if (notificationContainer.children.length == 0)
-    notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 10px;">No new notifications...</h4>`;
+        notificationContainer.innerHTML = `<h4 class="item-title" style="padding-left: 11px;">No new notifications...</h4>`;
 }
 
 function timeSince(date) {
@@ -268,12 +255,7 @@ function joinCommunityNotificationPartial(notification) {
     return not;
 }
 
-
-if (window.location.href.search("search?_token=") != -1) {
-    console.log("no search");
-    let searchedQuery = document.getElementById("search-title-query").innerHTML;
-    let searchBar = document.getElementById("search-bar");
-    searchBar.value = searchedQuery;
-
-}
-
+$(document).ready(function () {
+    if ($(".search-title-query").length)
+        document.getElementById("search-bar").value = document.querySelector(".search-title-query").innerHTML;
+});

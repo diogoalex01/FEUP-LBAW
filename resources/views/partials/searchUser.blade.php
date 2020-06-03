@@ -1,6 +1,6 @@
 <!-- User Thumbnail -->
 <div class="user-tab-menu active-tab menu-content">
-    <div id="c5" class="card mb-4 post-container">
+    <div class="card mb-4 post-container">
         <div class="card-body community-thumbnail">
 
             @auth('admin')

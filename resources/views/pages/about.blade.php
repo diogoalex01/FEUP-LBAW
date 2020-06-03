@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "About"])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => "About" ])
 @section('content')
 
 <!-- Page Content -->

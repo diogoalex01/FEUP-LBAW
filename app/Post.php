@@ -101,11 +101,38 @@ class Post extends Model
                 ['user' => $user->id]
             )
         );
-        // DB::table('post')
-        // ->join('community', 'community.id', 'post.id_community')
-        // ->whereExists()
+
     }
 
+    public static function getUserFollowPosts()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
+
+        return DB::select(
+            DB::raw(
+                "select * from post where exists 
+                    (select * from follow_user 
+                        where (follow_user.id_followed = post.id_author 
+                        and 
+                        follow_user.id_follower =" . $user->id . ") 
+                    )
+                and exists (select * from community
+                                 where
+                                    ( 
+                                        community.id = post.id_community
+                                        and
+                                        community.private = false
+                                    )
+                            )
+            order by (post.time_stamp) desc; ",
+                ['user' => $user->id]
+            )
+        );
+    }
     public static function getOtherPosts($criteria)
     {
         if (Auth::check()) {
@@ -164,5 +191,22 @@ class Post extends Model
             )
         );
     }
+
+    public static function search($query){
+        return DB::select(
+            DB::raw("
+            SELECT post_id, ts_rank_cd(search_weight, query) AS weight
+            FROM(
+                    SELECT *, post.id AS post_id
+                        FROM post JOIN member_user ON member_user.id = post.id_author
+                        GROUP BY post.id, member_user.id) abc,
+                        to_tsquery('portuguese', :query) AS query
+                        WHERE search_weight @@ query
+                    ORDER BY weight DESC;"),
+
+            array('query' => $query)
+        );
+    }
+
 
 }

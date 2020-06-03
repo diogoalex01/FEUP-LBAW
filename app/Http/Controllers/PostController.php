@@ -51,7 +51,12 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //$this->authorize('create', $post);
+        $this->authorize('create', Post::class);
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            $user = null;
+        }
 
         $data = $request->validate([
             'community' => 'required',
@@ -60,7 +65,7 @@ class PostController extends Controller
             'post_content' => 'required',
             'image' => 'nullable|mimes:jpeg,jpg,png,gif',
         ]);
-        // dd($data);
+        
         /* Check and create community if needed */
         $communities = Community::all()->pluck('name')->toArray();
         $community_name = $data['community'];
@@ -75,8 +80,18 @@ class PostController extends Controller
         $lowerCommunities = array_map('strtolower', $communities);
         $lowerCommunityName = strtolower($community_name);
         if (in_array($lowerCommunityName, $lowerCommunities)) {
-            $community_id = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first()->id;
-            // Community::find($community_id)->members()->where('t')
+            $community = Community::where('name', 'ilike', '%' . $community_name . '%')->get()->first();
+            $member = $community->members()->where('id_user', '=', $user->id)->first();
+
+            if($member === null){
+                if($community->private){
+                    error_log("não é member");
+                    return redirect('/community/'.$community->id);
+                }
+                $community->members()->attach(Auth::user()->id, []);
+            }
+
+            $community_id = $community->id;
         } else {
             if (!isset($data['private'])) {
                 $data['private'] = 'false';
@@ -180,13 +195,28 @@ class PostController extends Controller
         $posts = [];
         if ($user !== null) {
             $posts = Post::getUserHomePosts();
+            $follow_posts = Post::getUserFollowPosts();
+
+            foreach ($posts as $post) {
+                $newPost = Post::find($post->id);
+                array_push($allPosts, $newPost);
+            }
+            foreach ($follow_posts as $post) {
+                $newPost = Post::find($post->id);
+                array_push($allPosts, $newPost);
+            }
+
+            usort($allPosts, function($a, $b) {return !strcmp($a->time_stamp, $b->time_stamp);});
+            // $allPosts = $allPosts->sortByDesc('time_stamp');
         } else {
             $posts = Post::getPosts('time_stamp');
-        }
-        foreach ($posts as $post) {
+            
+            foreach ($posts as $post) {
             $newPost = Post::find($post->id);
             array_push($allPosts, $newPost);
+            }
         }
+        
         $posts = array_slice($allPosts, 0, 15);
         // dd($posts);
         return view('pages.home', ['posts' => $posts, 'user' => $user]);
@@ -222,6 +252,8 @@ class PostController extends Controller
             $newPost = Post::find($post->id);
             array_push($allPosts, $newPost);
         }
+        
+        usort($allPosts, function($a, $b) {return !strcmp($a->time_stamp, $b->time_stamp);});
         $posts = array_slice($allPosts, 0, 15);
 
         $htmlView = [];
@@ -250,7 +282,6 @@ class PostController extends Controller
         $allPosts = [];
 
         $posts = $user !== null ? Post::getOtherPosts('upvotes') : Post::getPosts('upvotes');
-
 
         foreach ($posts as $post) {
             $newPost = Post::find($post->id);
@@ -289,6 +320,7 @@ class PostController extends Controller
             $newPost = Post::find($post->id);
             array_push($allPosts, $newPost);
         }
+
         $posts = array_slice($allPosts, 0, 15);
         $htmlView = [];
 
@@ -321,7 +353,22 @@ class PostController extends Controller
         // $posts = Post::orderBy('time_stamp', 'desc')->get()->take(20);
 
         if ($request['type'] == 'home') {
-            $posts =  $user !== null ?  Post::getUserHomePosts() : Post::getPosts('time_stamp');
+            if ($user !== null) {
+                $joinedPosts = [];
+                $posts = Post::getUserHomePosts();
+                $follow_posts = Post::getUserFollowPosts();
+
+                foreach ($posts as $post) {
+                    array_push($joinedPosts, $post);
+                }
+                foreach ($follow_posts as $post) {
+                    array_push($joinedPosts, $post);
+                }
+                $posts = $joinedPosts;
+            } else {
+                $posts = Post::getPosts('time_stamp');
+            }
+            // $posts =  $user !== null ?  Post::getUserHomePosts() : Post::getPosts('time_stamp');
             // $posts = Post::orderBy('time_stamp', 'desc')->skip($request['num_posts'])->take(5)->get();
         } else if ($request['type'] == 'popular') {
             $posts = $user !== null ? Post::getOtherPosts('upvotes') : Post::getPosts('upvotes');
@@ -335,6 +382,8 @@ class PostController extends Controller
             $newPost = Post::find($post->id);
             array_push($allPosts, $newPost);
         }
+
+        usort($allPosts, function($a, $b) {return !strcmp($a->time_stamp, $b->time_stamp);});
 
         $posts = array_slice($allPosts, $request['num_posts'], 5);
 
@@ -370,7 +419,6 @@ class PostController extends Controller
      */
     public function update($post_id, Request $request)
     {
-        error_log("\n1\n");
         //TODO: add policy
         if (Auth::check()) {
             $user = Auth::user();
@@ -380,7 +428,6 @@ class PostController extends Controller
 
 
         if ($user == null) {
-            error_log("\n2\n");
             return response([
                 'success' => false
             ]);
@@ -394,7 +441,6 @@ class PostController extends Controller
         // $this->authorize('update', 2,$post);
 
         if ($post != null) {
-            error_log("\n3\n");
             $post->content = $data['new_content'];
             $post->save();
             return response([
@@ -403,7 +449,6 @@ class PostController extends Controller
                 "new_content" => $post->content
             ]);
         } else {
-            error_log("\n4\n");
             return response([
                 'success' => false
             ]);
@@ -419,7 +464,8 @@ class PostController extends Controller
      */
     public function destroy($post_id)
     {
-        //TODO: add policy
+        $post = Post::find($post_id);
+        // $this->authorize('delete', $post);
         if (Auth::check()) {
             $user = Auth::user();
         } else {
@@ -433,24 +479,21 @@ class PostController extends Controller
         //     'post_id' => 'required',
         // ]);
 
-        $post = Post::find($post_id);
-
-        if ($post->delete()) {
-            return response([
-                'success' => true
-            ]);
-        } else {
-            return response([
-                'success' => false
-            ]);
+        if($post != null){
+            if ($post->delete()) {
+                return response(['success'=>true]);
+            } else {
+                return response(['success'=>true]);
+            }
         }
+        abort(404);
     }
 
     public function adminDestroy($post_id)
     {
-        //todo is admin
-        //$this->authorize('view', Admin::class);
+        // $this->authorize('adminDel', Post::class);
         DB::transaction(function () use ($post_id) {
+
             $post = Post::find($post_id);
 
             if ($post->delete()) {
@@ -463,6 +506,10 @@ class PostController extends Controller
                 ]);
             }
         });
+
+        return response([
+                    'success' => true
+                ]);
     }
 
     public function vote($post_id, Request $request)
@@ -585,8 +632,5 @@ class PostController extends Controller
             // Link them together
             $post_report->report()->save($report);
         });
-
-
-        //TODO: mostrar mensagem de sucesso?
     }
 }

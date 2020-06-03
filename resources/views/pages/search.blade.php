@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' =>"Search Results for \"{$query}\" | PearToPear"])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' =>  "Search Results for \"{$query}\" | PearToPear" ])
 @section('content')
 <!-- Page Content -->
 <div class="container">

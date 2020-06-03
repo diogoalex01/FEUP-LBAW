@@ -82,7 +82,7 @@
                     <i class="fas fa-exclamation-circle"></i>
                 </a>
 
-                <ul class="dropdown-menu notifications dropdown-menu-right pl-3 pt-3 pb-0 mt-3" role="menu"
+                <div class="dropdown-menu notifications dropdown-menu-right pl-3 pt-3 pb-0 mt-3" role="menu"
                     aria-labelledby="dLabel" style="background-color: #f8f9fa;">
 
                     <div class="notification-heading">
@@ -93,13 +93,13 @@
                         </div>
                     </div>
 
-                    <li class="divider"></li>
+                    <div class="divider"></div>
 
                     <div class="notifications-wrapper">
 
                     </div>
-                    <li class="divider"></li>
-                </ul>
+                    <div class="divider"></div>
+                </div>
 
             </div>
 
@@ -588,6 +588,35 @@
                                                 data-dismiss="modal">Close</button>
                                             <input type="submit" class="btn btn-danger my-2 ml-1" value="Send Report"
                                                 id="send-comment-report-button" data-toggle="#modalCommentReport">
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ask for Community Deletion Modal -->
+            <div class="modal" id="modalCommunityDeletion" tabindex="-1" role="dialog" aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body login-modal">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <section>
+                                <div class="container mb-3">
+                                    <h2 class="text-dark title-padding title-mobile">Delete my Community
+                                    </h2>
+                                    <hr>
+                                    <form onsubmit="askForDeletion(event);">
+                                        <label class="col-md-8 control-label mx-2">This action is irreversible:</label>
+                                        <div class="row justify-content-end my-2 mx-1">
+                                            <button class="btn btn-secondary my-2 mr-1" data-toggle="modal"
+                                                data-dismiss="modal">Close</button>
+                                            <input type="submit" class="btn btn-danger my-2 ml-1" value="Request Deletion"
+                                                id="send-community-deletion-button" data-toggle="#modalCommunityDeletion">
                                         </div>
                                     </form>
                                 </div>

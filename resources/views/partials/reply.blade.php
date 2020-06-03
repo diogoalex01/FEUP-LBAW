@@ -1,9 +1,9 @@
+<!-- Reply -->
 @if($reply->id_parent===$comment->id)
 <div id="comment{{$reply->id}}" class="card mb-2 post-container post-reply">
     <div class="row pt-4">
 
         {{-- Votes --}}
-        {{-- @include('partials.vote', ['route'=>'/comment/'.$reply->id."/vote", 'user'=>$user, 'object'=>$reply]) --}}
         @if($user == null || $reply->votedUsers->where('id', "=", $user->id)->first() == null)
         @include('partials.vote', ['route'=>'/comment/'.$reply->id.'/vote', 'user'=>$user, 'object'=> $reply,
         'vote_type' => "null"])
@@ -24,6 +24,10 @@
         style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
         <div class="col-md-6 align-self-center">
             <div class="card-footer-buttons row align-content-center justify-content-start">
+                @if(Auth::guard('admin')->check())
+                <a href="" class="admin-delete-comment" data-object='{{$reply->id}}'><i
+                        class="fas fa-trash-alt"></i>Delete</a>
+                @else
                 @if($user === null)
                 <a href="" data-toggle="modal" data-target="#modalWelcome" class="reply-btn"><i
                         class="fas fa-reply"></i>Reply</a>
@@ -48,23 +52,36 @@
                 </a>
                 <a href="" class="edit-btn" data-comment-id="{{$reply->id}}"><i class="fas fa-eraser"></i>Edit</a>
                 @endif
+                @endif
             </div>
         </div>
         <div class="col-md-6">
             <div class="row align-self-center justify-content-end">
                 @if($comment->user != null)
+                @if(Auth::guard('admin')->check())
+                <a href="{{route('admin.profile', $comment->user->id)}}">
+                    <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}"
+                        alt="">
+                </a>
+                @else
                 <a href="{{route('profile', $comment->user->id)}}">
                     <img class="profile-pic-small" height="35" width="35" src="{{ asset($comment->user->photo) }}"
                         alt="">
                 </a>
+                @endif
                 @endif
 
                 <span class="px-1 align-self-center">{{date('F d, Y', strtotime($reply->time_stamp))}} by </span>
                 @if($reply->user == null)
                 <a>@unknown</a>
                 @else
+                @if(Auth::guard('admin')->check())
+                <a href={{ route('admin.profile', $reply->user->id) }} class="my-auto">
+                    <span>@</span>{{$reply->user->username}}</a>
+                @else
                 <a href={{ route('profile', $reply->user->id) }} class="my-auto">
                     <span>@</span>{{$reply->user->username}}</a>
+                @endif
                 @endif
             </div>
         </div>
@@ -73,7 +90,8 @@
 
 <div id="replies{{$reply->id}}" style="margin-left: 6%;">
     @foreach($replies as $new_reply)
-    @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply, 'post_author' => $post_author])
+    @include('partials.reply', ['user'=>$user, 'reply'=> $new_reply, 'comment' => $reply, 'post_author' =>
+    $post_author])
     @endforeach
 </div>
 

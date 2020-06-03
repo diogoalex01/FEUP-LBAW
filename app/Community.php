@@ -69,13 +69,22 @@ class Community extends Model
         return $this->hasMany('App\JoinCommunityRequest');
     }
 
-    public static function userCommunitites(){
-        if (Auth::check()) {
-            $user = Auth::user();
-        } else {
-            $user = null;
-        }
-        return DB::table('community')->join('community_member','community_member.id_community','community.id')->where('community_member.id_user',$user->id)->get();
+    public static function userCommunitites($user_id){
+        return DB::table('community')->join('community_member','community_member.id_community','community.id')->where('community_member.id_user',$user_id)->get();
+    }
+
+    public static function search($query){
+        return DB::select(
+            DB::raw("
+            SELECT community_id, ts_rank_cd(to_tsvector('portuguese', c_search.name), query) AS weight
+            FROM (
+                SELECT community.id AS community_id, name
+                    FROM community
+                    GROUP BY community.id) c_search, to_tsquery('portuguese', :query) AS query
+            WHERE (to_tsvector('portuguese', c_search.name)) @@ query 
+            ORDER BY weight DESC;"),
+            array('query' => $query)
+        );
     }
 
 }

@@ -66,18 +66,18 @@ class UserController extends Controller
      */
     public function show($user_id)
     {
-        if (Auth::guard('admin')->check()) {
-            $this_user = Auth::guard('admin')->user();
-        } else {
-            $this_user = Auth::user();
-        }
-        $member_users = User::all();
-        $member_user = $member_users->find($user_id);
-
         $follows = false;
         $blocking = false;
         $blocked = false;
         $request_status = null;
+        $member_users = User::all();
+        $member_user = $member_users->find($user_id);
+
+        if (Auth::guard('admin')->check()) {
+            $this_user = null;
+        } else {
+            $this_user = Auth::user();
+        }
 
         if ($member_user != NULL) {
             $postN = Post::where('id_author', '=', $user_id)->count();
@@ -89,13 +89,12 @@ class UserController extends Controller
             $activities = $posts->merge($comments);
             $activities = $activities->sortByDesc('time_stamp');
 
-            // $communities = Community::where('id_owner', $this_user->id)->orderBy('name', 'asc')->get();
-            $communities = Community::userCommunitites();
-            // dd($communities);
+            $communities = Community::userCommunitites($user_id);
+
             $allCommunities = [];
             foreach ($communities as $community) {
-            $newCommunity = Community::find($community->id);
-            array_push($allCommunities, $newCommunity);
+                $newCommunity = Community::find($community->id);
+                array_push($allCommunities, $newCommunity);
             }
 
             $communities = $allCommunities;
@@ -138,10 +137,7 @@ class UserController extends Controller
                     $blocked = false;
                 }
             }
-            //dd($blocking, $blocked);
-            // $follow_request = DB::table('follow_user')->where('id_followed', '=', $user_id)->get() !== null;
-
-            //$comments = DB::table('comment')->where('id_post', '=', $id)->orderBy('time_stamp', 'desc')->get();
+            // dd($blocking);
             return view('pages.myProfile', ['other_user' => $member_user, 'age' => $age, 'nPosts' => $postN, 'activities' => $activities, 'communities' => $communities, 'user' => $this_user, 'follow_status' => $request_status, 'follows' => $follows, 'isBlocked' => $blocked, 'isBlocking' => $blocking]);
         }
         abort(404);
@@ -332,8 +328,9 @@ class UserController extends Controller
 
     public function adminDestroy($user_id)
     {
-        //todo is admin
-        //$this->authorize('view', Admin::class);
+        //authorize('create', Post::class);
+        // $this->authorize('adminDel');
+        // $this->authorize('deleteAdmin', Auth::guard('admin')->user());
         DB::transaction(function () use ($user_id) {
             Post::where('id_author', '=', $user_id)->delete();
             Comment::where('id_author', '=', $user_id)->delete();
@@ -350,6 +347,8 @@ class UserController extends Controller
                 ]);
             }
         });
+        return response([
+                    'success' => true]);
     }
 
 
@@ -445,7 +444,5 @@ class UserController extends Controller
             // Link them together
             $user_report->report()->save($report);
         });
-
-        //TODO: mostrar mensagem de sucesso?
     }
 }

@@ -95,6 +95,18 @@ class CommentPolicy
     }
 
     /**
+     * Determine whether the admin can delete the model.
+     *
+     * @param  \App\Admin  $admin
+     * @param  \App\Admin  $model
+     * @return mixed
+     */
+    public function adminDel()
+    {
+        return Auth::guard('admin')->check();
+    }
+
+    /**
      * Determine whether the user can permanently delete the comment.
      *
      * @param  \App\User  $user

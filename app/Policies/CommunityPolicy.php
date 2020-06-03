@@ -105,4 +105,16 @@ class CommunityPolicy
     {
         //
     }
+
+    /**
+     * Determine whether the admin can delete the model.
+     *
+     * @param  \App\Admin  $admin
+     * @param  \App\Admin  $model
+     * @return mixed
+     */
+    public function adminDel()
+    {
+        return Auth::guard('admin')->check();
+    }
 }

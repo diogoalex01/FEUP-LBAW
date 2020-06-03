@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $post->title])
+@extends( (Auth::guard('admin')->check()) ? 'layouts.admin' : 'layouts.app', [ 'title' => $post->title])
 @section('content')
 
 <!-- Page Content -->
@@ -10,13 +10,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-2 text-center community-pic-container">
+                    @if(Auth::guard('admin')->check())
+                    <a href="{{ route('admin.community', $post->community->id)}}">
+                        <img class="community-pic" src="{{ asset($post->community->image) }}" alt="Community Image">
+                    </a>
+                    @else
                     <a href="{{ route('community', $post->community->id)}}">
                         <img class="community-pic" src="{{ asset($post->community->image) }}" alt="Community Image">
                     </a>
+                    @endif
                 </div>
                 <div class="col-md-7 my-auto">
+                    @if(Auth::guard('admin')->check())
+                    <h1 class="my-4"> <a href="{{ route('admin.community', $post->community->id)}}">
+                            /{{$post->community->name}} </a></h1>
+                    @else
                     <h1 class="my-4"> <a href="{{ route('community', $post->community->id)}}">
-                           /{{$post->community->name}} </a></h1>
+                            /{{$post->community->name}} </a></h1>
+                    @endif
                 </div>
             </div>
         </div>
@@ -33,12 +44,12 @@
                 <div class="row">
 
                     {{-- Votes --}}
-                    @if($user == null || $post->votedUsers->where('id', "=", $user->id)->first() == null)
-                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
+                    @if(!Auth::check() || $post->votedUsers->where('id', "=", Auth::user()->id)->first() == null)
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=> Auth::user(), 'object'=> $post,
                     'vote_type' => "null"])
                     @else
-                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=>$user, 'object'=> $post,
-                    'vote_type'=> $post->votedUsers->where('id', "=", $user->id)->first()->pivot->vote_type])
+                    @include('partials.vote', ['route'=>'/post/'.$post->id.'/vote', 'user'=> Auth::user(), 'object'=> $post,
+                    'vote_type'=> $post->votedUsers->where('id', "=",  Auth::user()->id)->first()->pivot->vote_type])
                     @endif
 
                     <div class="col-md-10 mx-auto" id="post-content-container-{{$post->id}}">
@@ -55,18 +66,23 @@
                     style="border-top: 3px solid rgba(76, 25, 27, 0.444); background-color: white;">
                     <div class="col-md-6 align-self-center ">
                         <div class="card-footer-buttons row align-content-center justify-content-start">
-                            @if($user != null)
+                            @if(Auth::guard('admin')->check())
+                            <a href="" class="admin-delete-post" data-object='{{$post->id}}'><i
+                                    class="fas fa-trash-alt"></i>Delete</a>
+                            @else
+                            @if(Auth::check())
                             <a href="/post/{{$post->id}}#new-comment-input"><i class="fas fa-reply"></i>Reply</a>
                             @else
                             <a href="" data-toggle="modal" data-target="#modalWelcome"><i
                                     class="fas fa-reply"></i>Reply</a>
                             @endif
 
-                            @if($user === null)
+
+                            @if(!Auth::check())
                             <a href="" data-toggle="modal" data-target="#modalWelcome">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
-                            @elseif($user !== null && $user->id === $post->id_author)
+                            @elseif( Auth::user()->id === $post->id_author)
                             <a href="" class="delete-btn" data-toggle="modal" data-target="#modalDeletePost"
                                 data-object="{{$post->id}}" data-route="/post/{{$post->id}}" data-type="post">
                                 <i class="fas fa-trash-alt"></i>Delete
@@ -74,19 +90,28 @@
                             <a href="" id="edit-post-btn" data-post-id="{{$post->id}}"><i class="fas fa-eraser"></i>Edit
                             </a>
                             @else
-                            <a class="report-button"  data-toggle="modal" data-object ="{{$post->id}}" data-target="#modalPostReport">
+                            <a class="report-button" data-toggle="modal" data-object="{{$post->id}}"
+                                data-target="#modalPostReport">
                                 <div class="a-report"><i class="fas fa-flag"></i>Report</div>
                             </a>
+                            @endif
                             @endif
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row align-self-center justify-content-end">
                             @if($post->user != null)
+                            @if(Auth::guard('admin')->check())
+                            <a href="{{route('admin.profile', $post->user->id)}}">
+                                <img class="profile-pic-small" height="35" width="35"
+                                    src="{{ asset($post->user->photo) }}" alt="">
+                            </a>
+                            @else
                             <a href="{{route('profile', $post->user->id)}}">
                                 <img class="profile-pic-small" height="35" width="35"
                                     src="{{ asset($post->user->photo) }}" alt="">
                             </a>
+                            @endif
                             @endif
 
                             <span class="px-1 pl-2 align-self-center">{{date('F d, Y', strtotime($post->time_stamp))}}
@@ -95,10 +120,13 @@
                             <a class="align-self-center">
                                 @unknown </a>
                             @else
+                            @if(Auth::guard('admin')->check())
+                            <a class="align-self-center" href={{ route('admin.profile', $post->user->id)}}>
+                                <span>@</span>{{$post->user->username}}</a>
+                            @else
                             <a class="align-self-center" href={{ route('profile', $post->user->id)}}>
                                 <span>@</span>{{$post->user->username}}</a>
-                            {{-- <a class="align-self-center" href="myProfile.php?auth=&admin=">
-                                @someusername</a> --}}
+                            @endif
                             @endif
                         </div>
                     </div>
@@ -116,7 +144,7 @@
                     <div class="row" style="font-size: 0.45rem;">
                         @csrf
                         <div class="col-md-10 pr-md-0">
-                            <input hidden name="user_id" value={{$user->id}}>
+                            <input hidden name="user_id" value={{ Auth::user()->id}}>
                             <input hidden name="post_id" value={{$post->id}}>
                             <textarea id="new-comment-input" rows="1" onclick="this.rows = '8';"
                                 onblur="if(this.value == '') this.rows = '1';" class="form-control mr-0"
@@ -136,7 +164,8 @@
         <div id="post-comment-section">
             {{-- @each('partials.comment', $comments, 'comment') --}}
             @foreach($comments as $comment)
-            @include('partials.comment', ['comment'=>$comment, 'user'=>$user, 'replies'=> $replies, 'post_author' => $post->id_author])
+            @include('partials.comment', ['comment'=>$comment, 'user'=> Auth::user(), 'replies'=> $replies, 'post_author' =>
+            $post->id_author])
             @endforeach
         </div>
     </div>
@@ -152,7 +181,6 @@
                 <section>
                     <div id="deletePostForm" class="container mb-3">
                         <h2 class="text-dark title-padding title-mobile">Delete Post
-                            {{-- <i class="fas fa-exclamation-circle pl-2 text-danger"></i> --}}
                         </h2>
                         <hr>
                         <label class="col control-label pl-0 mx-0">This action cannot be undone. This will permanently

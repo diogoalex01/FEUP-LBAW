@@ -102,7 +102,7 @@ function sendResetPassword(e) {
 
 function resetPassHandler() {
     if (this.status != 200) {
-        console.log(this.responseText)
+        // console.log(this.responseText)
         let response = JSON.parse(this.responseText);
         let string = "";
         for (let s in response.errors) {
@@ -129,9 +129,7 @@ function resetPassHandler() {
 }
 
 function sendDeleteProfile(event) {
-    console.log("send delete");
     event.preventDefault();
-
     let delete_content = document.querySelector('#deleteToggle').checked;
     sendAjaxRequest('delete', '/settings', { delete_content: delete_content }, profileDeletedHandler);
 }
@@ -163,9 +161,9 @@ function profileDeletedHandler() {
 }
 
 function profileEditedHandler(responseText) {
-    console.log(responseText);
-    let response = JSON.parse(responseText);
-    console.log(response);
+    // console.log(responseText);
+    // let response = JSON.parse(responseText);
+    // console.log(response);
     let string = "";
     for (let s in response.errors) {
         string += "<li>" + response.errors[s] + "</li>"
@@ -238,9 +236,9 @@ function blockUser(event, blocked) {
     event.preventDefault();
     event.stopPropagation();
     blockButton = document.getElementById("block-button");
-    console.log(blockButton);
+    // console.log(blockButton);
     let followButton = document.getElementById("follow-button");
-
+    console.log(blockButton)
     if (blockButton.value == "Block") {
         blockButton.value = "Unblock";
         sendAjaxRequest('post', '/block/' + blocked, {
@@ -312,11 +310,11 @@ function joinCommunity(event, communityId) {
 }
 
 function followHandler() {
-    console.log(this.responseText);
+    // console.log(this.responseText);
 }
 
 function blockHandler() {
-    console.log(this.responseText);
+    // console.log(this.responseText);
 }
 
 // Delete user

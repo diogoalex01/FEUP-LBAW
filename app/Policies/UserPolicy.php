@@ -69,6 +69,7 @@ class UserPolicy
         return $user->id == $model->id;
     }
 
+   
     /**
      * Determine whether the user can restore the model.
      *
@@ -115,5 +116,18 @@ class UserPolicy
     {
         return Auth::check();
     }
+
+     /**
+     * Determine whether the admin can delete the model.
+     *
+     * @param  \App\Admin  $admin
+     * @param  \App\Admin  $model
+     * @return mixed
+     */
+    public function adminDel()
+    {
+        return !Auth::guard('admin')->check();
+    }
+
 
 }

@@ -67,7 +67,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        //
+        return $user->id === $post->id_author;
     }
 
     /**
@@ -104,5 +104,17 @@ class PostPolicy
     public function forceDelete(User $user, Post $post)
     {
         //
+    }
+
+    /**
+     * Determine whether the admin can delete the model.
+     *
+     * @param  \App\Admin  $admin
+     * @param  \App\Admin  $model
+     * @return mixed
+     */
+    public function adminDel(User $user)
+    {
+        return Auth::guard('admin')->check();
     }
 }
