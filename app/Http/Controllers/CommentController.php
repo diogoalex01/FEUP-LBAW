@@ -296,7 +296,5 @@ class CommentController extends Controller
             // Link them together
             $comment_report->report()->save($report);
         });
-
-        //TODO: mostrar mensagem de sucesso?
     }
 }

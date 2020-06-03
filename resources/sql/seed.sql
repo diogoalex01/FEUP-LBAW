@@ -740,9 +740,9 @@ INSERT INTO member_user (username, first_name, last_name, email, password, birth
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('PedroFute', 'Pedro', 'Firmino', 'pedroFirmino23@gmail.com','GUYIHJLP9','1981-05-21','male', 'img/avatar_male.png', FALSE, 473);
 INSERT INTO member_user (username, first_name, last_name, email, password, birthday, gender, photo, private, credibility) VALUES ('testUser', 'Test', 'User', 'testUser@fe.up.pt','$2y$10$7NH/HcO0j.PDdMQQ62fzZe1917dwe4OJ5JUI95MolRb/9fc.w2uKK','1999-01-01','male', 'img/avatar_male.png', FALSE, 0);
  
-INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('mafaldaSntos', 'Mafalda', 'Santos', 'mafaldaSantos@gmail.com', 'admin1');
-INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('joaoLuz', 'Joao', 'Luz', 'joaoLuz@gmail.com', 'admin2');
-INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('diogoSilva',  'Diogo', 'Silva', 'diogoSilva@gmail.com', 'admin3');
+INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('mafaldaSntos', 'Mafalda', 'Santos', 'mafaldaSantos@gmail.com', '$2y$10$7NH/HcO0j.PDdMQQ62fzZe1917dwe4OJ5JUI95MolRb/9fc.w2uKK');
+INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('joaoLuz', 'Joao', 'Luz', 'joaoLuz@gmail.com', '$2y$10$7NH/HcO0j.PDdMQQ62fzZe1917dwe4OJ5JUI95MolRb/9fc.w2uKK');
+INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('diogoSilva',  'Diogo', 'Silva', 'diogoSilva@gmail.com', '$2y$10$7NH/HcO0j.PDdMQQ62fzZe1917dwe4OJ5JUI95MolRb/9fc.w2uKK');
 INSERT INTO admin_user (username, first_name, last_name, email, password) VALUES ('lilianaAlmeida',  'Liliana', 'Almeida', 'lilianaAlmeida@gmail.com', '$2y$10$7NH/HcO0j.PDdMQQ62fzZe1917dwe4OJ5JUI95MolRb/9fc.w2uKK');
  
 INSERT INTO community (name, image, private, id_owner) VALUES ('FEUP','img/default_community.jpg', FALSE, 2);

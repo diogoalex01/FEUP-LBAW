@@ -71,7 +71,7 @@ class PostController extends Controller
         $community_name = $data['community'];
 
         // Make alphanumeric (removes all other characters)
-        $community_name = preg_replace("/[\W0-9_\s-]/", "", $community_name);
+        $community_name = preg_replace("/[^a-z^A-Z0-9_\s-]/", "", $community_name);
         // Clean up multiple dashes or whitespaces
         $community_name = preg_replace("/[\s-]+/", " ", $community_name);
         // Convert whitespaces and underscore to dash
@@ -85,7 +85,6 @@ class PostController extends Controller
 
             if($member === null){
                 if($community->private){
-                    error_log("não é member");
                     return redirect('/community/'.$community->id);
                 }
                 $community->members()->attach(Auth::user()->id, []);

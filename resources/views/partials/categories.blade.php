@@ -1,8 +1,7 @@
 <!-- My Categories -->
 <div class="card aside-container sticky-top">
-    <h5 class="card-header aside-container-top"
-        style="border: 1px solid rgba(76, 25, 27); border-radius: 2px; background-color: rgb(76, 25, 27);">
-    </h5>
+    <div class="card-header aside-container-top"
+        style="border: 1px solid rgba(76, 25, 27); border-radius: 2px; background-color: rgb(76, 25, 27);"> </div>
     <div class="card-body">
         <div class="row">
             <div class="col justify-content-start">

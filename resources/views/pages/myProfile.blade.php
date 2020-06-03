@@ -162,12 +162,12 @@ $other_user->last_name . " | PearToPear" ])
 
             <!-- New Post -->
             @if(Auth::check() && ($other_user->id ===  Auth::user()->id))
-            <a href="/new_post">
+            {{-- <a href="/new_post"> --}}
                 <div class="card mb-4 post-container">
                     <div class="card-body">
                         <div class="row" style="font-size: 0.45rem;">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Write your own post">
+                                <input type="text" class="form-control" onclick = "window.location = '/new_post';" placeholder="Write your own post">
                             </div>
                             <div class="col-1 pl-0 my-auto">
                                 <i class="fas fa-plus-circle fa-4x"></i>
@@ -175,7 +175,7 @@ $other_user->last_name . " | PearToPear" ])
                         </div>
                     </div>
                 </div>
-            </a>
+            {{-- </a> --}}
             @endif
 
             @if(Auth::guard('admin')->check() || (!$other_user->private) || (Auth::check() && ($other_user->id === Auth::user()->id || $follows) && (!$isBlocked
@@ -204,12 +204,12 @@ $other_user->last_name . " | PearToPear" ])
 
                 <h5 class="card-header aside-container-top d-flex align-items-center">
 
-                    <div class="col-1 pr-lg-0">
+                    <span class="col-1 pr-lg-0">
                         <i class="fas fa-user-lock"></i>
-                    </div>
-                    <div class="col pl-lg-0">
+                    </span>
+                    <span class="col pl-lg-0">
                         You can't check this account
-                    </div>
+                    </span>
 
                 </h5>
 

@@ -20,12 +20,12 @@
             @if (Auth::check())
 
             <!-- New Post -->
-            <a href={{route('new_post')}}>
+            {{-- <a href={{route('new_post')}}> --}}
                 <div class="mt-4 mt-md-1 card mb-4 mr-md-2 mr-lg-4 post-container">
                     <div class="card-body">
                         <div class="row" style="font-size: 0.45rem;">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Write your own post">
+                                <input type="text" onclick = "window.location = '/new_post';" class="form-control" placeholder="Write your own post">
                             </div>
                             <div class="col-1 pl-0 my-auto">
                                 <i class="fas fa-plus-circle fa-4x"></i>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-            </a>
+            {{-- </a> --}}
 
             @endif
 
@@ -47,12 +47,12 @@
 
                 <h5 class="card-header aside-container-top d-flex align-items-center">
 
-                    <div class="col-1 pr-lg-0">
+                    <span class="col-1 pr-lg-0">
                         <i class="far fa-laugh-beam fa-2x"></i>
-                    </div>
-                    <div class="col pl-lg-0">
+                    </span>
+                    <span class="col pl-lg-0">
                         Welcome!
-                    </div>
+                    </span>
 
                 </h5>
 

@@ -305,13 +305,13 @@
 
                                                         <div class="col sign-up-input">
                                                             <label for="firstNameSignUp" class="control-label">First
-                                                                name:</label>
+                                                                name *</label>
                                                             <input class="form-control" type="text" id="firstNameSignUp"
                                                                 name="firstName" placeholder="First Name" required>
                                                         </div>
                                                         <div class="col sign-up-input">
                                                             <label for="lastNameSignUp" class=" control-label">Last
-                                                                name:</label>
+                                                                name *</label>
                                                             <input class="form-control" type="text"
                                                                 placeholder="Last Name" id="lastNameSignUp"
                                                                 name="lastName" required>
@@ -319,7 +319,7 @@
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="usernameSignUp">Username</label>
+                                                            <label for="usernameSignUp">Username *</label>
                                                             <div class="input-group mb-2">
                                                                 <div class="input-group-prepend">
                                                                     <div class="input-group-text">@</div>
@@ -330,14 +330,14 @@
                                                             </div>
                                                         </div>
                                                         <div class="col sign-up-input">
-                                                            <label for="emailSignUp">Email</label>
+                                                            <label for="emailSignUp">Email *</label>
                                                             <input type="email" class="form-control" id="emailSignUp"
                                                                 name="email" placeholder="Email" required>
                                                         </div>
                                                     </div>
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
-                                                            <label for="passwordSignUp">Password</label>
+                                                            <label for="passwordSignUp">Password *</label>
                                                             <input type="password" id="passwordSignUp" name="password"
                                                                 class="form-control"
                                                                 {{-- aria-describedby="passwordHelp" --}}
@@ -349,7 +349,7 @@
                                                         </div>
                                                         <div class="col sign-up-input">
                                                             <label for="password_confirmationSignUp">Confirm
-                                                                Password</label>
+                                                                Password *</label>
                                                             <input type="password" id="password_confirmationSignUp"
                                                                 name="password_confirmation" class="form-control"
                                                                 {{-- aria-describedby="passwordHelp" --}}
@@ -363,7 +363,7 @@
                                                     <div class="row d-flex justify-content-lg-center mb-2">
                                                         <div class="col sign-up-input">
                                                             <label for="genderSignUp"
-                                                                class="control-label">Gender</label>
+                                                                class="control-label">Gender *</label>
                                                             <select class="form-control" id="genderSignUp"
                                                                 name="gender">
                                                                 <option value="male">Male</option>
@@ -373,7 +373,7 @@
                                                         </div>
                                                         <div class="col sign-up-input">
                                                             <label for="birthdateSignUp"
-                                                                class="control-label">Birthdate:</label>
+                                                                class="control-label">Birthdate *</label>
                                                             <input class="form-control" type="date" id="birthdateSignUp"
                                                                 name="birthdate" required>
                                                         </div>

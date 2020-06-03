@@ -340,8 +340,5 @@ class CommunityController extends Controller
             // Link them together
             $community_report->report()->save($report);
         });
-
-
-        //TODO: mostrar mensagem de sucesso?
     }
 }

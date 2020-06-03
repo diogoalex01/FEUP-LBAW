@@ -1032,13 +1032,17 @@ $(document).ready(function () {
     let api_route;
     let data_route;
 
-    no_content.style.display = "block";
+    // if (no_content != null)
+    //     no_content.style.display = "block";
 
     if (posts_column_home != null || posts_column_community != null) {
-        if (posts_column_community != null && posts_column_community.children.length == 0) {
-            console.log("dasd")
-            no_content.style.display = "none";
-        }
+        // if (posts_column_community != null && posts_column_community.children.length != 0) {
+        //     no_content.style.display = "none";
+        // }
+
+        // if (posts_column_home != null && posts_column_home.children.length != 0) {
+        //     no_content.style.display = "none";
+        // }
 
         lock = false;
         loader.style.display = 'none';
